@@ -1,0 +1,88 @@
+<div class="example-form mt-3 ml-3">
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+        <table class="example-full-width" cellspacing="0">
+            <tr>
+                <td colspan="2">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Project Name</mat-label>
+                        <input formControlName="name" matInput placeholder="Ex : Project n°:1">
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Membres</mat-label>
+                        <input formControlName="membres" matInput placeholder="Ex : ahmed, ramzi">
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Tags</mat-label>
+                        <input formControlName="tags" matInput placeholder="Ex : html , advyeam">
+                    </mat-form-field>
+                </td>
+                <td>
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Tasks</mat-label>
+                        <input formControlName="tasks" matInput placeholder="Ex : task1, tasks2">
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <mat-form-field class="example-full-width">
+                        <mat-label>documents</mat-label>
+                        <input formControlName="documents" matInput placeholder="Ex : html.txt , fiche1.txt">
+                    </mat-form-field>
+                </td>
+                <td>
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Status</mat-label>
+                        <input formControlName="status" matInput placeholder="Ex : blocked, done">
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <mat-form-field appearance="fill " class="example-full-width">
+                        <mat-label>Enter a date range</mat-label>
+                        <mat-date-range-input [rangePicker]="picker">
+                            <input matStartDate formControlName="startDate" placeholder="Start date">
+                            <input matEndDate formControlName="deadline" placeholder="End date">
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+
+                        <mat-error *ngIf="projectForm.controls.startDate.hasError('matStartDateInvalid')">Invalid start
+                            date
+                        </mat-error>
+                        <mat-error *ngIf="projectForm.controls.deadline.hasError('matEndDateInvalid')">Invalid end date
+                        </mat-error>
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Progress</mat-label>
+                        <input type="number" formControlName="progress" matInput placeholder="Ex : 0..100%">
+                    </mat-form-field>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Description</mat-label>
+                        <input formControlName="description" matInput placeholder="Ex : 0..100%">
+                    </mat-form-field>
+                </td>
+            </tr>
+        </table>
+        <button class="btn btn-primary" style="background-color: #ff5e3a; border-color:#ff5e3a;"
+            type="submit">Submit</button>
+    </form>
+
+</div>

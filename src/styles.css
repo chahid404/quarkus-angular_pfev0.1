@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */ 
+@import"./assets/Bootstrap/dist/css/bootstrap.css";
+@import"./assets/Bootstrap/dist/css/bootstrap-grid.css";
+@import"./assets/Bootstrap/dist/css/bootstrap-reboot.css";
+
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
