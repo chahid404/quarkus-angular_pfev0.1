@@ -4,6 +4,7 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import org.advyteam.entites.Project;
 import org.advyteam.repositorys.ProjectRepository;
+import org.advyteam.repositorys.SettingReposotory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -19,6 +20,8 @@ public class ProjectRessource {
 
     @Inject
     ProjectRepository projectRepository;
+    @Inject
+    SettingReposotory settingReposotory;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -35,12 +38,32 @@ public class ProjectRessource {
 
 
     @POST
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Project AddNewProject(Project p) {
-        projectRepository.persist(p);
-        return p;
+    public Project AddNewProject(@PathParam("id") Long idsetting,Project project) {
+
+      Project newProject = new Project();
+      if (settingReposotory.findById(idsetting) == null) {
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
+      }
+      newProject.setCreatedDate(project.getCreatedDate());
+      newProject.setCreator(project.getCreator());
+      newProject.setDeadline(project.getDeadline());
+      newProject.setDescription(project.getDescription());
+      newProject.setDocuments(project.getDocuments());
+      newProject.setMembres(project.getMembres());
+      newProject.setName(project.getName());
+      newProject.setProgress(project.getProgress());
+      newProject.setProjectSettings(settingReposotory.findById(idsetting));
+      newProject.setStartDate(project.getStartDate());
+      newProject.setStatus(project.getStatus());
+      newProject.setSubProject(project.getSubProject());
+      newProject.setTags(project.getTags());
+      newProject.setTasks(project.getTasks());
+        projectRepository.persist(newProject);
+        return newProject;
     }
 
 

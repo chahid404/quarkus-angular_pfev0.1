@@ -12,7 +12,8 @@ export class ProjectService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public newProduct(data): Observable<Project> {
-    return this.httpClient.post<Project>(this.host + "/projects", data);
+  public newProduct(data, setting_id): Observable<Project> {
+    return this.httpClient.post<Project>(this.host + "/projects/" + setting_id, data);
   }
+
 }

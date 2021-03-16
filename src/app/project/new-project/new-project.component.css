@@ -1,21 +1,80 @@
 .example-form {
-  min-width: 150px;
+  min-width: 75px;
   max-width: 500px;
   width: 100%;
 }
 
 .example-full-width {
   width: 100%;
-  max-height: 50px;
 }
 
 td {
   padding-right: 8px;
 }
-/* .mat-form-field {
-  margin-right: 8px;
-} */
-.mat-snack-bar-handset{
-  background-color: aqua;
-  margin-left: 30px;
+
+.containere {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.containere input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmarke {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.containere:hover input ~ .checkmarke {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.containere input:checked ~ .checkmarke {
+  background-color: #2196F3;
+}
+
+/* Create the checkmarke/indicator (hidden when not checked) */
+.checkmarke:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmarke when checked */
+.containere input:checked ~ .checkmarke:after {
+  display: block;
+}
+
+/* Style the checkmarke/indicator */
+.containere .checkmarke:after {
+  left: 6.5px;
+  top: 2.75px;
+  width: 6.5px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }

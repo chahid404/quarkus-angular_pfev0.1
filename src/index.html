@@ -34,6 +34,24 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+  <!-- table with fixed colum  -->
+  <link rel="stylesheet" type="text/css" href="assets/fixedColumTable/vendor/bootstrap/css/bootstrap.min.css">
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css"
+    href="assets/fixedColumTable/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="assets/fixedColumTable/vendor/animate/animate.css">
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="assets/fixedColumTable/vendor/select2/select2.min.css">
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="assets/fixedColumTable/vendor/perfect-scrollbar/perfect-scrollbar.css">
+  <!--===============================================================================================-->
+  <link rel="stylesheet" type="text/css" href="assets/fixedColumTable/css/util.css">
+  <link rel="stylesheet" type="text/css" href="assets/fixedColumTable/css/main.css">
+
+  <!-- end table with fixed colum  -->
 </head>
 
 <body class="page-has-left-panels page-has-right-panels mat-typography">
@@ -119,6 +137,43 @@
   <script defer src="assets/fonts/fontawesome-all.js"></script>
 
 
+
+  <!-- table with fixed colum  -->
+  <!--===============================================================================================-->
+  <script src="assets/fixedColumTable/vendor/jquery/jquery-3.2.1.min.js"></script>
+  <!--=========assets/fixedColumTable/======================================================================================-->
+  <script src="assets/fixedColumTable/vendor/bootstrap/js/popper.js"></script>
+  <script src="assets/fixedColumTable/vendor/bootstrap/js/bootstrap.min.js"></script>
+  <!--=========assets/fixedColumTable/======================================================================================-->
+  <script src="assets/fixedColumTable/vendor/select2/select2.min.js"></script>
+  <!--=========assets/fixedColumTable/======================================================================================-->
+  <script src="assets/fixedColumTable/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+  <script>
+    $('.js-pscroll').each(function () {
+      var ps = new PerfectScrollbar(this);
+
+      $(window).on('resize', function () {
+        ps.update();
+      })
+
+      $(this).on('ps-x-reach-start', function () {
+        $(this).parent().find('.table100-firstcol').removeClass('shadow-table100-firstcol');
+      });
+
+      $(this).on('ps-scroll-x', function () {
+        $(this).parent().find('.table100-firstcol').addClass('shadow-table100-firstcol');
+      });
+
+    });
+
+
+
+
+  </script>
+  <!--===============================================================================================-->
+  <script src="assets/fixedColumTable/js/main.js"></script>
+
+  <!-- table with fixed colum  -->
 </body>
 
 </html>

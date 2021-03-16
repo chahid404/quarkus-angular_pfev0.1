@@ -60,8 +60,6 @@ public class SettingRessource {
         if (newSetting == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-
-        newSetting.setProjectString(setting.getProjectString());
         newSetting.setEditTasks(setting.getEditTasks());
         newSetting.setCommentOnTasks(setting.getCommentOnTasks());
         newSetting.setViewTaskAttachements(setting.getViewTaskAttachements());

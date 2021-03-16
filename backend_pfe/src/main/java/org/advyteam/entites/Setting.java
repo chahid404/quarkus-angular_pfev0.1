@@ -1,97 +1,96 @@
 package org.advyteam.entites;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Setting {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-    public String projectString;
-    public Boolean EditTasks;
-    public Boolean commentOnTasks;
-    public Boolean viewTaskAttachements;
-    public Boolean uploadAttachementsOnTask;
-    public Boolean viewActivityLog;
-    public Boolean viewTeamMembers;
-    public Boolean hideProjectTasksOnMainTasksTable;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public Long id;
+  public Boolean EditTasks;
+  public Boolean commentOnTasks;
+  public Boolean viewTaskAttachements;
+  public Boolean uploadAttachementsOnTask;
+  public Boolean viewActivityLog;
+  public Boolean viewTeamMembers;
+  public Boolean hideProjectTasksOnMainTasksTable;
+//  @OneToOne(mappedBy = "project")
+//  public Project project;
 
-    public Setting() {
-    }
+//  public Project getProject() {
+//    return project;
+//  }
+//
+//  public void setProject(Project project) {
+//    this.project = project;
+//  }
 
-    public Long getId() {
-        return id;
-    }
+  public Setting() {
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getProjectString() {
-        return projectString;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setProjectString(String projectString) {
-        this.projectString = projectString;
-    }
 
-    public Boolean getEditTasks() {
-        return EditTasks;
-    }
+  public Boolean getEditTasks() {
+    return EditTasks;
+  }
 
-    public void setEditTasks(Boolean editTasks) {
-        EditTasks = editTasks;
-    }
+  public void setEditTasks(Boolean editTasks) {
+    EditTasks = editTasks;
+  }
 
-    public Boolean getCommentOnTasks() {
-        return commentOnTasks;
-    }
+  public Boolean getCommentOnTasks() {
+    return commentOnTasks;
+  }
 
-    public void setCommentOnTasks(Boolean commentOnTasks) {
-        this.commentOnTasks = commentOnTasks;
-    }
+  public void setCommentOnTasks(Boolean commentOnTasks) {
+    this.commentOnTasks = commentOnTasks;
+  }
 
-    public Boolean getViewTaskAttachements() {
-        return viewTaskAttachements;
-    }
+  public Boolean getViewTaskAttachements() {
+    return viewTaskAttachements;
+  }
 
-    public void setViewTaskAttachements(Boolean viewTaskAttachements) {
-        this.viewTaskAttachements = viewTaskAttachements;
-    }
+  public void setViewTaskAttachements(Boolean viewTaskAttachements) {
+    this.viewTaskAttachements = viewTaskAttachements;
+  }
 
-    public Boolean getUploadAttachementsOnTask() {
-        return uploadAttachementsOnTask;
-    }
+  public Boolean getUploadAttachementsOnTask() {
+    return uploadAttachementsOnTask;
+  }
 
-    public void setUploadAttachementsOnTask(Boolean uploadAttachementsOnTask) {
-        this.uploadAttachementsOnTask = uploadAttachementsOnTask;
-    }
+  public void setUploadAttachementsOnTask(Boolean uploadAttachementsOnTask) {
+    this.uploadAttachementsOnTask = uploadAttachementsOnTask;
+  }
 
-    public Boolean getViewActivityLog() {
-        return viewActivityLog;
-    }
+  public Boolean getViewActivityLog() {
+    return viewActivityLog;
+  }
 
-    public void setViewActivityLog(Boolean viewActivityLog) {
-        this.viewActivityLog = viewActivityLog;
-    }
+  public void setViewActivityLog(Boolean viewActivityLog) {
+    this.viewActivityLog = viewActivityLog;
+  }
 
-    public Boolean getViewTeamMembers() {
-        return viewTeamMembers;
-    }
+  public Boolean getViewTeamMembers() {
+    return viewTeamMembers;
+  }
 
-    public void setViewTeamMembers(Boolean viewTeamMembers) {
-        this.viewTeamMembers = viewTeamMembers;
-    }
+  public void setViewTeamMembers(Boolean viewTeamMembers) {
+    this.viewTeamMembers = viewTeamMembers;
+  }
 
-    public Boolean getHideProjectTasksOnMainTasksTable() {
-        return hideProjectTasksOnMainTasksTable;
-    }
+  public Boolean getHideProjectTasksOnMainTasksTable() {
+    return hideProjectTasksOnMainTasksTable;
+  }
 
-    public void setHideProjectTasksOnMainTasksTable(Boolean hideProjectTasksOnMainTasksTable) {
-        this.hideProjectTasksOnMainTasksTable = hideProjectTasksOnMainTasksTable;
-    }
+  public void setHideProjectTasksOnMainTasksTable(Boolean hideProjectTasksOnMainTasksTable) {
+    this.hideProjectTasksOnMainTasksTable = hideProjectTasksOnMainTasksTable;
+  }
 }

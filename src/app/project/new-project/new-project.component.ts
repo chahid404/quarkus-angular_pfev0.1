@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project.service';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { ProjectSettingsService } from 'src/app/services/project-settings.service';
 
 @Component({
   selector: 'app-new-project',
@@ -10,7 +11,7 @@ import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition
   styleUrls: ['./new-project.component.css']
 })
 export class NewProjectComponent implements OnInit {
-  constructor(public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar) { }
+  constructor(public projectSettingsServ: ProjectSettingsService, public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar) { }
   public todayDate = new Date();
   horizontalPosition: MatSnackBarHorizontalPosition = 'end';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
@@ -24,7 +25,6 @@ export class NewProjectComponent implements OnInit {
     documents: "",
     membres: "",
     progress: 0,
-    projectSettings: "",
     status: "",
     subProject: "",
     tags: "",
@@ -35,6 +35,15 @@ export class NewProjectComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  projectSettingsForm = new FormGroup({
+    EditTasks: new FormControl(false),
+    commentOnTasks: new FormControl(false),
+    viewTaskAttachements: new FormControl(false),
+    uploadAttachementsOnTask: new FormControl(false),
+    viewActivityLog: new FormControl(false),
+    viewTeamMembers: new FormControl(false),
+    hideProjectTasksOnMainTasksTable: new FormControl(false),
+  });
 
   projectForm = new FormGroup({
     name: new FormControl(),
@@ -47,9 +56,7 @@ export class NewProjectComponent implements OnInit {
     status: new FormControl(),
     tags: new FormControl(),
     tasks: new FormControl(),
-
     creator: new FormControl(),
-    projectSettings: new FormControl(),
     createdDate: new FormControl(),
     subProject: new FormControl()
   });
@@ -58,24 +65,29 @@ export class NewProjectComponent implements OnInit {
     return this.datepipe.transform(date, 'yyyy-MM-dd');
   }
   onSubmit() {
-    this.project = this.projectForm.value;
-    this.project.createdDate = this.dateFromat(this.todayDate);
-    this.project.startDate = this.dateFromat(this.projectForm.value.startDate);
-    this.project.deadline = this.dateFromat(this.projectForm.value.deadline);
-    this.project.creator = "chahid";
-    this.project.projectSettings = "settings 1"
-    this.project.subProject = "projectsub1"
-    this.projectService.newProduct(this.project).subscribe(data => {
-      console.log(data);
-      this._snackBar.open(this.project.name + " added successfully", "close", {
-        duration: 2000,
-        horizontalPosition: this.horizontalPosition,
-        verticalPosition: this.verticalPosition,
+    this.projectSettingsServ.newProjectSettings(this.projectSettingsForm.value).subscribe(res => {
+      console.log(res);
+      this.project = this.projectForm.value;
+      this.project.createdDate = this.dateFromat(this.todayDate);
+      this.project.startDate = this.dateFromat(this.projectForm.value.startDate);
+      this.project.deadline = this.dateFromat(this.projectForm.value.deadline);
+      this.project.creator = "chahid";
+      this.project.subProject = "projectsub1";
+      this.projectService.newProduct(this.project, res.id).subscribe(data => {
+        console.log(data);
+        this._snackBar.open(this.project.name + " added successfully", "close", {
+          duration: 2000,
+          horizontalPosition: this.horizontalPosition,
+          verticalPosition: this.verticalPosition,
+        });
+        this.projectForm.reset();
+        this.projectSettingsForm.reset();
+      }, err => {
+        console.log(err);
       });
-      this.projectForm.reset();
     }, err => {
       console.log(err);
-    })
+    });
   }
 
 }

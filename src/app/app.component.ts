@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import '../assets/js/libs/webfontloader.min.js';
 import '../assets/js/start';
 // import '../assets/js/libs/webfontloader.min.js';
@@ -41,7 +41,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+
 })
 export class AppComponent {
   title = 'test-integration';
