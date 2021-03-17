@@ -21,8 +21,7 @@ import { MatCardModule } from '@angular/material/card';
 import { DatePipe } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
-
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 
 
@@ -55,7 +54,8 @@ const routes: Routes = [
     MatNativeDateModule,
     MatCardModule,
     HttpClientModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    AngularEditorModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

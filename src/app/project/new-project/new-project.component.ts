@@ -4,6 +4,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project.service';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { ProjectSettingsService } from 'src/app/services/project-settings.service';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 @Component({
   selector: 'app-new-project',
@@ -64,6 +65,7 @@ export class NewProjectComponent implements OnInit {
   dateFromat(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');
   }
+
   onSubmit() {
     this.projectSettingsServ.newProjectSettings(this.projectSettingsForm.value).subscribe(res => {
       console.log(res);
@@ -76,7 +78,7 @@ export class NewProjectComponent implements OnInit {
       this.projectService.newProduct(this.project, res.id).subscribe(data => {
         console.log(data);
         this._snackBar.open(this.project.name + " added successfully", "close", {
-          duration: 2000,
+          duration: 3000,
           horizontalPosition: this.horizontalPosition,
           verticalPosition: this.verticalPosition,
         });
@@ -90,5 +92,50 @@ export class NewProjectComponent implements OnInit {
     });
   }
 
+
+
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: 'auto',
+    minHeight: '0',
+    maxHeight: 'auto',
+    width: 'auto',
+    minWidth: '0',
+    translate: 'yes',
+    enableToolbar: true,
+    showToolbar: true,
+    placeholder: 'Enter text here...',
+    defaultParagraphSeparator: '',
+    defaultFontName: '',
+    defaultFontSize: '',
+    fonts: [
+      { class: 'arial', name: 'Arial' },
+      { class: 'times-new-roman', name: 'Times New Roman' },
+      { class: 'calibri', name: 'Calibri' },
+      { class: 'comic-sans-ms', name: 'Comic Sans MS' }
+    ],
+    customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
+      },
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ],
+    sanitize: true,
+    toolbarPosition: 'top',
+    toolbarHiddenButtons: [
+      ['bold', 'italic'],
+      ['fontSize']
+    ]
+  };
 }
 

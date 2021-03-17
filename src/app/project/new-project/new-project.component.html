@@ -77,10 +77,9 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <mat-form-field class="example-full-width">
-                            <mat-label>Description</mat-label>
-                            <input formControlName="description" matInput placeholder="Ex : 0..100%">
-                        </mat-form-field>
+                        <label for="editor1">Description</label>
+                        <angular-editor id="editor1" formControlName="description" [config]="editorConfig">
+                        </angular-editor>
                     </td>
                 </tr>
             </table>
@@ -151,10 +150,6 @@
         </ul>
     </div>
 </div>
-
-
-
-
 <!-- <label class="containere  ">One
     <input type="checkbox" checked="checked">
     <span class="checkmarke"></span>
