@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { AccordionModule } from 'primeng/accordion';     //accordion and accordion tab
+import { MenuItem } from 'primeng/api';
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './sections/sidebar/sidebar.component';
 import { HeaderComponent } from './sections/header/header.component';
@@ -22,6 +23,7 @@ import { DatePipe } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AngularEditorModule } from '@kolkov/angular-editor';
+import { UploadComponent } from './project/upload/upload.component';
 
 
 
@@ -38,7 +40,8 @@ const routes: Routes = [
     SidebarrightComponent,
     AddProjectComponent,
     NewProjectComponent,
-    ListProjectComponent
+    ListProjectComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
