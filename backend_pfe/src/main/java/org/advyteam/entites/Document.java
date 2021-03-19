@@ -15,25 +15,18 @@ public class Document {
     public String documentName;
     public LocalDate uploadDate;
     public String path;
-    public String task;
-    public String file;
-
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getDocumentName() {
         return documentName;
     }
-
     public void setDocumentName(String documentName) {
         this.documentName = documentName;
     }
-
     public LocalDate getUploadDate() {
         return uploadDate;
     }
@@ -50,21 +43,6 @@ public class Document {
         this.path = path;
     }
 
-    public String getTask() {
-        return task;
-    }
-
-    public void setTask(String task) {
-        this.task = task;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
 
     public Document() {
 

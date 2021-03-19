@@ -5,18 +5,26 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.css']
+  styleUrls: ['./upload.component.css'],
+
 })
 export class UploadComponent implements OnInit {
   SERVER_URL = "http://localhost:8080/documents/uploadfile";
   uploadForm: FormGroup;
   public fileName: string;
+  uploadedFiles: any[] = [];
   constructor(private formBuilder: FormBuilder, private httpClient: HttpClient) { }
 
   ngOnInit(): void {
     this.uploadForm = this.formBuilder.group({
       profile: ['']
     });
+  }
+
+  display: boolean = false;
+
+  showDialog() {
+    this.display = true;
   }
 
   onFileSelect(event) {
@@ -32,6 +40,17 @@ export class UploadComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', this.uploadForm.get('profile').value);
     formData.append('fileName', this.fileName);
+    this.httpClient.post<any>(this.SERVER_URL, formData).subscribe(
+      (res) => console.log(res),
+      (err) => console.log(err)
+    );
+  }
+
+  onUpload(event) {
+    console.log(event.files[0].name);
+    const formData = new FormData();
+    formData.append('file', event.files[0]);
+    formData.append('fileName', event.files[0].name);
     this.httpClient.post<any>(this.SERVER_URL, formData).subscribe(
       (res) => console.log(res),
       (err) => console.log(err)

@@ -82,12 +82,30 @@
                         </angular-editor>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <div class="mt-3 mb-3">
+                            <button class="p-button-text" id="uploadfilebtn" pButton type="button" label="Click"
+                                (click)="showDialog()" icon="pi pi-upload" label="Upload"></button>
+                            <label class="ml-2" for="uploadfilebtn">Add Attachements</label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="dropdown-divider mt-3 mb-5"></div>
+                    </td>
+                </tr>
             </table>
-            <button class="btn btn-primary" style="background-color: #ff5e3a; border-color:#ff5e3a;"
-                type="submit">Submit</button>
+            <div>
+                <button iconPos="right" icon="pi pi-check" pButton type="submit" label="submit"
+                    class="mr-3 p-button-raised p-button-rounded "></button>
+                <button iconPos="right" class="mt-6 p-button-raised p-button-rounded p-button-secondary"
+                    (click)="restForms()" icon="pi pi-undo" pButton type="button" label="Rest"></button>
+            </div>
         </form>
     </div>
-    <div class="p-2 flex-fill bd-highlight">
+    <div class="p-2 flex-fill bd-highlight" style="min-width: max-content;">
         <div>
             <h2>Project Settings</h2>
         </div>
@@ -154,3 +172,21 @@
     <input type="checkbox" checked="checked">
     <span class="checkmarke"></span>
 </label> -->
+
+
+<p-dialog [(visible)]="display" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}">
+    <ng-template pTemplate="header">
+        <b>Header content here</b>
+    </ng-template>
+    <form action=""></form>
+    <p-fileUpload name="demo[]" customUpload="true" (uploadHandler)="onUpload($event)">
+        <ng-template pTemplate="content">
+            <ul *ngIf="uploadedFiles.length">
+                <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+            </ul>
+        </ng-template>
+    </p-fileUpload>
+    <p-footer>
+        <button pButton type="button" icon="pi pi-check" label="Click"></button>
+    </p-footer>
+</p-dialog>

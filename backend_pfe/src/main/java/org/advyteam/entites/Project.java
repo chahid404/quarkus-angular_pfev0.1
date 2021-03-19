@@ -25,8 +25,12 @@ public class Project extends PanacheEntityBase {
   public String status;
   public Integer progress;
   public String tags;
-  public String documents;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "documents_id", referencedColumnName = "id")
+  public Document documents;
   public String tasks;
+
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "setting_id", referencedColumnName = "id")
   public Setting projectSettings;
@@ -123,11 +127,11 @@ public class Project extends PanacheEntityBase {
     this.tags = tags;
   }
 
-  public String getDocuments() {
+  public Document getDocuments() {
     return documents;
   }
 
-  public void setDocuments(String documents) {
+  public void setDocuments(Document documents) {
     this.documents = documents;
   }
 

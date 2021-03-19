@@ -2,7 +2,8 @@ package org.advyteam.ressources;
 
 
 import org.advyteam.entites.Document;
-import org.advyteam.entites.MultiPartBody;
+import org.advyteam.otherClasses.FileParams;
+import org.advyteam.otherClasses.MultiPartBody;
 import org.advyteam.repositorys.DocumentRepository;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
@@ -14,7 +15,9 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
 
 @Path("/documents")
 public class DocumentRessource {
@@ -42,7 +45,6 @@ public String path = "E:/formation quarkus/Angular/test-integration/backend_pfe/
   @Consumes(MediaType.APPLICATION_JSON)
   @Transactional
   public Document AddNewDocument(Document document) {
-    document.setPath(path+document.getDocumentName());
     documentRepository.persist(document);
     return document;
   }
@@ -59,9 +61,7 @@ public String path = "E:/formation quarkus/Angular/test-integration/backend_pfe/
     }
     newDocument.setDocumentName(document.getDocumentName());
     newDocument.setUploadDate(document.getUploadDate());
-    newDocument.setFile(document.getFile());
     newDocument.setPath(document.getPath());
-    newDocument.setTask(document.getTask());
     return documentRepository.findById(id);
   }
 
@@ -76,12 +76,19 @@ public String path = "E:/formation quarkus/Angular/test-integration/backend_pfe/
 
   @Path("/uploadfile")
   @POST
-  @Produces(MediaType.TEXT_PLAIN)
+  @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public String uploadFile(@MultipartForm MultiPartBody sting) throws IOException {
-    byte[] bytes = sting.file.readAllBytes();
-    writeFile(bytes, path + sting.getFileName());
-    return sting.fileName;
+  public FileParams uploadFile(@MultipartForm MultiPartBody bodyFile) throws IOException {
+    byte[] bytes = bodyFile.file.readAllBytes();
+    Random random = new Random();
+    FileParams fileParams = new FileParams();
+    int randomNumber = random.nextInt(1000 - 10) + 10;
+    LocalDate localDate = LocalDate.now();
+    writeFile(bytes, path +randomNumber+"-" + localDate +"-" + bodyFile.getFileName());
+    fileParams.setFileName(bodyFile.getFileName());
+    fileParams.setFullPath(path +randomNumber+"-" + localDate +"-" + bodyFile.getFileName());
+    fileParams.setRegenaratedFileName(randomNumber+"-" + localDate +"-" + bodyFile.getFileName());
+    return fileParams;
   }
   private void writeFile(byte[] content, String filename) throws IOException {
     File file = new File(filename);

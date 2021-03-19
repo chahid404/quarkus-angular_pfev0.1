@@ -1,10 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project.service';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { ProjectSettingsService } from 'src/app/services/project-settings.service';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { DocumentService } from 'src/app/services/document.service';
 
 @Component({
   selector: 'app-new-project',
@@ -12,10 +13,16 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
   styleUrls: ['./new-project.component.css']
 })
 export class NewProjectComponent implements OnInit {
-  constructor(public projectSettingsServ: ProjectSettingsService, public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar) { }
+  constructor(private documentService: DocumentService, private formBuilder: FormBuilder, public projectSettingsServ: ProjectSettingsService, public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar) { }
   public todayDate = new Date();
   horizontalPosition: MatSnackBarHorizontalPosition = 'end';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
+  uploadForm: FormGroup;
+  public fileName: string;
+  public fileFullPath: string;
+  uploadedFiles: any[] = [];
+  display: boolean = false;
   public project = {
     name: "",
     description: "",
@@ -34,6 +41,9 @@ export class NewProjectComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.uploadForm = this.formBuilder.group({
+      profile: ['']
+    });
   }
 
   projectSettingsForm = new FormGroup({
@@ -92,20 +102,23 @@ export class NewProjectComponent implements OnInit {
     });
   }
 
-
+  restForms() {
+    this.projectForm.reset();
+    this.projectSettingsForm.reset();
+  }
 
   editorConfig: AngularEditorConfig = {
     editable: true,
     spellcheck: true,
     height: 'auto',
-    minHeight: '0',
+    minHeight: '150px',
     maxHeight: 'auto',
     width: 'auto',
     minWidth: '0',
     translate: 'yes',
     enableToolbar: true,
     showToolbar: true,
-    placeholder: 'Enter text here...',
+    placeholder: 'Enter your description here...',
     defaultParagraphSeparator: '',
     defaultFontName: '',
     defaultFontSize: '',
@@ -137,5 +150,21 @@ export class NewProjectComponent implements OnInit {
       ['fontSize']
     ]
   };
+  // uploadFile method
+  showDialog() {
+    this.display = true;
+  }
+  onUpload(event) {
+    console.log(event.files[0].name);
+    const formData = new FormData();
+    formData.append('file', event.files[0]);
+    formData.append('fileName', event.files[0].name);
+    this.documentService.uploadFile(formData).subscribe(data => {
+      this.fileFullPath = data;
+    }, err => {
+      console.log(err);
+    });
+  }
+
 }
 

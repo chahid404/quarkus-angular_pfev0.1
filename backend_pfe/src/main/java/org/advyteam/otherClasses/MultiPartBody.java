@@ -1,4 +1,4 @@
-package org.advyteam.entites;
+package org.advyteam.otherClasses;
 
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
