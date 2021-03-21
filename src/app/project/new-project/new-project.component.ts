@@ -6,23 +6,51 @@ import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition
 import { ProjectSettingsService } from 'src/app/services/project-settings.service';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { DocumentService } from 'src/app/services/document.service';
+import { Validators } from '@angular/forms';
 
+interface Status {
+  value: string;
+  viewValue: string;
+}
 @Component({
   selector: 'app-new-project',
   templateUrl: './new-project.component.html',
-  styleUrls: ['./new-project.component.css']
+  styleUrls: ['./new-project.component.scss']
 })
 export class NewProjectComponent implements OnInit {
   constructor(private documentService: DocumentService, private formBuilder: FormBuilder, public projectSettingsServ: ProjectSettingsService, public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar) { }
   public todayDate = new Date();
   horizontalPosition: MatSnackBarHorizontalPosition = 'end';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-
+  public selectedValues = ['AdvyTeam', 'STAGE', 'PFE'];
   uploadForm: FormGroup;
   public fileName: string;
   public fileFullPath: string;
   uploadedFiles: any[] = [];
+  tagsValues: string[] = [];
   display: boolean = false;
+  displayModal: boolean = false;
+  selectedValue: string;
+
+  status: Status[] = [
+    { value: 'not Started', viewValue: 'not Started' },
+    { value: 'inprogress', viewValue: 'in Progress' },
+    { value: 'on Hold', viewValue: 'on Hold' },
+    { value: 'Cancelled', viewValue: 'Cancelled' },
+    { value: 'Finished', viewValue: 'Finished' }
+  ];
+
+  public document = {
+    documentName: "",
+    uploadDate: "",
+    path: ""
+  }
+
+  public fileParams = {
+    fileName: "",
+    fullPath: "",
+    regenaratedFileName: ""
+  }
   public project = {
     name: "",
     description: "",
@@ -30,13 +58,12 @@ export class NewProjectComponent implements OnInit {
     startDate: "",
     deadline: "",
     createdDate: "",
-    documents: "",
     membres: "",
     progress: 0,
     status: "",
-    subProject: "",
-    tags: "",
     tasks: "",
+    subProject: "",
+    tags: [],
   };
 
 
@@ -55,18 +82,18 @@ export class NewProjectComponent implements OnInit {
     viewTeamMembers: new FormControl(false),
     hideProjectTasksOnMainTasksTable: new FormControl(false),
   });
-
+  otherForm = new FormGroup({
+    tagss: new FormControl()
+  });
   projectForm = new FormGroup({
-    name: new FormControl(),
+    name: new FormControl('', Validators.required),
     description: new FormControl(),
-    startDate: new FormControl(),
-    deadline: new FormControl(),
-    documents: new FormControl(),
-    membres: new FormControl(),
-    progress: new FormControl(),
-    status: new FormControl(),
+    startDate: new FormControl('', Validators.required),
+    deadline: new FormControl('', Validators.required),
+    membres: new FormControl('', Validators.required),
+    progress: new FormControl(0),
+    status: new FormControl('', Validators.required),
     tags: new FormControl(),
-    tasks: new FormControl(),
     creator: new FormControl(),
     createdDate: new FormControl(),
     subProject: new FormControl()
@@ -77,26 +104,40 @@ export class NewProjectComponent implements OnInit {
   }
 
   onSubmit() {
+
     this.projectSettingsServ.newProjectSettings(this.projectSettingsForm.value).subscribe(res => {
-      console.log(res);
+      //console.log(res);
       this.project = this.projectForm.value;
       this.project.createdDate = this.dateFromat(this.todayDate);
       this.project.startDate = this.dateFromat(this.projectForm.value.startDate);
       this.project.deadline = this.dateFromat(this.projectForm.value.deadline);
+      this.project.tasks = "task1 , task2";
       this.project.creator = "chahid";
       this.project.subProject = "projectsub1";
-      this.projectService.newProduct(this.project, res.id).subscribe(data => {
-        console.log(data);
-        this._snackBar.open(this.project.name + " added successfully", "close", {
-          duration: 3000,
-          horizontalPosition: this.horizontalPosition,
-          verticalPosition: this.verticalPosition,
+      this.project.tags = this.tagsValues;
+      //DocumentHttpClient
+      this.document.uploadDate = this.dateFromat(this.todayDate);;
+      this.document.path = this.fileParams.fullPath;
+      this.document.documentName = this.fileParams.regenaratedFileName;
+      //console.log(this.document);
+      this.documentService.addDocument(this.document).subscribe(document => {
+        //console.log(document);
+        this.projectService.newProduct(this.project, res.id, document.id).subscribe(data => {
+          console.log(data);
+          this._snackBar.open(this.project.name + " added successfully", "close", {
+            duration: 3000,
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition,
+          });
+          this.projectForm.reset();
+          this.projectSettingsForm.reset();
+        }, err => {
+          console.log(err);
         });
-        this.projectForm.reset();
-        this.projectSettingsForm.reset();
       }, err => {
         console.log(err);
       });
+      //end DocumentHttpClient
     }, err => {
       console.log(err);
     });
@@ -105,6 +146,9 @@ export class NewProjectComponent implements OnInit {
   restForms() {
     this.projectForm.reset();
     this.projectSettingsForm.reset();
+    this.otherForm.reset();
+    this.otherForm.setValue({ tagss: ['AdvyTeam', 'STAGE', 'PFE'] })
+
   }
 
   editorConfig: AngularEditorConfig = {
@@ -155,16 +199,31 @@ export class NewProjectComponent implements OnInit {
     this.display = true;
   }
   onUpload(event) {
-    console.log(event.files[0].name);
     const formData = new FormData();
     formData.append('file', event.files[0]);
     formData.append('fileName', event.files[0].name);
     this.documentService.uploadFile(formData).subscribe(data => {
-      this.fileFullPath = data;
+      this.fileParams = data;
+      // this._snackBar.open(event.files[0].name + " added successfully", "close", {
+      //   duration: 3000,
+      //   horizontalPosition: this.horizontalPosition,
+      //   verticalPosition: this.verticalPosition,
+      // });
+      this.displayModal = true;
+
+      //console.log(this.fileParams);
     }, err => {
       console.log(err);
     });
+
   }
+
+  change($event) {
+    this.tagsValues = $event;
+
+    //console.log(this.tagsValues);
+  }
+
 
 }
 

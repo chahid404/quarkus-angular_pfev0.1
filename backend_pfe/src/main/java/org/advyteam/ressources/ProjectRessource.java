@@ -1,6 +1,7 @@
 package org.advyteam.ressources;
 
 import org.advyteam.entites.Project;
+import org.advyteam.otherClasses.FileParams;
 import org.advyteam.repositorys.DocumentRepository;
 import org.advyteam.repositorys.ProjectRepository;
 import org.advyteam.repositorys.SettingReposotory;
@@ -9,11 +10,17 @@ import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
 
 @Path("/projects")
 public class ProjectRessource {
-
+  public String path = "E:/formation quarkus/Angular/test-integration/backend_pfe/assets/description_project/";
   @Inject
   ProjectRepository projectRepository;
   @Inject
@@ -40,7 +47,7 @@ public class ProjectRessource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @Transactional
-  public Project AddNewProject(@PathParam("idd") Long iddocument,@PathParam("ids") Long idsetting, Project project) {
+  public Project AddNewProject(@PathParam("idd") Long iddocument,@PathParam("ids") Long idsetting, Project project) throws IOException {
 
     Project newProject = new Project();
     if (settingReposotory.findById(idsetting) == null) {
@@ -49,7 +56,7 @@ public class ProjectRessource {
     newProject.setCreatedDate(project.getCreatedDate());
     newProject.setCreator(project.getCreator());
     newProject.setDeadline(project.getDeadline());
-    newProject.setDescription(project.getDescription());
+    newProject.setDescription(ConvertDescriptionToHtmlFile(project.getDescription(),project.getName()));
     newProject.setDocuments(documentRepository.findById(iddocument));
     newProject.setMembres(project.getMembres());
     newProject.setName(project.getName());
@@ -101,5 +108,25 @@ public class ProjectRessource {
     projectRepository.delete(projectRepository.findById(id));
     return projectRepository.findAll().list();
   }
+  public String ConvertDescriptionToHtmlFile( String descriptionBody,String projectName) throws IOException {
+    byte[] bytes = descriptionBody.getBytes(StandardCharsets.UTF_8);
+    Random random = new Random();
+    FileParams fileParams = new FileParams();
+    int randomNumber = random.nextInt(10000 - 10) + 10;
+    LocalDate localDate = LocalDate.now();
+    String fullPath=path +localDate +"-"+randomNumber +"-"+ projectName+ ".html";
+    writeFile(bytes, fullPath);
+    return fullPath;
+  }
 
+  private void writeFile(byte[] content, String filename) throws IOException {
+    File file = new File(filename);
+    if (!file.exists()) {
+      file.createNewFile();
+    }
+    FileOutputStream fop = new FileOutputStream(file);
+    fop.write(content);
+    fop.flush();
+    fop.close();
+  }
 }

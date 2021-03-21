@@ -25,6 +25,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { UploadComponent } from './project/upload/upload.component';
 import { ButtonModule } from 'primeng/button';
+import { NgxMatTagInputModule } from 'ngx-mat-tag-input';
+import { MatSelectModule } from '@angular/material/select';
+import { SliderModule } from 'primeng/slider';
+import { TagModule } from 'primeng/tag';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+;
+
+
+
 
 
 
@@ -64,7 +73,12 @@ const routes: Routes = [
     AngularEditorModule,
     DialogModule,
     ButtonModule,
-    FileUploadModule
+    FileUploadModule,
+    NgxMatTagInputModule,
+    MatSelectModule,
+    SliderModule, TagModule,
+    MatProgressBarModule
+
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

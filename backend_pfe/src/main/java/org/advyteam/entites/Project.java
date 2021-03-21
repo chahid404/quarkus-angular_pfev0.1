@@ -24,7 +24,7 @@ public class Project extends PanacheEntityBase {
   public String membres;
   public String status;
   public Integer progress;
-  public String tags;
+  public String[] tags;
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "documents_id", referencedColumnName = "id")
@@ -119,11 +119,11 @@ public class Project extends PanacheEntityBase {
     this.progress = progress;
   }
 
-  public String getTags() {
+  public String[] getTags() {
     return tags;
   }
 
-  public void setTags(String tags) {
+  public void setTags(String[] tags) {
     this.tags = tags;
   }
 

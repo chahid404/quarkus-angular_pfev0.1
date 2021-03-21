@@ -6,7 +6,7 @@
                     <td colspan="2">
                         <mat-form-field class="example-full-width">
                             <mat-label>Project Name</mat-label>
-                            <input formControlName="name" matInput placeholder="Ex : Project n°:1">
+                            <input required formControlName="name" matInput placeholder="Ex : Project n°:1">
                         </mat-form-field>
                     </td>
                 </tr>
@@ -20,35 +20,17 @@
                 </tr>
                 <tr>
                     <td>
-                        <mat-form-field class="example-full-width">
-                            <mat-label>Tags</mat-label>
-                            <input formControlName="tags" matInput placeholder="Ex : html , advyeam">
-                        </mat-form-field>
-                    </td>
-                    <td>
-                        <mat-form-field class="example-full-width">
-                            <mat-label>Tasks</mat-label>
-                            <input formControlName="tasks" matInput placeholder="Ex : task1, tasks2">
-                        </mat-form-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <mat-form-field class="example-full-width">
-                            <mat-label>documents</mat-label>
-                            <input formControlName="documents" matInput placeholder="Ex : html.txt , fiche1.txt">
-                        </mat-form-field>
-                    </td>
-                    <td>
-                        <mat-form-field class="example-full-width">
+                        <mat-form-field class="example-full-width" appearance="fill">
                             <mat-label>Status</mat-label>
-                            <input formControlName="status" matInput placeholder="Ex : blocked, done">
+                            <mat-select formControlName="status" name="status">
+                                <mat-option *ngFor="let statu of status" [value]="statu.value">
+                                    {{statu.viewValue}}
+                                </mat-option>
+                            </mat-select>
                         </mat-form-field>
                     </td>
-                </tr>
-                <tr>
                     <td>
-                        <mat-form-field appearance="fill " class="example-full-width">
+                        <mat-form-field appearance="fill" class="ml-0 example-full-width">
                             <mat-label>Enter a date range</mat-label>
                             <mat-date-range-input [rangePicker]="picker">
                                 <input matStartDate formControlName="startDate" placeholder="Start date">
@@ -56,7 +38,6 @@
                             </mat-date-range-input>
                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                             <mat-date-range-picker #picker></mat-date-range-picker>
-
                             <mat-error *ngIf="projectForm.controls.startDate.hasError('matStartDateInvalid')">
                                 Invalid start
                                 date
@@ -69,10 +50,27 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <mat-form-field class="example-full-width">
-                            <mat-label>Progress</mat-label>
-                            <input type="number" formControlName="progress" matInput placeholder="Ex : 0..100%">
-                        </mat-form-field>
+                        <label class="containere">Calculate progress through tasks
+                            <input type="checkbox" checked="checked">
+                            <span class="checkmarke"></span>
+                        </label>
+                        <mat-label>Progress : <p-tag value="{{projectForm.value.progress+' %'}}"></p-tag>
+                        </mat-label>
+                        <div class="dropdown-divider mt-3 mb-3" style="width: 30%;"></div>
+                        <p-slider class="example-full-width" formControlName="progress"></p-slider>
+                        <!-- <input type="number" formControlName="progress" matInput placeholder="Ex : 0..100%"> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="containers mt-4">
+                            <div class="example-full-width">
+                                <ngx-mat-tag-input formControlName="tags" [selectedTags]="selectedValues"
+                                    (change)="change($event)" appearance="outline" placeholder="Add a new tag">
+                                </ngx-mat-tag-input>
+
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -98,10 +96,10 @@
                 </tr>
             </table>
             <div>
-                <button iconPos="right" icon="pi pi-check" pButton type="submit" label="submit"
-                    class="mr-3 p-button-raised p-button-rounded "></button>
+                <button [disabled]="!projectForm.valid" iconPos="right" icon="pi pi-check" pButton type="submit"
+                    label="submit" class="mr-3 p-button-raised p-button-rounded "></button>
                 <button iconPos="right" class="mt-6 p-button-raised p-button-rounded p-button-secondary"
-                    (click)="restForms()" icon="pi pi-undo" pButton type="button" label="Rest"></button>
+                    (click)="restForms();form.clear()" icon="pi pi-undo" pButton type="button" label="Rest"></button>
             </div>
         </form>
     </div>
@@ -179,14 +177,25 @@
         <b>Header content here</b>
     </ng-template>
     <form action=""></form>
-    <p-fileUpload name="demo[]" customUpload="true" (uploadHandler)="onUpload($event)">
+    <p-fileUpload #form name="demo[]" customUpload="true" (uploadHandler)="onUpload($event)">
         <ng-template pTemplate="content">
             <ul *ngIf="uploadedFiles.length">
-                <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes
+                </li>
             </ul>
         </ng-template>
     </p-fileUpload>
     <p-footer>
-        <button pButton type="button" icon="pi pi-check" label="Click"></button>
+        <button pButton type="button" (click)="display = false;" iconPos="right" icon="pi pi-check"
+            label="Done"></button>
     </p-footer>
+</p-dialog>
+
+
+<p-dialog header="Header" [(visible)]="displayModal" [modal]="true" [baseZIndex]="10000" [draggable]="false"
+    [resizable]="false">
+    <p class="p-m-0">Your files upload successfully</p>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="displayModal=false" label="Ok" styleClass="p-button-text"></p-button>
+    </ng-template>
 </p-dialog>

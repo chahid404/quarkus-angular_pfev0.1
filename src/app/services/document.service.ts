@@ -8,9 +8,12 @@ import { Observable } from 'rxjs';
 export class DocumentService {
 
   constructor(private httpClient: HttpClient) { }
-  SERVER_URL = "http://localhost:8080/documents/uploadfile";
+  SERVER_URL = "http://localhost:8080/documents";
 
   public uploadFile(formdata): Observable<any> {
-    return this.httpClient.post<any>(this.SERVER_URL, formdata);
+    return this.httpClient.post<any>(this.SERVER_URL + "/uploadfile", formdata);
+  }
+  public addDocument(document): Observable<any> {
+    return this.httpClient.post<any>(this.SERVER_URL, document);
   }
 }
