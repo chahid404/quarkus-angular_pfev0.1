@@ -16,4 +16,8 @@ export class ProjectService {
     return this.httpClient.post<Project>(this.host + "/projects/" + setting_id + "/" + document_id, data);
   }
 
+  public listProject() {
+    return this.httpClient.get(this.host + "/projects");
+  }
+
 }

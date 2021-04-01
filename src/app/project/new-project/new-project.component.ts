@@ -33,9 +33,9 @@ export class NewProjectComponent implements OnInit {
   selectedValue: string;
 
   status: Status[] = [
-    { value: 'not Started', viewValue: 'not Started' },
-    { value: 'inprogress', viewValue: 'in Progress' },
-    { value: 'on Hold', viewValue: 'on Hold' },
+    { value: 'Not Started', viewValue: 'not Started' },
+    { value: 'In Progress', viewValue: 'in Progress' },
+    { value: 'On Hold', viewValue: 'on Hold' },
     { value: 'Cancelled', viewValue: 'Cancelled' },
     { value: 'Finished', viewValue: 'Finished' }
   ];

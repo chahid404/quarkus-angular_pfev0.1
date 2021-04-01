@@ -30,7 +30,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { SliderModule } from 'primeng/slider';
 import { TagModule } from 'primeng/tag';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-;
+import { RatingModule } from 'primeng/rating';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
 
 
 
@@ -77,7 +79,10 @@ const routes: Routes = [
     NgxMatTagInputModule,
     MatSelectModule,
     SliderModule, TagModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    RatingModule,
+    AvatarModule,
+    AvatarGroupModule
 
   ],
   providers: [DatePipe],
