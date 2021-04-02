@@ -19,6 +19,24 @@
                     </td>
                 </tr>
                 <tr>
+                    <td colspan="2">
+                        <mat-form-field class="example-full-width">
+                            <mat-select [formControl]="bankMultiCtrl" placeholder="Users" [multiple]="true"
+                                #multiSelect>
+                                <mat-option>
+                                    <ngx-mat-select-search placeholderLabel="Find user..."
+                                        noEntriesFoundLabel="no matching user found"
+                                        [formControl]="bankMultiFilterCtrl"></ngx-mat-select-search>
+                                </mat-option>
+                                <mat-option *ngFor="let bank of filteredBanksMulti | async" [value]="bank">
+                                    <img class="ml-2 avatar" aria-hidden src="assets\img\avatar27-sm.jpg" height="25">
+                                    <span class="ml-2">{{bank.name}}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
+                <tr>
                     <td>
                         <mat-form-field class="example-full-width" appearance="fill">
                             <mat-label>Status</mat-label>
@@ -65,7 +83,7 @@
                     <td colspan="2">
                         <div class="containers mt-4">
                             <div class="example-full-width">
-                                <ngx-mat-tag-input formControlName="tags" [selectedTags]="selectedValues"
+                                <ngx-mat-tag-input [ngModel]="selectedValues" formControlName="tags"
                                     (change)="change($event)" appearance="outline" placeholder="Add a new tag">
                                 </ngx-mat-tag-input>
 
@@ -199,3 +217,11 @@
         <p-button icon="pi pi-check" (click)="displayModal=false" label="Ok" styleClass="p-button-text"></p-button>
     </ng-template>
 </p-dialog>
+
+
+<p>
+    Selected Banks:
+</p>
+<ul *ngFor="let bank of bankMultiCtrl?.value">
+    <li>{{bank.name}}</li>
+</ul>

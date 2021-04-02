@@ -24,6 +24,7 @@
     "@kolkov/angular-editor": "^1.1.4",
     "bootstrap": "^4.6.0",
     "jquery": "^3.6.0",
+    "ngx-mat-select-search": "^3.2.0",
     "ngx-mat-tag-input": "0.0.2",
     "popper.js": "^1.16.1",
     "primeicons": "^4.1.0",

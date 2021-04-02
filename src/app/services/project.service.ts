@@ -8,7 +8,7 @@ import { Project } from '../models/project/project.module';
 })
 export class ProjectService {
 
-  public host: string = "http://localhost:8080";
+  public host: string = "http://localhost:8083";
 
   constructor(private httpClient: HttpClient) { }
 

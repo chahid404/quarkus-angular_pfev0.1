@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project.service';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
@@ -7,6 +7,9 @@ import { ProjectSettingsService } from 'src/app/services/project-settings.servic
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { DocumentService } from 'src/app/services/document.service';
 import { Validators } from '@angular/forms';
+import { ReplaySubject, Subject } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
+import { Bank, BANKS } from './../demo/demo';
 
 interface Status {
   value: string;
@@ -17,12 +20,15 @@ interface Status {
   templateUrl: './new-project.component.html',
   styleUrls: ['./new-project.component.scss']
 })
-export class NewProjectComponent implements OnInit {
-  constructor(private documentService: DocumentService, private formBuilder: FormBuilder, public projectSettingsServ: ProjectSettingsService, public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar) { }
+export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
+  constructor(private documentService: DocumentService, private formBuilder: FormBuilder, public projectSettingsServ: ProjectSettingsService,
+    public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar) {
+
+  }
   public todayDate = new Date();
   horizontalPosition: MatSnackBarHorizontalPosition = 'end';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  public selectedValues = ['AdvyTeam', 'STAGE', 'PFE'];
+  selectedValues = ['AdvyTeam', 'STAGE', 'PFE'];
   uploadForm: FormGroup;
   public fileName: string;
   public fileFullPath: string;
@@ -31,6 +37,21 @@ export class NewProjectComponent implements OnInit {
   display: boolean = false;
   displayModal: boolean = false;
   selectedValue: string;
+  //////users///////
+  /** list of banks */
+  protected banks: Bank[] = BANKS;
+  /** control for the selected bank for multi-selection */
+  public bankMultiCtrl: FormControl = new FormControl('', Validators.required);
+
+  /** control for the MatSelect filter keyword multi-selection */
+  public bankMultiFilterCtrl: FormControl = new FormControl();
+
+  /** list of banks filtered by search keyword */
+  public filteredBanksMulti: ReplaySubject<Bank[]> = new ReplaySubject<Bank[]>(1);
+  /** Subject that emits when the component has been destroyed. */
+  protected _onDestroy = new Subject<void>();
+  //////end users//////
+
 
   status: Status[] = [
     { value: 'Not Started', viewValue: 'not Started' },
@@ -71,8 +92,24 @@ export class NewProjectComponent implements OnInit {
     this.uploadForm = this.formBuilder.group({
       profile: ['']
     });
+
+    // initusers
+    this.filteredBanksMulti.next(this.banks.slice());
+    this.bankMultiFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe(() => {
+        this.filterBanksMulti();
+      });
+    // endinitUsers
+  }
+  ngAfterViewInit() {
+    this.setInitialValue();
   }
 
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
+  }
   projectSettingsForm = new FormGroup({
     EditTasks: new FormControl(false),
     commentOnTasks: new FormControl(false),
@@ -96,7 +133,8 @@ export class NewProjectComponent implements OnInit {
     tags: new FormControl(),
     creator: new FormControl(),
     createdDate: new FormControl(),
-    subProject: new FormControl()
+    subProject: new FormControl(),
+
   });
 
   dateFromat(date) {
@@ -224,6 +262,41 @@ export class NewProjectComponent implements OnInit {
     //console.log(this.tagsValues);
   }
 
+  // users
+  /**
+   * Sets the initial value after the filteredBanks are loaded initially
+   */
+  protected setInitialValue() {
+    this.filteredBanksMulti
+      .pipe(take(1), takeUntil(this._onDestroy))
+      .subscribe(() => {
+        // setting the compareWith property to a comparison function
+        // triggers initializing the selection according to the initial value of
+        // the form control (i.e. _initializeSelection())
+        // this needs to be done after the filteredBanks are loaded initially
+        // and after the mat-option elements are available
+        //this.multiSelect.compareWith = (a: Bank, b: Bank) => a && b && a.id === b.id;
+      });
+  }
+
+  protected filterBanksMulti() {
+    if (!this.banks) {
+      return;
+    }
+    // get the search keyword
+    let search = this.bankMultiFilterCtrl.value;
+    if (!search) {
+      this.filteredBanksMulti.next(this.banks.slice());
+      return;
+    } else {
+      search = search.toLowerCase();
+    }
+    // filter the banks
+    this.filteredBanksMulti.next(
+      this.banks.filter(bank => bank.name.toLowerCase().indexOf(search) > -1)
+    );
+  }
+  // endUsers
 
 }
 

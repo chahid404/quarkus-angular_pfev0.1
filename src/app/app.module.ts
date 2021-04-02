@@ -33,6 +33,11 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RatingModule } from 'primeng/rating';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DemoComponent } from './project/demo/demo.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+
 
 
 
@@ -55,7 +60,8 @@ const routes: Routes = [
     AddProjectComponent,
     NewProjectComponent,
     ListProjectComponent,
-    UploadComponent
+    UploadComponent,
+    DemoComponent
   ],
   imports: [
     BrowserModule,
@@ -82,7 +88,12 @@ const routes: Routes = [
     MatProgressBarModule,
     RatingModule,
     AvatarModule,
-    AvatarGroupModule
+    AvatarGroupModule,
+    MultiSelectModule,
+    MatSelectModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    NgxMatSelectSearchModule
 
   ],
   providers: [DatePipe],

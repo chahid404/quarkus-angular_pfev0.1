@@ -78,7 +78,12 @@ td {
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-
+.avatar {
+  vertical-align: middle;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}
 
 
 .containers {

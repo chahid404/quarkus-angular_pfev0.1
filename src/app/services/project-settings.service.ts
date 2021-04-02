@@ -8,7 +8,7 @@ import { ProjectSetting } from '../models/project/projectSettings.module';
 export class ProjectSettingsService {
 
   constructor(private httpClient: HttpClient) { }
-  public host: string = "http://localhost:8080";
+  public host: string = "http://localhost:8083";
 
 
 

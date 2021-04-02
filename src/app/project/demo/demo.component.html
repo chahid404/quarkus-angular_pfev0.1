@@ -1,0 +1,32 @@
+<!-- <mat-form-field appearance="fill">
+    <mat-label>Toppings</mat-label>
+    <mat-select [formControl]="toppings" multiple>
+        <mat-select-trigger>
+            {{toppings.value ? toppings.value[0] : ''}}
+            <span *ngIf="toppings.value?.length > 1" class="example-additional-selection">
+                (+{{toppings.value.length - 1}} {{toppings.value?.length === 2 ? 'other' : 'others'}})
+            </span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let topping of toppingList" [value]="topping">{{topping}}</mat-option>
+    </mat-select>
+</mat-form-field> -->
+<h3>Multiple selection</h3>
+<p>
+    <mat-form-field>
+        <mat-select [formControl]="bankMultiCtrl" placeholder="Banks" [multiple]="true" #multiSelect>
+            <mat-option>
+                <ngx-mat-select-search [formControl]="bankMultiFilterCtrl"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let bank of filteredBanksMulti | async" [value]="bank">
+                <img class="avatar" aria-hidden src="assets\img\avatar27-sm.jpg" height="25">
+                <span class="ml-2">{{bank.name}}</span>
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</p>
+<p>
+    Selected Banks:
+</p>
+<ul *ngFor="let bank of bankMultiCtrl?.value">
+    <li>{{bank.name}}</li>
+</ul>
