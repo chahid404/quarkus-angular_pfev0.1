@@ -11,29 +11,22 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2">
-                        <mat-form-field class="example-full-width">
-                            <mat-label>Membres</mat-label>
-                            <input formControlName="membres" matInput placeholder="Ex : ahmed, ramzi">
-                        </mat-form-field>
-                    </td>
-                </tr>
                 <tr>
                     <td colspan="2">
                         <mat-form-field class="example-full-width">
-                            <mat-select [formControl]="bankMultiCtrl" placeholder="Users" [multiple]="true"
-                                #multiSelect>
+                            <mat-select [formControl]="userMultiCtrl" placeholder="Users" [multiple]="true">
                                 <mat-option>
                                     <ngx-mat-select-search placeholderLabel="Find user..."
                                         noEntriesFoundLabel="no matching user found"
-                                        [formControl]="bankMultiFilterCtrl"></ngx-mat-select-search>
+                                        [formControl]="userMultiFilterCtrl"></ngx-mat-select-search>
                                 </mat-option>
-                                <mat-option *ngFor="let bank of filteredBanksMulti | async" [value]="bank">
-                                    <img class="ml-2 avatar" aria-hidden src="assets\img\avatar27-sm.jpg" height="25">
-                                    <span class="ml-2">{{bank.name}}</span>
+                                <mat-option *ngFor="let user of usersList" [value]="user.id">
+                                    <img class="ml-2 avatar" aria-hidden src="assets\img\user-default.png" height="25">
+                                    <span class="ml-2">{{user.username}}</span>
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
+
                     </td>
                 </tr>
                 <tr>
@@ -131,7 +124,7 @@
                     <span class="checkmarke"></span>
                 </label></li>
             <li>
-                <div class="dropdown-divider mt-3 mb-3"></div>
+                <div class="dropdown-divider mt-4 mb-4"></div>
             </li>
             <li><label class="containere  ">Allow membres to comment on tasks
                     <input formControlName="commentOnTasks" type="checkbox" checked="checked">
@@ -139,7 +132,7 @@
                 </label>
             </li>
             <li>
-                <div class="dropdown-divider mt-3 mb-3"></div>
+                <div class="dropdown-divider mt-4 mb-4"></div>
             </li>
             <li><label class="containere  ">Allow membres to view task attachements
                     <input formControlName="viewTaskAttachements" type="checkbox" checked="checked">
@@ -147,7 +140,7 @@
                 </label>
             </li>
             <li>
-                <div class="dropdown-divider mt-3 mb-3"></div>
+                <div class="dropdown-divider mt-4 mb-4"></div>
             </li>
             <li><label class="containere  ">Allow membres to upload attachements on task
                     <input formControlName="uploadAttachementsOnTask" type="checkbox" checked="checked">
@@ -155,7 +148,7 @@
                 </label>
             </li>
             <li>
-                <div class="dropdown-divider mt-3 mb-3"></div>
+                <div class="dropdown-divider mt-4 mb-4"></div>
             </li>
             <li><label class="containere  ">Allow membres to view activity log
                     <input formControlName="viewActivityLog" type="checkbox" checked="checked">
@@ -163,7 +156,7 @@
                 </label>
             </li>
             <li>
-                <div class="dropdown-divider mt-3 mb-3"></div>
+                <div class="dropdown-divider mt-4 mb-4"></div>
             </li>
             <li><label class="containere  ">Allow membres to view team members
                     <input formControlName="viewTeamMembers" type="checkbox" value="false">
@@ -171,7 +164,7 @@
                 </label>
             </li>
             <li>
-                <div class="dropdown-divider mt-3 mb-3"></div>
+                <div class="dropdown-divider mt-4 mb-4"></div>
             </li>
             <li><label class="containere  ">Hide project tasks on main tasks table (admin area)
                     <input formControlName="hideProjectTasksOnMainTasksTable" type="checkbox">
@@ -179,7 +172,7 @@
                 </label>
             </li>
             <li>
-                <div class="dropdown-divider mt-3 mb-3"></div>
+                <div class="dropdown-divider mt-4 mb-4"></div>
             </li>
         </ul>
     </div>
@@ -222,6 +215,6 @@
 <p>
     Selected Banks:
 </p>
-<ul *ngFor="let bank of bankMultiCtrl?.value">
-    <li>{{bank.name}}</li>
+<ul *ngFor="let user of userMultiCtrl?.value">
+    <li>{{user}}</li>
 </ul>

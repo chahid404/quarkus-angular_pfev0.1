@@ -7,9 +7,10 @@ import { ProjectSettingsService } from 'src/app/services/project-settings.servic
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { DocumentService } from 'src/app/services/document.service';
 import { Validators } from '@angular/forms';
-import { ReplaySubject, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
-import { Bank, BANKS } from './../demo/demo';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Users } from 'src/app/models/project/user.module';
+import { UserService } from 'src/app/services/user.service';
 
 interface Status {
   value: string;
@@ -21,8 +22,9 @@ interface Status {
   styleUrls: ['./new-project.component.scss']
 })
 export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
+
   constructor(private documentService: DocumentService, private formBuilder: FormBuilder, public projectSettingsServ: ProjectSettingsService,
-    public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar) {
+    public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar, private userService: UserService) {
 
   }
   public todayDate = new Date();
@@ -37,21 +39,40 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
   display: boolean = false;
   displayModal: boolean = false;
   selectedValue: string;
+
+
+  usersList: Users[];
   //////users///////
-  /** list of banks */
-  protected banks: Bank[] = BANKS;
-  /** control for the selected bank for multi-selection */
-  public bankMultiCtrl: FormControl = new FormControl('', Validators.required);
-
-  /** control for the MatSelect filter keyword multi-selection */
-  public bankMultiFilterCtrl: FormControl = new FormControl();
-
-  /** list of banks filtered by search keyword */
-  public filteredBanksMulti: ReplaySubject<Bank[]> = new ReplaySubject<Bank[]>(1);
+  public userMultiCtrl: FormControl = new FormControl('', Validators.required);
+  public userMultiFilterCtrl: FormControl = new FormControl();
   /** Subject that emits when the component has been destroyed. */
   protected _onDestroy = new Subject<void>();
   //////end users//////
+  projectSettingsForm = new FormGroup({
+    EditTasks: new FormControl(false),
+    commentOnTasks: new FormControl(false),
+    viewTaskAttachements: new FormControl(false),
+    uploadAttachementsOnTask: new FormControl(false),
+    viewActivityLog: new FormControl(false),
+    viewTeamMembers: new FormControl(false),
+    hideProjectTasksOnMainTasksTable: new FormControl(false),
+  });
+  otherForm = new FormGroup({
+    tagss: new FormControl()
+  });
+  projectForm = new FormGroup({
+    name: new FormControl('', Validators.required),
+    description: new FormControl(),
+    startDate: new FormControl('', Validators.required),
+    deadline: new FormControl('', Validators.required),
+    progress: new FormControl(0),
+    status: new FormControl('', Validators.required),
+    tags: new FormControl(),
+    creator: new FormControl(),
+    createdDate: new FormControl(),
+    subProject: new FormControl(),
 
+  });
 
   status: Status[] = [
     { value: 'Not Started', viewValue: 'not Started' },
@@ -79,7 +100,7 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     startDate: "",
     deadline: "",
     createdDate: "",
-    membres: "",
+    membres: [],
     progress: 0,
     status: "",
     tasks: "",
@@ -92,16 +113,20 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     this.uploadForm = this.formBuilder.group({
       profile: ['']
     });
+    this.userService.getAllUsers().subscribe(users => {
+      this.usersList = users;
+    })
 
     // initusers
-    this.filteredBanksMulti.next(this.banks.slice());
-    this.bankMultiFilterCtrl.valueChanges
+    this.userMultiFilterCtrl.valueChanges
       .pipe(takeUntil(this._onDestroy))
       .subscribe(() => {
-        this.filterBanksMulti();
+        this.filterUsersMulti();
       });
     // endinitUsers
+
   }
+
   ngAfterViewInit() {
     this.setInitialValue();
   }
@@ -110,35 +135,22 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     this._onDestroy.next();
     this._onDestroy.complete();
   }
-  projectSettingsForm = new FormGroup({
-    EditTasks: new FormControl(false),
-    commentOnTasks: new FormControl(false),
-    viewTaskAttachements: new FormControl(false),
-    uploadAttachementsOnTask: new FormControl(false),
-    viewActivityLog: new FormControl(false),
-    viewTeamMembers: new FormControl(false),
-    hideProjectTasksOnMainTasksTable: new FormControl(false),
-  });
-  otherForm = new FormGroup({
-    tagss: new FormControl()
-  });
-  projectForm = new FormGroup({
-    name: new FormControl('', Validators.required),
-    description: new FormControl(),
-    startDate: new FormControl('', Validators.required),
-    deadline: new FormControl('', Validators.required),
-    membres: new FormControl('', Validators.required),
-    progress: new FormControl(0),
-    status: new FormControl('', Validators.required),
-    tags: new FormControl(),
-    creator: new FormControl(),
-    createdDate: new FormControl(),
-    subProject: new FormControl(),
 
-  });
 
   dateFromat(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');
+  }
+
+  public listOfMembers(array): Users[] {
+    let usersAssigned: Users[] = [];
+    array.forEach(userid => {
+      this.userService.getUserById(userid).subscribe(user => {
+        usersAssigned.push(user);
+      }, err => {
+        console.log(err);
+      })
+    });
+    return usersAssigned;
   }
 
   onSubmit() {
@@ -153,28 +165,30 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
       this.project.creator = "chahid";
       this.project.subProject = "projectsub1";
       this.project.tags = this.tagsValues;
+      //create membreslist
+      this.project.membres = this.listOfMembers(this.userMultiCtrl.value);
       //DocumentHttpClient
       this.document.uploadDate = this.dateFromat(this.todayDate);;
       this.document.path = this.fileParams.fullPath;
       this.document.documentName = this.fileParams.regenaratedFileName;
       //console.log(this.document);
-      this.documentService.addDocument(this.document).subscribe(document => {
-        //console.log(document);
-        this.projectService.newProduct(this.project, res.id, document.id).subscribe(data => {
-          console.log(data);
-          this._snackBar.open(this.project.name + " added successfully", "close", {
-            duration: 3000,
-            horizontalPosition: this.horizontalPosition,
-            verticalPosition: this.verticalPosition,
-          });
-          this.projectForm.reset();
-          this.projectSettingsForm.reset();
-        }, err => {
-          console.log(err);
-        });
-      }, err => {
-        console.log(err);
-      });
+      // this.documentService.addDocument(this.document).subscribe(document => {
+      //   //console.log(document);
+      //   this.projectService.newProduct(this.project, res.id, document.id).subscribe(data => {
+      //     console.log(data);
+      //     this._snackBar.open(this.project.name + " added successfully", "close", {
+      //       duration: 3000,
+      //       horizontalPosition: this.horizontalPosition,
+      //       verticalPosition: this.verticalPosition,
+      //     });
+      //     this.projectForm.reset();
+      //     this.projectSettingsForm.reset();
+      //   }, err => {
+      //     console.log(err);
+      //   });
+      // }, err => {
+      //   console.log(err);
+      // });
       //end DocumentHttpClient
     }, err => {
       console.log(err);
@@ -249,7 +263,6 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
       // });
       this.displayModal = true;
 
-      //console.log(this.fileParams);
     }, err => {
       console.log(err);
     });
@@ -258,8 +271,6 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
 
   change($event) {
     this.tagsValues = $event;
-
-    //console.log(this.tagsValues);
   }
 
   // users
@@ -267,36 +278,29 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
    * Sets the initial value after the filteredBanks are loaded initially
    */
   protected setInitialValue() {
-    this.filteredBanksMulti
-      .pipe(take(1), takeUntil(this._onDestroy))
-      .subscribe(() => {
-        // setting the compareWith property to a comparison function
-        // triggers initializing the selection according to the initial value of
-        // the form control (i.e. _initializeSelection())
-        // this needs to be done after the filteredBanks are loaded initially
-        // and after the mat-option elements are available
-        //this.multiSelect.compareWith = (a: Bank, b: Bank) => a && b && a.id === b.id;
-      });
+    this.userService.getAllUsers().subscribe(users => {
+      this.usersList = users;
+    })
   }
 
-  protected filterBanksMulti() {
-    if (!this.banks) {
+  protected filterUsersMulti() {
+    if (!this.usersList) {
       return;
     }
     // get the search keyword
-    let search = this.bankMultiFilterCtrl.value;
+    let search = this.userMultiFilterCtrl.value;
     if (!search) {
-      this.filteredBanksMulti.next(this.banks.slice());
+      this.setInitialValue();
       return;
     } else {
       search = search.toLowerCase();
     }
-    // filter the banks
-    this.filteredBanksMulti.next(
-      this.banks.filter(bank => bank.name.toLowerCase().indexOf(search) > -1)
-    );
+    this.usersList = this.usersList.filter(user => user.username.toLowerCase().indexOf(search) > -1);
+
   }
   // endUsers
+
+
 
 }
 
