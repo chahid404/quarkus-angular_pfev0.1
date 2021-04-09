@@ -18,10 +18,8 @@ public class Project extends PanacheEntityBase {
   public String description;
   public LocalDate createdDate;
   public LocalDate startDate;
-  ;
   public LocalDate deadline;
-  ;
-  public User[] membres;
+  public String[] membres;
   public String status;
   public Integer progress;
   public String[] tags;
@@ -95,11 +93,11 @@ public class Project extends PanacheEntityBase {
     this.deadline = deadline;
   }
 
-  public User[] getMembres() {
+  public String[] getMembres() {
     return membres;
   }
 
-  public void setMembres(User[] membres) {
+  public void setMembres(String[] membres) {
     this.membres = membres;
   }
 

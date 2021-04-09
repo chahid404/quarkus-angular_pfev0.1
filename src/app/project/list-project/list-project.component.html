@@ -75,12 +75,8 @@
             <td>
                 <p-avatarGroup styleClass="p-mb-3">
                     <div *ngFor="let member of project.membres">
-                        <div *ngIf="isLoading">
-                            <h1 (loaded)="labelLoaded($event)">aaaaaaaaa</h1>
-                        </div>
                         <p-avatar image="assets/img/author-page.jpg" shape="circle">
                         </p-avatar>
-
                     </div>
 
                     <p-avatar label="+2" shape="circle" [style]="{'background-color':'#9c27b0', 'color': '#ffffff'}">
@@ -107,7 +103,5 @@
                 <p-rating style="width: 100%;" [cancel]="false"></p-rating>
             </td>
         </tr>
-        <h1>{{aaaa}}</h1>
-
     </tbody>
 </table>

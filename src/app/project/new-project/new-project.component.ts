@@ -39,8 +39,6 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
   display: boolean = false;
   displayModal: boolean = false;
   selectedValue: string;
-
-
   usersList: Users[];
   //////users///////
   public userMultiCtrl: FormControl = new FormControl('', Validators.required);
@@ -166,29 +164,29 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
       this.project.subProject = "projectsub1";
       this.project.tags = this.tagsValues;
       //create membreslist
-      this.project.membres = this.listOfMembers(this.userMultiCtrl.value);
+      this.project.membres = this.userMultiCtrl.value;
+      console.log(this.userMultiCtrl.value);
       //DocumentHttpClient
       this.document.uploadDate = this.dateFromat(this.todayDate);;
       this.document.path = this.fileParams.fullPath;
       this.document.documentName = this.fileParams.regenaratedFileName;
-      //console.log(this.document);
-      // this.documentService.addDocument(this.document).subscribe(document => {
-      //   //console.log(document);
-      //   this.projectService.newProduct(this.project, res.id, document.id).subscribe(data => {
-      //     console.log(data);
-      //     this._snackBar.open(this.project.name + " added successfully", "close", {
-      //       duration: 3000,
-      //       horizontalPosition: this.horizontalPosition,
-      //       verticalPosition: this.verticalPosition,
-      //     });
-      //     this.projectForm.reset();
-      //     this.projectSettingsForm.reset();
-      //   }, err => {
-      //     console.log(err);
-      //   });
-      // }, err => {
-      //   console.log(err);
-      // });
+      this.documentService.addDocument(this.document).subscribe(document => {
+        console.log(this.project);
+        this.projectService.newProject(this.project, res.id, document.id).subscribe(data => {
+          console.log(data);
+          this._snackBar.open(this.project.name + " added successfully", "close", {
+            duration: 3000,
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition,
+          });
+          this.projectForm.reset();
+          this.projectSettingsForm.reset();
+        }, err => {
+          console.log(err);
+        });
+      }, err => {
+        console.log(err);
+      });
       //end DocumentHttpClient
     }, err => {
       console.log(err);

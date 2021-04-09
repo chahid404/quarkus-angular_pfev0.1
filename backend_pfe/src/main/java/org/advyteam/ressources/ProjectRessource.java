@@ -5,10 +5,13 @@ import org.advyteam.otherClasses.FileParams;
 import org.advyteam.repositorys.DocumentRepository;
 import org.advyteam.repositorys.ProjectRepository;
 import org.advyteam.repositorys.SettingReposotory;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,7 +50,7 @@ public class ProjectRessource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @Transactional
-  public Project AddNewProject(@PathParam("idd") Long iddocument,@PathParam("ids") Long idsetting, Project project) throws IOException {
+  public Project AddNewProject(@PathParam("idd") Long iddocument, @PathParam("ids") Long idsetting,Project project) throws IOException {
 
     Project newProject = new Project();
     if (settingReposotory.findById(idsetting) == null) {
@@ -112,7 +115,7 @@ public class ProjectRessource {
     byte[] bytes = descriptionBody.getBytes(StandardCharsets.UTF_8);
     Random random = new Random();
     FileParams fileParams = new FileParams();
-    int randomNumber = random.nextInt(10000 - 10) + 10;
+    int randomNumber = random.nextInt(1000000000 - 10) + 10;
     LocalDate localDate = LocalDate.now();
     String fullPath=path +localDate +"-"+randomNumber +"-"+ projectName+ ".html";
     writeFile(bytes, fullPath);
