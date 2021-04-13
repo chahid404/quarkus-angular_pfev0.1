@@ -45,7 +45,6 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 
 
-
 const routes: Routes = [
   { path: "project", component: AddProjectComponent },
 
@@ -93,8 +92,7 @@ const routes: Routes = [
     MatSelectModule,
     MatSelectModule,
     MatFormFieldModule,
-    NgxMatSelectSearchModule
-
+    NgxMatSelectSearchModule,
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

@@ -74,12 +74,10 @@
             <!-- <td>{{project.membres}}</td> -->
             <td>
                 <p-avatarGroup styleClass="p-mb-3">
-                    <div *ngFor="let member of project.membres">
-                        <p-avatar image="assets/img/author-page.jpg" shape="circle">
-                        </p-avatar>
-                    </div>
-
-                    <p-avatar label="+2" shape="circle" [style]="{'background-color':'#9c27b0', 'color': '#ffffff'}">
+                    <p-avatar *ngFor="let member of project.membres" image="assets/img/author-page.jpg" shape="circle">
+                    </p-avatar>
+                    <p-avatar *ngIf="project.membres.length >2" label="{{'+'}}{{project.membres.length-1}}"
+                        shape="circle" [style]="{'background-color':'#9c27b0', 'color': '#ffffff'}">
                     </p-avatar>
                 </p-avatarGroup>
 
