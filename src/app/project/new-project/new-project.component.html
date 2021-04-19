@@ -61,19 +61,6 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <label class="containere">Calculate progress through tasks
-                            <input type="checkbox" checked="checked">
-                            <span class="checkmarke"></span>
-                        </label>
-                        <mat-label>Progress : <p-tag value="{{projectForm.value.progress+' %'}}"></p-tag>
-                        </mat-label>
-                        <div class="dropdown-divider mt-3 mb-3" style="width: 30%;"></div>
-                        <p-slider class="example-full-width" formControlName="progress"></p-slider>
-                        <!-- <input type="number" formControlName="progress" matInput placeholder="Ex : 0..100%"> -->
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
                         <div class="containers mt-4">
                             <div class="example-full-width">
                                 <ngx-mat-tag-input [ngModel]="selectedValues" formControlName="tags"
@@ -88,6 +75,7 @@
                     <td colspan="2">
                         <label for="editor1">Description</label>
                         <angular-editor id="editor1" formControlName="description" [config]="editorConfig">
+                            <!-- <input type="text" formControlName="description"> -->
                         </angular-editor>
                     </td>
                 </tr>
@@ -210,3 +198,4 @@
         <p-button icon="pi pi-check" (click)="displayModal=false" label="Ok" styleClass="p-button-text"></p-button>
     </ng-template>
 </p-dialog>
+timestamp

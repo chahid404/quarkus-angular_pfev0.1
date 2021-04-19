@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FileUploadModule } from 'primeng/fileupload';
 import { DialogModule } from 'primeng/dialog';
 import { AppComponent } from './app.component';
@@ -32,15 +32,25 @@ import { TagModule } from 'primeng/tag';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { RatingModule } from 'primeng/rating';
 import { AvatarModule } from 'primeng/avatar';
-import { AvatarGroupModule } from 'primeng/avatargroup';
+import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
+import { CalendarModule } from 'primeng/calendar';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { DropdownModule } from 'primeng/dropdown';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { InputTextModule } from 'primeng/inputtext';
+import { AvatarGroupModule } from 'primeng/avatargroup';
 import { DemoComponent } from './project/demo/demo.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { KeycloakSecurityService } from './services/keycloak-security.service';
 
 
 
-
+export function kcFactory(kcSecurity: KeycloakSecurityService) {
+  return () => kcSecurity.init();
+}
 
 
 
@@ -93,8 +103,16 @@ const routes: Routes = [
     MatSelectModule,
     MatFormFieldModule,
     NgxMatSelectSearchModule,
+    TableModule,
+    ToastModule,
+    CalendarModule,
+    ContextMenuModule,
+    DropdownModule,
+    ProgressBarModule,
+    InputTextModule
+
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, { provide: APP_INITIALIZER, deps: [KeycloakSecurityService], useFactory: kcFactory, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

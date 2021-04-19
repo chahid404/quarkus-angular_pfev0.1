@@ -5,7 +5,9 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Project extends PanacheEntityBase {
@@ -19,20 +21,33 @@ public class Project extends PanacheEntityBase {
   public LocalDate createdDate;
   public LocalDate startDate;
   public LocalDate deadline;
-  public String[] membres;
-  public String status;
+  public String subProject;
   public Integer progress;
-  public String[] tags;
+  public String status;
+
+  @Column
+  @ElementCollection(targetClass=String.class)
+  public List<String> membres = new ArrayList<>();
+
+
+  @Column
+  @ElementCollection(targetClass=String.class)
+  public List<String> tags = new ArrayList<>() ;
+
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "documents_id", referencedColumnName = "id")
   public Document documents;
-  public String tasks;
+
+  //@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  @JoinColumn(name = "tasks_id")
+  private List<Task> tasks = new ArrayList<>();
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "setting_id", referencedColumnName = "id")
   public Setting projectSettings;
-  public String subProject;
+
 
   public Project() {
   }
@@ -93,13 +108,6 @@ public class Project extends PanacheEntityBase {
     this.deadline = deadline;
   }
 
-  public String[] getMembres() {
-    return membres;
-  }
-
-  public void setMembres(String[] membres) {
-    this.membres = membres;
-  }
 
   public String getStatus() {
     return status;
@@ -117,28 +125,12 @@ public class Project extends PanacheEntityBase {
     this.progress = progress;
   }
 
-  public String[] getTags() {
-    return tags;
-  }
-
-  public void setTags(String[] tags) {
-    this.tags = tags;
-  }
-
   public Document getDocuments() {
     return documents;
   }
 
   public void setDocuments(Document documents) {
     this.documents = documents;
-  }
-
-  public String getTasks() {
-    return tasks;
-  }
-
-  public void setTasks(String tasks) {
-    this.tasks = tasks;
   }
 
   public Setting getProjectSettings() {
@@ -155,5 +147,29 @@ public class Project extends PanacheEntityBase {
 
   public void setSubProject(String subProject) {
     this.subProject = subProject;
+  }
+
+  public List<Task> getTasks() {
+    return tasks;
+  }
+
+  public void setTasks(List<Task> tasks) {
+    this.tasks = tasks;
+  }
+
+  public List<String> getMembres() {
+    return membres;
+  }
+
+  public void setMembres(List<String> membres) {
+    this.membres = membres;
+  }
+
+  public List<String> getTags() {
+    return tags;
+  }
+
+  public void setTags(List<String> tags) {
+    this.tags = tags;
   }
 }

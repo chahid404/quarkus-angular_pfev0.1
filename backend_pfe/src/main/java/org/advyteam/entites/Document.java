@@ -15,6 +15,8 @@ public class Document {
     public String documentName;
     public LocalDate uploadDate;
     public String path;
+
+    public Document() { }
     public Long getId() {
         return id;
     }
@@ -30,21 +32,16 @@ public class Document {
     public LocalDate getUploadDate() {
         return uploadDate;
     }
-
     public void setUploadDate(LocalDate uploadDate) {
         this.uploadDate = uploadDate;
     }
-
     public String getPath() {
         return path;
     }
-
     public void setPath(String path) {
         this.path = path;
     }
 
 
-    public Document() {
 
-    }
 }

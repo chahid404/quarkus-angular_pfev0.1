@@ -1,10 +1,13 @@
 package org.advyteam.ressources;
 
 import org.advyteam.entites.Project;
+import org.advyteam.entites.Task;
 import org.advyteam.otherClasses.FileParams;
 import org.advyteam.repositorys.DocumentRepository;
 import org.advyteam.repositorys.ProjectRepository;
 import org.advyteam.repositorys.SettingReposotory;
+import org.advyteam.repositorys.TaskRepository;
+import org.advyteam.requestBody.ProjectRequestBody;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 import javax.inject.Inject;
@@ -18,18 +21,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Path("/projects")
 public class ProjectRessource {
-  public String path = "E:/formation quarkus/Angular/test-integration/backend_pfe/assets/description_project/";
+  public String path = "E:/formation quarkus/Angular/test-integration/backend_pfe/assets/";
   @Inject
   ProjectRepository projectRepository;
   @Inject
   SettingReposotory settingReposotory;
   @Inject
   DocumentRepository documentRepository;
+  @Inject
+  TaskRepository taskRepository;
+  @Inject
+  UsersRessource usersRessource;
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -50,13 +56,35 @@ public class ProjectRessource {
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @Transactional
-  public Project AddNewProject(@PathParam("idd") Long iddocument, @PathParam("ids") Long idsetting,Project project) throws IOException {
+  public Project AddNewProject(@PathParam("idd") Long iddocument, @PathParam("ids") Long idsetting, ProjectRequestBody project) throws IOException {
 
-    Project newProject = new Project();
+    Project newProject = new Project ();
     if (settingReposotory.findById(idsetting) == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
+    List<Task> tasks = new ArrayList<>();
+    Task newtask = new Task(project.getCreator());
+    tasks.add(newtask);
+    taskRepository.persist(tasks);
+
     newProject.setCreatedDate(project.getCreatedDate());
+    newProject.setCreator(project.getCreator());
+    newProject.setDeadline(project.getDeadline());
+    //newProject.setDescription(project.getDescription());
+    newProject.setDescription(ConvertDescriptionToHtmlFile(project.getDescription(),project.getName()));
+    newProject.setDocuments(documentRepository.findById(iddocument));
+    newProject.setMembres(project.getMembres());
+    newProject.setName(project.getName());
+    newProject.setProgress(project.getProgress());
+    newProject.setProjectSettings(settingReposotory.findById(idsetting));
+    newProject.setStartDate(project.getStartDate());
+    newProject.setStatus(project.getStatus());
+    newProject.setSubProject(project.getSubProject());
+    newProject.setTags(project.getTags());
+    newProject.setTasks(tasks);
+    projectRepository.persist(newProject);
+
+    /*newProject.setCreatedDate(project.getCreatedDate());
     newProject.setCreator(project.getCreator());
     newProject.setDeadline(project.getDeadline());
     newProject.setDescription(ConvertDescriptionToHtmlFile(project.getDescription(),project.getName()));
@@ -70,8 +98,8 @@ public class ProjectRessource {
     newProject.setSubProject(project.getSubProject());
     newProject.setTags(project.getTags());
     newProject.setTasks(project.getTasks());
-    projectRepository.persist(newProject);
-    return newProject;
+    projectRepository.persist(newProject);*/
+    return projectRepository.findById(newProject.id);
   }
 
 
@@ -85,7 +113,6 @@ public class ProjectRessource {
     if (newProject == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
-
     newProject.setCreatedDate(project.getCreatedDate());
     newProject.setCreator(project.getCreator());
     newProject.setDeadline(project.getDeadline());

@@ -22,3 +22,7 @@
 --INSERT INTO task(name,description,membres,tags,comments,document,visibility,priority,status,progress,score,startDate,dueDate,createdDate,createdBy) VALUES ('taske 2','this is task num 2','mah sami','makeup','comment2','vide2.mp4','private','low','blocked',33,1,'2021-03-06','2021-03-06','2021-03-06','sami');
 --INSERT INTO task(name,description,membres,tags,comments,document,visibility,priority,status,progress,score,startDate,dueDate,createdDate,createdBy) VALUES ('taske 3','this is task num 3','chahid yasmine','pfe','comment3','vide3.mp4','public','high','done',50,1,'2021-03-06','2021-03-06','2021-03-06','mah');
 --INSERT INTO task(name,description,membres,tags,comments,document,visibility,priority,status,progress,score,startDate,dueDate,createdDate,createdBy) VALUES ('taske 4','this is task num 4','mah sami','webdesign','comment4','vide4.mp4','public','medium','in progress',21,1,'2021-03-06','2021-03-06','2021-03-06','yasmine');
+
+--INSERT INTO document(documentName,uploadDate,path) VALUES ('document num 1','2021-03-06','tast num 1');
+INSERT INTO document(documentName,uploadDate,path) VALUES ('document num 2','2021-03-06','tast num 2');
+INSERT INTO setting(EditTasks,commentOnTasks,viewTaskAttachements,uploadAttachementsOnTask,viewActivityLog,viewTeamMembers,hideProjectTasksOnMainTasksTable) VALUES (TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE);

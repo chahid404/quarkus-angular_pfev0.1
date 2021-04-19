@@ -40,6 +40,8 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
   displayModal: boolean = false;
   selectedValue: string;
   usersList: Users[];
+  currentUserId: string = localStorage.getItem("userId");
+  currentUser: Users;
   //////users///////
   public userMultiCtrl: FormControl = new FormControl('', Validators.required);
   public userMultiFilterCtrl: FormControl = new FormControl();
@@ -55,15 +57,12 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     viewTeamMembers: new FormControl(false),
     hideProjectTasksOnMainTasksTable: new FormControl(false),
   });
-  otherForm = new FormGroup({
-    tagss: new FormControl()
-  });
+
   projectForm = new FormGroup({
     name: new FormControl('', Validators.required),
-    description: new FormControl(),
+    description: new FormControl(""),
     startDate: new FormControl('', Validators.required),
     deadline: new FormControl('', Validators.required),
-    progress: new FormControl(0),
     status: new FormControl('', Validators.required),
     tags: new FormControl(),
     creator: new FormControl(),
@@ -101,7 +100,6 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     membres: [],
     progress: 0,
     status: "",
-    tasks: "",
     subProject: "",
     tags: [],
   };
@@ -111,10 +109,7 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     this.uploadForm = this.formBuilder.group({
       profile: ['']
     });
-    this.userService.getAllUsers().subscribe(users => {
-      this.usersList = users;
-    })
-
+    this.setInitialValue();
     // initusers
     this.userMultiFilterCtrl.valueChanges
       .pipe(takeUntil(this._onDestroy))
@@ -159,8 +154,7 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
       this.project.createdDate = this.dateFromat(this.todayDate);
       this.project.startDate = this.dateFromat(this.projectForm.value.startDate);
       this.project.deadline = this.dateFromat(this.projectForm.value.deadline);
-      this.project.tasks = "task1 , task2";
-      this.project.creator = "chahid";
+      this.project.creator = this.currentUser.id;
       this.project.subProject = "projectsub1";
       this.project.tags = this.tagsValues;
       //create membreslist
@@ -196,8 +190,8 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
   restForms() {
     this.projectForm.reset();
     this.projectSettingsForm.reset();
-    this.otherForm.reset();
-    this.otherForm.setValue({ tagss: ['AdvyTeam', 'STAGE', 'PFE'] })
+    this.selectedValues = ['AdvyTeam', 'STAGE', 'PFE'];
+    //this.otherForm.setValue({ tagss: ['AdvyTeam', 'STAGE', 'PFE'] })
 
   }
 
@@ -276,9 +270,18 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
    * Sets the initial value after the filteredBanks are loaded initially
    */
   protected setInitialValue() {
-    this.userService.getAllUsers().subscribe(users => {
-      this.usersList = users;
-    })
+    this.userService.getUserById(this.currentUserId).subscribe(user => {
+      this.currentUser = user;
+      this.userService.getAllUsers().subscribe(users => {
+        this.usersList = users;
+        var indexOfSepecificUser = this.usersList.findIndex(u => u.id === user.id);
+        this.usersList.splice(indexOfSepecificUser, 1);
+      }, error => {
+        console.log(error);
+      });
+    }, err => {
+      console.log(err);
+    });
   }
 
   protected filterUsersMulti() {

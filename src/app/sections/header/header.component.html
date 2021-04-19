@@ -505,7 +505,7 @@
                                             </use>
                                         </svg>
 
-                                        <span>Log Out</span>
+                                        <span (click)="onLogout()"> Log Out</span>
                                     </a>
                                 </li>
                             </ul>
@@ -586,13 +586,15 @@
 
                     </div>
                 </div>
-                <a href="02-ProfilePage.html" class="author-name fn">
-                    <div class="author-title">
-                        James Spiegel <svg class="olymp-dropdown-arrow-icon">
+                <a *ngIf="kcService.kc.authenticated" href="02-ProfilePage.html" class="author-name fn">
+                    <div *ngIf="kcService.kc.authenticated; else elseBlock" class="author-title">
+                        {{kcService.kc.tokenParsed.preferred_username}}
+                        <ng-template #elseBlock #elseBlock>Login</ng-template> <svg class="olymp-dropdown-arrow-icon">
                             <use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-dropdown-arrow-icon"></use>
                         </svg>
                     </div>
-                    <span class="author-subtitle">SPACE COWBOY</span>
+                    <span class="author-subtitle"
+                        *ngIf="kcService.kc.authenticated">{{kcService.kc.tokenParsed.email}}</span>
                 </a>
             </div>
 
