@@ -1,12 +1,8 @@
 package org.advyteam.entites;
 
-import jdk.jfr.Enabled;
-
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
-import java.lang.reflect.Member;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 public class Task {
@@ -14,32 +10,30 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-    public String name ="";
-    public String description ="";
-    public String membres="";
-    public String tags="";
-    public String comments="";
-    public String document="";
+    public String name = "";
+    public String description = "";
+    public String membres = "";
+    public String tags = "";
+    public String comments = "";
+    public String document = "";
     public Boolean visibility = true;
-    public String priority ="";
-    public String status ="";
-    public Integer progress =0;
+    public String priority = "";
+    public String status = "";
+    public Integer progress = 0;
     public Integer score = 0;
-    public LocalDate startDate;
-    public LocalDate dueDate;
-    public LocalDate createdDate;
+    public LocalDate startDate = LocalDate.now();
+    public LocalDate dueDate = LocalDate.now();
+    public LocalDate createdDate = LocalDate.now();
 
     public String createdBy;
-  //@ManyToOne(fetch = FetchType.LAZY)
+    // @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
     @JsonbTransient
     public Project project;
 
-
-
     public Task(String createdBy) {
-    this.createdBy = createdBy;
-  }
+        this.createdBy = createdBy;
+    }
 
     public Task() {
     }
@@ -171,4 +165,5 @@ public class Task {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
+
 }

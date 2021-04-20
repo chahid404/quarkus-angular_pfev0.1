@@ -74,9 +74,8 @@
                 <tr>
                     <td colspan="2">
                         <label for="editor1">Description</label>
-                        <angular-editor id="editor1" formControlName="description" [config]="editorConfig">
-                            <!-- <input type="text" formControlName="description"> -->
-                        </angular-editor>
+                        <!-- <angular-editor id="editor1" formControlName="description" [config]="editorConfig"></angular-editor> -->
+                        <input type="text" formControlName="description">
                     </td>
                 </tr>
                 <tr>
@@ -172,9 +171,6 @@
 
 
 <p-dialog [(visible)]="display" [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}">
-    <ng-template pTemplate="header">
-        <b>Header content here</b>
-    </ng-template>
     <form action=""></form>
     <p-fileUpload #form name="demo[]" customUpload="true" (uploadHandler)="onUpload($event)">
         <ng-template pTemplate="content">
@@ -184,18 +180,14 @@
             </ul>
         </ng-template>
     </p-fileUpload>
-    <p-footer>
-        <button pButton type="button" (click)="display = false;" iconPos="right" icon="pi pi-check"
-            label="Done"></button>
-    </p-footer>
 </p-dialog>
 
 
-<p-dialog header="Header" [(visible)]="displayModal" [modal]="true" [baseZIndex]="10000" [draggable]="false"
-    [resizable]="false">
+<p-dialog [(visible)]="displayModal" [modal]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
     <p class="p-m-0">Your files upload successfully</p>
     <ng-template pTemplate="footer">
-        <p-button icon="pi pi-check" (click)="displayModal=false" label="Ok" styleClass="p-button-text"></p-button>
+        <p-button icon="pi pi-check" (click)="displayModal=false;display = false;" label="Ok"
+            styleClass="p-button-text"></p-button>
     </ng-template>
 </p-dialog>
 timestamp

@@ -21,4 +21,7 @@ export class ProjectService {
     return this.httpClient.get<Projects[]>(this.host + "/projects");
   }
 
+  public getProjectByCreator(idUser: string): Observable<Projects[]> {
+    return this.httpClient.get<Projects[]>(this.host + "/getprojectsbycreator");
+  }
 }

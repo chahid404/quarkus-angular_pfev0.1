@@ -31,75 +31,84 @@
 <ul *ngFor="let bank of bankMultiCtrl?.value">
     <li>{{bank.name}}</li>
 </ul> -->
-<!-- //////////////////////////////////////////////////// -->
-<p-table [value]="products" dataKey="name">
+<p-table [value]="projectsList" dataKey="name">
     <ng-template pTemplate="header">
         <tr>
             <th style="width: 3rem"></th>
             <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon>
             </th>
-            <th>Image</th>
-            <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon>
+            <th>membres</th>
+            <th pSortableColumn="deadline">deadline <p-sortIcon field="deadline"></p-sortIcon>
             </th>
-            <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon>
+            <th pSortableColumn="status">status <p-sortIcon field="status"></p-sortIcon>
             </th>
-            <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon>
+            <th pSortableColumn="progress">progress <p-sortIcon field="progress"></p-sortIcon>
             </th>
-            <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus"></p-sortIcon>
+            <th pSortableColumn="createdDate">created Date <p-sortIcon field="createdDate"></p-sortIcon>
             </th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-product let-expanded="expanded">
+    <ng-template pTemplate="body" let-project let-expanded="expanded">
         <tr>
             <td>
-                <button type="button" pButton pRipple [pRowToggler]="product"
+                <button type="button" pButton pRipple [pRowToggler]="project"
                     class="p-button-text p-button-rounded p-button-plain"
                     [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
             </td>
-            <td>{{product.name}}</td>
-            <td><img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name" width="100"
-                    class="p-shadow-4" /></td>
-            <td>{{product.price | currency:'USD'}}</td>
-            <td>{{product.category}}</td>
+            <td>{{project.name}}</td>
             <td>
-                <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
+                <p-avatarGroup styleClass="p-mb-3">
+                    <p-avatar *ngFor="let member of project.membres| slice:0:3" image="assets/img/author-page.jpg"
+                        shape="circle">
+                    </p-avatar>
+                    <p-avatar *ngIf="project.membres.length >3" label="{{'+'}}{{project.membres.length-3}}"
+                        shape="circle" [style]="{'background-color':'#9c27b0', 'color': '#ffffff'}">
+                    </p-avatar>
+                </p-avatarGroup>
             </td>
-            <td><span
-                    [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>
+            <td>{{project.deadline}}</td>
+            <td>{{project.status}}</td>
+            <td>
+                <p>{{project.progress}}</p>
+            </td>
+            <td><span>{{project.createdDate}}</span>
             </td>
         </tr>
     </ng-template>
-    <ng-template pTemplate="rowexpansion" let-product>
+    <ng-template pTemplate="rowexpansion" let-project>
         <tr>
             <td colspan="7">
                 <div class="p-p-3">
-                    <p-table [value]="product.orders" dataKey="id">
+                    <p-table [value]="project.tasks" dataKey="name">
                         <ng-template pTemplate="header">
         <tr>
-            <th pSortableColumn="id">Id <p-sortIcon field="price"></p-sortIcon>
+            <th pSortableColumn="name">name <p-sortIcon field="name"></p-sortIcon>
             </th>
-            <th pSortableColumn="customer">Customer <p-sortIcon field="customer"></p-sortIcon>
+            <th pSortableColumn="startDate">start Date <p-sortIcon field="startDate"></p-sortIcon>
             </th>
-            <th pSortableColumn="date">Date <p-sortIcon field="date"></p-sortIcon>
+            <th pSortableColumn="dueDate">due Date <p-sortIcon field="dueDate"></p-sortIcon>
             </th>
-            <th pSortableColumn="amount">Amount <p-sortIcon field="amount"></p-sortIcon>
+            <th pSortableColumn="tags">tags<p-sortIcon field="tags"></p-sortIcon>
             </th>
-            <th pSortableColumn="stats">Status <p-sortIcon field="status"></p-sortIcon>
+            <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon>
             </th>
-            <th style="width: 4rem"></th>
+            <th style="width: 4rem"> Action</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-order>
+    <ng-template pTemplate="body" let-task>
         <tr>
-            <td>{{order.id}}</td>
-            <td>{{order.customer}}</td>
-            <td>{{order.id}}</td>
-            <td>{{order.amount | currency:'USD'}}</td>
-            <td><span [class]="'order-badge order-' + order.status.toLowerCase()">{{order.status}}</span></td>
+            <td>{{task.name}}</td>
+            <td>{{task.startDate}}</td>
+            <td>{{task.dueDate}}</td>
+            <td>{{task.tags}}</td>
+            <td>{{task.status}}</td>
             <td>
                 <p-button type="button" icon="pi pi-search"></p-button>
             </td>
         </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton type="button" icon="pi pi-plus" label="New" class="p-button-outlined p-button-sm"></button>
     </ng-template>
     <ng-template pTemplate="emptymessage">
         <tr>
@@ -112,4 +121,3 @@
 </tr>
 </ng-template>
 </p-table>
-<!-- /////////////////////////////////////////// -->

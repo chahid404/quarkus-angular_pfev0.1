@@ -2,19 +2,15 @@ package org.advyteam.ressources;
 
 import org.advyteam.entites.Project;
 import org.advyteam.entites.Task;
-import org.advyteam.otherClasses.FileParams;
 import org.advyteam.repositorys.DocumentRepository;
 import org.advyteam.repositorys.ProjectRepository;
 import org.advyteam.repositorys.SettingReposotory;
 import org.advyteam.repositorys.TaskRepository;
 import org.advyteam.requestBody.ProjectRequestBody;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +21,7 @@ import java.util.*;
 
 @Path("/projects")
 public class ProjectRessource {
-  public String path = "E:/formation quarkus/Angular/test-integration/backend_pfe/assets/";
+  public String path = "E:/formation quarkus/Angular/test-integration/backend_pfe/assets/description_project/";
   @Inject
   ProjectRepository projectRepository;
   @Inject
@@ -50,15 +46,15 @@ public class ProjectRessource {
     return projectRepository.findById(id);
   }
 
-
   @POST
   @Path("/{ids}/{idd}")
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_JSON)
   @Transactional
-  public Project AddNewProject(@PathParam("idd") Long iddocument, @PathParam("ids") Long idsetting, ProjectRequestBody project) throws IOException {
+  public Project AddNewProject(@PathParam("idd") Long iddocument, @PathParam("ids") Long idsetting,
+      ProjectRequestBody project) throws IOException {
 
-    Project newProject = new Project ();
+    Project newProject = new Project();
     if (settingReposotory.findById(idsetting) == null) {
       throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
@@ -70,12 +66,11 @@ public class ProjectRessource {
     newProject.setCreatedDate(project.getCreatedDate());
     newProject.setCreator(project.getCreator());
     newProject.setDeadline(project.getDeadline());
-    //newProject.setDescription(project.getDescription());
-    newProject.setDescription(ConvertDescriptionToHtmlFile(project.getDescription(),project.getName()));
+    newProject.setDescription(ConvertDescriptionToHtmlFile(project.getDescription(), project.getName()));
     newProject.setDocuments(documentRepository.findById(iddocument));
     newProject.setMembres(project.getMembres());
     newProject.setName(project.getName());
-    newProject.setProgress(project.getProgress());
+    newProject.setProgress(0);
     newProject.setProjectSettings(settingReposotory.findById(idsetting));
     newProject.setStartDate(project.getStartDate());
     newProject.setStatus(project.getStatus());
@@ -83,25 +78,8 @@ public class ProjectRessource {
     newProject.setTags(project.getTags());
     newProject.setTasks(tasks);
     projectRepository.persist(newProject);
-
-    /*newProject.setCreatedDate(project.getCreatedDate());
-    newProject.setCreator(project.getCreator());
-    newProject.setDeadline(project.getDeadline());
-    newProject.setDescription(ConvertDescriptionToHtmlFile(project.getDescription(),project.getName()));
-    newProject.setDocuments(documentRepository.findById(iddocument));
-    newProject.setMembres(project.getMembres());
-    newProject.setName(project.getName());
-    newProject.setProgress(project.getProgress());
-    newProject.setProjectSettings(settingReposotory.findById(idsetting));
-    newProject.setStartDate(project.getStartDate());
-    newProject.setStatus(project.getStatus());
-    newProject.setSubProject(project.getSubProject());
-    newProject.setTags(project.getTags());
-    newProject.setTasks(project.getTasks());
-    projectRepository.persist(newProject);*/
     return projectRepository.findById(newProject.id);
   }
-
 
   @Path("/{id}")
   @PUT
@@ -138,13 +116,13 @@ public class ProjectRessource {
     projectRepository.delete(projectRepository.findById(id));
     return projectRepository.findAll().list();
   }
-  public String ConvertDescriptionToHtmlFile( String descriptionBody,String projectName) throws IOException {
+
+  public String ConvertDescriptionToHtmlFile(String descriptionBody, String projectName) throws IOException {
     byte[] bytes = descriptionBody.getBytes(StandardCharsets.UTF_8);
     Random random = new Random();
-    FileParams fileParams = new FileParams();
     int randomNumber = random.nextInt(1000000000 - 10) + 10;
     LocalDate localDate = LocalDate.now();
-    String fullPath=path +localDate +"-"+randomNumber +"-"+ projectName+ ".html";
+    String fullPath = path + localDate + randomNumber + projectName + ".html";
     writeFile(bytes, fullPath);
     return fullPath;
   }
