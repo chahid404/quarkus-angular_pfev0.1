@@ -7,6 +7,7 @@ import org.advyteam.repositorys.ProjectRepository;
 import org.advyteam.repositorys.SettingReposotory;
 import org.advyteam.repositorys.TaskRepository;
 import org.advyteam.requestBody.ProjectRequestBody;
+
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -81,11 +82,41 @@ public class ProjectRessource {
     return projectRepository.findById(newProject.id);
   }
 
+  @Path("/createnewtask/{idProject}")
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Transactional
+  public Project createNewTask(@PathParam("idProject") Long idProject) {
+    Project project = projectRepository.findById(idProject);
+
+    if (project == null) {
+      throw new WebApplicationException(Response.Status.NO_CONTENT);
+    }
+    List<Task> tasks = project.getTasks();
+    tasks.add(new Task(project.getCreator()));
+    taskRepository.persist(tasks);
+    // project.setCreatedDate(project.getCreatedDate());
+    // project.setCreator(project.getCreator());
+    // project.setDeadline(project.getDeadline());
+    // project.setDescription(project.getDescription());
+    // project.setDocuments(project.getDocuments());
+    // project.setMembres(project.getMembres());
+    // project.setName(project.getName());
+    // project.setProgress(project.getProgress());
+    // project.setProjectSettings(project.getProjectSettings());
+    // project.setStartDate(project.getStartDate());
+    // project.setStatus(project.getStatus());
+    // project.setSubProject(project.getSubProject());
+    // project.setTags(project.getTags());
+    project.setTasks(tasks);
+    return projectRepository.findById(idProject);
+  }
+
   @Path("/{id}")
   @PUT
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  @Transactional
   public Project updateProject(@PathParam("id") Long id, Project project) {
     Project newProject = projectRepository.findById(id);
     if (newProject == null) {

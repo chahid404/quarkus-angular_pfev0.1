@@ -1,6 +1,5 @@
 package org.advyteam.ressources;
 
-
 import org.advyteam.entites.User;
 import org.advyteam.services.UserService;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
@@ -10,7 +9,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import java.util.List;
-import java.util.Set;
 
 @Path("/users")
 public class UsersRessource {
@@ -20,13 +18,13 @@ public class UsersRessource {
   UserService userService;
 
   @GET
-  public List<User> getAllUsers(){
+  public List<User> getAllUsers() {
     return userService.getAllUsers();
   }
 
   @GET
   @Path("/byid/{userid}")
-  public User getUserById(@PathParam("userid") String userid){
+  public User getUserById(@PathParam("userid") String userid) {
     return userService.getUserById(userid);
   }
 }

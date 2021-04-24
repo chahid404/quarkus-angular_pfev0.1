@@ -24,4 +24,7 @@ export class ProjectService {
   public getProjectByCreator(idUser: string): Observable<Projects[]> {
     return this.httpClient.get<Projects[]>(this.host + "/getprojectsbycreator");
   }
+  public createNewTask(idproject) {
+    return this.httpClient.get(this.host + "/projects" + "/createnewtask/" + idproject);
+  }
 }

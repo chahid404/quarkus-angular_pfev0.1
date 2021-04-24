@@ -45,8 +45,8 @@ import { DemoComponent } from './project/demo/demo.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { KeycloakSecurityService } from './services/keycloak-security.service';
-
-
+import { TooltipModule } from 'primeng/tooltip';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 export function kcFactory(kcSecurity: KeycloakSecurityService) {
   return () => kcSecurity.init();
@@ -73,43 +73,11 @@ const routes: Routes = [
     DemoComponent
   ],
   imports: [
-    BrowserModule,
-    MatSliderModule,
-    BrowserAnimationsModule,
-    MatTabsModule,
-    MatGridListModule,
-    MatInputModule,
-    MatDatepickerModule,
-    RouterModule.forRoot(routes),
-    FormsModule,
-    ReactiveFormsModule,
-    MatNativeDateModule,
-    MatCardModule,
-    HttpClientModule,
-    MatSnackBarModule,
-    AngularEditorModule,
-    DialogModule,
-    ButtonModule,
-    FileUploadModule,
-    NgxMatTagInputModule,
-    MatSelectModule,
-    SliderModule, TagModule,
-    MatProgressBarModule,
-    RatingModule,
-    AvatarModule,
-    AvatarGroupModule,
-    MultiSelectModule,
-    MatSelectModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    NgxMatSelectSearchModule,
-    TableModule,
-    ToastModule,
-    CalendarModule,
-    ContextMenuModule,
-    DropdownModule,
-    ProgressBarModule,
-    InputTextModule
+    BrowserModule, MatSliderModule, BrowserAnimationsModule, MatTabsModule, MatGridListModule, MatInputModule, MatDatepickerModule,
+    RouterModule.forRoot(routes), FormsModule, ReactiveFormsModule, MatNativeDateModule, MatCardModule, HttpClientModule, MatSnackBarModule,
+    AngularEditorModule, DialogModule, ButtonModule, FileUploadModule, NgxMatTagInputModule, MatSelectModule, SliderModule, TagModule, MatProgressBarModule,
+    RatingModule, AvatarModule, AvatarGroupModule, MultiSelectModule, MatSelectModule, MatSelectModule, MatFormFieldModule, NgxMatSelectSearchModule,
+    TableModule, ToastModule, CalendarModule, ContextMenuModule, DropdownModule, ProgressBarModule, InputTextModule, TooltipModule, NgbModule
 
   ],
   providers: [DatePipe, { provide: APP_INITIALIZER, deps: [KeycloakSecurityService], useFactory: kcFactory, multi: true }],

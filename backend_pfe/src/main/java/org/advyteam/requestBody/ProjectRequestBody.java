@@ -1,7 +1,5 @@
 package org.advyteam.requestBody;
 
-import org.advyteam.entites.Document;
-import org.advyteam.entites.Setting;
 import org.advyteam.entites.Task;
 
 import java.time.LocalDate;
@@ -16,13 +14,12 @@ public class ProjectRequestBody {
   public LocalDate createdDate;
   public LocalDate startDate;
   public LocalDate deadline;
-  public List<String> membres = new ArrayList<>();
+  public String[] membres;
   public String status;
   public Integer progress;
-  public List<String> tags;
+  public String[] tags;
   public List<Task> tasks = new ArrayList<>();
   public String subProject;
-
 
   public String getCreator() {
     return creator;
@@ -68,7 +65,6 @@ public class ProjectRequestBody {
     return deadline;
   }
 
-
   public String getStatus() {
     return status;
   }
@@ -80,8 +76,6 @@ public class ProjectRequestBody {
   public Integer getProgress() {
     return progress;
   }
-
-
 
   public String getSubProject() {
     return subProject;
@@ -95,18 +89,17 @@ public class ProjectRequestBody {
     this.deadline = deadline;
   }
 
-  public List<String> getMembres() {
+  public String[] getMembres() {
     return membres;
   }
 
-  public void setMembres(List<String> membres) {
+  public void setMembres(String[] membres) {
     this.membres = membres;
   }
 
   public void setProgress(Integer progress) {
     this.progress = progress;
   }
-
 
   public List<Task> getTasks() {
     return tasks;
@@ -116,11 +109,11 @@ public class ProjectRequestBody {
     this.tasks = tasks;
   }
 
-  public List<String> getTags() {
+  public String[] getTags() {
     return tags;
   }
 
-  public void setTags(List<String> tags) {
+  public void setTags(String[] tags) {
     this.tags = tags;
   }
 }

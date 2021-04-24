@@ -1,12 +1,10 @@
 package org.advyteam.entites;
 
-
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -25,21 +23,22 @@ public class Project extends PanacheEntityBase {
   public Integer progress;
   public String status;
 
-  @Column
-  @ElementCollection(targetClass=String.class)
-  public List<String> membres = new ArrayList<>();
+  // @Column
+  // @ElementCollection(targetClass=String.class)
+  // public List<String> membres = new ArrayList<>();
+  public String[] membres;
 
-
-  @Column
-  @ElementCollection(targetClass=String.class)
-  public List<String> tags = new ArrayList<>() ;
-
+  // @Column
+  // @ElementCollection(targetClass=String.class)
+  // public List<String> tags = new ArrayList<>() ;
+  public String[] tags;
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "documents_id", referencedColumnName = "id")
   public Document documents;
 
-  //@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+  // @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval =
+  // true)
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @JoinColumn(name = "tasks_id")
   private List<Task> tasks = new ArrayList<>();
@@ -47,7 +46,6 @@ public class Project extends PanacheEntityBase {
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "setting_id", referencedColumnName = "id")
   public Setting projectSettings;
-
 
   public Project() {
   }
@@ -108,7 +106,6 @@ public class Project extends PanacheEntityBase {
     this.deadline = deadline;
   }
 
-
   public String getStatus() {
     return status;
   }
@@ -157,19 +154,19 @@ public class Project extends PanacheEntityBase {
     this.tasks = tasks;
   }
 
-  public List<String> getMembres() {
+  public String[] getMembres() {
     return membres;
   }
 
-  public void setMembres(List<String> membres) {
+  public void setMembres(String[] membres) {
     this.membres = membres;
   }
 
-  public List<String> getTags() {
+  public String[] getTags() {
     return tags;
   }
 
-  public void setTags(List<String> tags) {
+  public void setTags(String[] tags) {
     this.tags = tags;
   }
 }

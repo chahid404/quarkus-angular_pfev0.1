@@ -1,23 +1,23 @@
 package org.advyteam.ressources;
 
-import org.advyteam.entites.Project;
 import org.advyteam.entites.Task;
 import org.advyteam.repositorys.TaskRepository;
+import org.advyteam.requestBody.TaskReqDirectEditBody;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import java.util.List;
 
 @Path("/tasks")
 public class TaskRessource {
 
-
     @Inject
     TaskRepository taskRepository;
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,7 +32,6 @@ public class TaskRessource {
         return taskRepository.findById(id);
     }
 
-
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -42,13 +41,13 @@ public class TaskRessource {
         return p;
     }
 
-    @Path("/{id}")
+    @Path("/deletetaskby/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public List<Task> DeleteTask(@PathParam("id") Long id) {
+    public Status DeleteTask(@PathParam("id") Long id) {
         taskRepository.delete(taskRepository.findById(id));
-        return taskRepository.findAll().list();
+        return Response.Status.ACCEPTED;
     }
 
     @Path("/{id}")
@@ -56,7 +55,7 @@ public class TaskRessource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
-    public Task updateProject(@PathParam("id") Long id, Task task) {
+    public Task updateTask(@PathParam("id") Long id, Task task) {
         Task newTask = taskRepository.findById(id);
         if (newTask == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -78,6 +77,25 @@ public class TaskRessource {
         newTask.setCreatedDate(task.getCreatedDate());
         newTask.setCreatedBy(task.getCreatedBy());
         newTask.setName(task.getName());
+        return taskRepository.findById(id);
+    }
+
+    @Path("/directedittask/{id}")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Task directUpdateTask(@PathParam("id") Long id, TaskReqDirectEditBody task) {
+        Task newTask = taskRepository.findById(id);
+        if (newTask == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        newTask.setName(task.getName());
+        newTask.setTags(task.getTags());
+        newTask.setStatus(task.getStatus());
+        newTask.setStartDate(task.getStartDate());
+        newTask.setDueDate(task.getDueDate());
+        newTask.setCreatedBy(task.getCreatedBy());
         return taskRepository.findById(id);
     }
 }

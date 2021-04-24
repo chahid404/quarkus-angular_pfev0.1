@@ -18,7 +18,7 @@ public class Task {
     public String document = "";
     public Boolean visibility = true;
     public String priority = "";
-    public String status = "";
+    public String status = "Not started";
     public Integer progress = 0;
     public Integer score = 0;
     public LocalDate startDate = LocalDate.now();

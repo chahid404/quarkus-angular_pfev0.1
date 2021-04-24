@@ -55,10 +55,14 @@
                     class="p-button-text p-button-rounded p-button-plain"
                     [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
             </td>
-            <td>{{project.name}}</td>
+            <td>
+
+                <span pTooltip="Preview" tooltipPosition="top">{{project.name}}<i class="ml-2 pi pi-eye"></i></span>
+            </td>
             <td>
                 <p-avatarGroup styleClass="p-mb-3">
-                    <p-avatar *ngFor="let member of project.membres| slice:0:3" image="assets/img/author-page.jpg"
+                    <p-avatar pTooltip="{{member.firstName}} {{member.lastName}}" tooltipPosition="top"
+                        *ngFor="let member of project.membres| slice:0:3" image="assets/img/author-page.jpg"
                         shape="circle">
                     </p-avatar>
                     <p-avatar *ngIf="project.membres.length >3" label="{{'+'}}{{project.membres.length-3}}"
@@ -82,7 +86,8 @@
                     <p-table [value]="project.tasks" dataKey="name">
                         <ng-template pTemplate="header">
         <tr>
-            <th pSortableColumn="name">name <p-sortIcon field="name"></p-sortIcon>
+            <th style="width: 3rem;">id</th>
+            <th pSortableColumn="name">Title <p-sortIcon field="name"></p-sortIcon>
             </th>
             <th pSortableColumn="startDate">start Date <p-sortIcon field="startDate"></p-sortIcon>
             </th>
@@ -92,23 +97,97 @@
             </th>
             <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon>
             </th>
-            <th style="width: 4rem"> Action</th>
+            <th> Action</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-task>
+    <ng-template pTemplate="body" let-task let-rowIndex="rowIndex">
         <tr>
-            <td>{{task.name}}</td>
-            <td>{{task.startDate}}</td>
-            <td>{{task.dueDate}}</td>
-            <td>{{task.tags}}</td>
-            <td>{{task.status}}</td>
+            <td>{{rowIndex +1 }}</td>
+            <td pEditableColumn>
+                <p-cellEditor>
+                    <ng-template pTemplate="output">
+                        <span *ngIf='task.name!=""; else noTitle'>{{task.name}}</span>
+                        <ng-template #noTitle>Tap to edit</ng-template>
+                    </ng-template>
+                    <ng-template pTemplate="input">
+                        <input (change)="onchowdate($event,task,1)" placeholder="{{task.name}}"
+                            [(ngModel)]="taskToUpdate.name" pInputText type="text">
+                    </ng-template>
+                </p-cellEditor>
+
+            </td>
+            <td pEditableColumn>
+                <p-cellEditor>
+                    <ng-template pTemplate="output">{{task.startDate}}</ng-template>
+                    <ng-template pTemplate="input" class="btn-toolbar mb-2">
+                        <!-- <input class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #d="ngbDatepicker"> -->
+                        <p-calendar (onSelect)="onchowdate($event,task,2)" dateFormat="yy-mm-dd"
+                            [style]="{'width':'110%','border-color':'#4CAF50'}"
+                            [panelStyle]="{'width':'320px','z-index': '-1'}" icon="pi pi-spin pi-spinner"
+                            [showIcon]="true" [(ngModel)]="taskToUpdate.startDate">
+                        </p-calendar>
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td pEditableColumn>
+                <p-cellEditor>
+                    <ng-template pTemplate="output">{{task.dueDate}}</ng-template>
+                    <ng-template pTemplate="input" class="btn-toolbar mb-2">
+                        <!-- <input class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #d="ngbDatepicker"> -->
+                        <p-calendar (onSelect)="onchowdate($event,task,3)" dateFormat="yy-mm-dd"
+                            [style]="{'width':'110%','border-color':'#4CAF50'}"
+                            [panelStyle]="{'width':'320px','z-index': '-1'}" icon="pi pi-spin pi-spinner"
+                            [showIcon]="true" [(ngModel)]="taskToUpdate.dueDate">
+                        </p-calendar>
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+
+            <td pEditableColumn>
+                <p-cellEditor>
+                    <ng-template pTemplate="output">
+                        <span *ngIf='task.tags!=""; else notags'>{{task.tags}}</span>
+                        <ng-template class="btn-info" #notags>Tap to edit</ng-template>
+                    </ng-template>
+                    <ng-template pTemplate="input">
+                        <input placeholder="{{task.tags}}" (change)="onchowdate($event,task,4)"
+                            [(ngModel)]="taskToUpdate.tags" pInputText type="text">
+                    </ng-template>
+                </p-cellEditor>
+
+            </td>
+            <td pEditableColumn>
+                <p-cellEditor>
+                    <ng-template pTemplate="output">
+                        <p-tag styleClass="p-mr-2" severity="{
+                                'Success':task.status === 'Notastarted',
+                                'Info':task.status === 'Notestarted',
+                                'Danger':task.status === 'Not started'}" value="{{task.status}}"></p-tag>
+                    </ng-template>
+                    <ng-template pTemplate="input">
+                        <p-dropdown (onChange)="onchowdate($event,task,5)" [(ngModel)]="taskToUpdate.status"
+                            placeholder="{{task.status}}" [options]="status" optionLabel="viewValue"
+                            optionValue="value"></p-dropdown>
+                    </ng-template>
+                </p-cellEditor>
+            </td>
             <td>
-                <p-button type="button" icon="pi pi-search"></p-button>
+                <div class="btn-toolbar mb-3">
+                    <button pButton type=" button" icon="pi pi-info" class="p-button-text p-button-info p-button-sm"
+                        pTooltip="info" tooltipPosition="top"></button>
+                    <button pButton type="button" icon="pi pi-ellipsis-v"
+                        class="p-button-text p-button-warning p-button-sm " pTooltip="Edit Task"
+                        tooltipPosition="top"></button>
+                    <button pButton (click)="onDeleteTask(task.id)" type="button" icon="pi pi-times-circle"
+                        class="p-button-text p-button-danger p-button-sm" pTooltip="Delete"
+                        tooltipPosition="top"></button>
+                </div>
             </td>
         </tr>
     </ng-template>
     <ng-template pTemplate="footer">
-        <button pButton type="button" icon="pi pi-plus" label="New" class="p-button-outlined p-button-sm"></button>
+        <button pButton type="button" icon="pi pi-plus" label="New" class="p-button-outlined p-button-sm mt-4 ml-4"
+            (click)="Newtask(project.id)"></button>
     </ng-template>
     <ng-template pTemplate="emptymessage">
         <tr>
