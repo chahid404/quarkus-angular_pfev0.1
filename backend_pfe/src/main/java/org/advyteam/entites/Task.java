@@ -12,27 +12,31 @@ public class Task {
     public Long id;
     public String name = "";
     public String description = "";
-    public String membres = "";
     public String tags = "";
     public String comments = "";
     public String document = "";
     public Boolean visibility = true;
-    public String priority = "";
-    public String status = "Not started";
+    public String priority = "LOW";
+    public String status = "Not Started";
     public Integer progress = 0;
     public Integer score = 0;
     public LocalDate startDate = LocalDate.now();
-    public LocalDate dueDate = LocalDate.now();
+    public LocalDate dueDate = LocalDate.now().plusDays(1);
     public LocalDate createdDate = LocalDate.now();
-
+    public String[] membres = {};
     public String createdBy;
-    // @ManyToOne(fetch = FetchType.LAZY)
+    
     @ManyToOne
     @JsonbTransient
     public Project project;
 
     public Task(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Task(String createdBy, Project project) {
+        this.createdBy = createdBy;
+        this.project = project;
     }
 
     public Task() {
@@ -62,11 +66,11 @@ public class Task {
         this.description = description;
     }
 
-    public String getMembres() {
+    public String[] getMembres() {
         return membres;
     }
 
-    public void setMembres(String membres) {
+    public void setMembres(String[] membres) {
         this.membres = membres;
     }
 

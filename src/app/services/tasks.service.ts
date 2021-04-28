@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Project } from '../models/project/project.module';
+import { Projects } from '../models/project/projects.module';
 import { Task, TaskDirectEditRequest } from '../models/task.module';
 
 @Injectable({
@@ -13,10 +15,14 @@ export class TasksService {
   constructor(private httpClient: HttpClient) { }
 
   public deleteTask(taskid: number) {
-    return this.httpClient.delete(this.host + "/tasks/deletetaskby/" + taskid);
+    return this.httpClient.get(this.host + "/tasks/deletetaskby/" + taskid);
   }
   public directUpdateTask(taskid: number, taskBody: TaskDirectEditRequest) {
     return this.httpClient.put(this.host + "/tasks/directedittask/" + taskid, taskBody);
+  }
+
+  public createNewTask(idproject: number, iduser: string) {
+    return this.httpClient.get(this.host + "/tasks/createnewtask/" + idproject + "/" + iduser);
   }
 
 }

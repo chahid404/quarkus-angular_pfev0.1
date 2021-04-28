@@ -1,6 +1,9 @@
 package org.advyteam.ressources;
 
+import org.advyteam.entites.Project;
 import org.advyteam.entites.Task;
+import org.advyteam.otherClasses.TaskPercentage;
+import org.advyteam.repositorys.ProjectRepository;
 import org.advyteam.repositorys.TaskRepository;
 import org.advyteam.requestBody.TaskReqDirectEditBody;
 
@@ -18,6 +21,9 @@ public class TaskRessource {
 
     @Inject
     TaskRepository taskRepository;
+
+    @Inject
+    ProjectRepository projectRepository;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -42,12 +48,18 @@ public class TaskRessource {
     }
 
     @Path("/deletetaskby/{id}")
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
+    @GET
     @Transactional
-    public Status DeleteTask(@PathParam("id") Long id) {
-        taskRepository.delete(taskRepository.findById(id));
-        return Response.Status.ACCEPTED;
+    public Status DeleteTask(@PathParam("id") Long idtask) {
+        Task newTask = taskRepository.findById(idtask);
+        if (newTask == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        taskRepository.delete("id", idtask);
+        Project project = projectRepository.findById(newTask.project.id);
+        TaskPercentage percentage = projectRepository.calculProjectProgressPersentForDelete(project.getTasks());
+        project.setProgress(percentage.getFinished());
+        return Response.Status.OK;
     }
 
     @Path("/{id}")
@@ -96,6 +108,31 @@ public class TaskRessource {
         newTask.setStartDate(task.getStartDate());
         newTask.setDueDate(task.getDueDate());
         newTask.setCreatedBy(task.getCreatedBy());
+        newTask.setPriority(task.getPriority());
+        newTask.setScore(task.getScore());
+        newTask.setMembres(task.getMembres());
+        Project project = projectRepository.findById(newTask.project.id);
+        TaskPercentage percentage = projectRepository.calculProjectProgressPersent(project.getTasks());
+        project.setProgress(percentage.getFinished());
         return taskRepository.findById(id);
+    }
+
+    @Path("/createnewtask/{idProject}/{iduser}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Project createNewTask(@PathParam("idProject") Long idProject, @PathParam("iduser") String idcreator) {
+        Project project = projectRepository.findById(idProject);
+        if (project == null) {
+            throw new WebApplicationException(Response.Status.NO_CONTENT);
+        }
+        List<Task> tasks = project.getTasks();
+        tasks.add(new Task(idcreator, project));
+        taskRepository.persist(tasks);
+        project.setTasks(tasks);
+        TaskPercentage percentage = projectRepository.calculProjectProgressPersent(project.getTasks());
+        project.setProgress(percentage.getFinished());
+        return projectRepository.findById(idProject);
     }
 }

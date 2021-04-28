@@ -40,7 +40,7 @@ public class Project extends PanacheEntityBase {
   // @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval =
   // true)
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-  @JoinColumn(name = "tasks_id")
+  @JoinColumn(name = "project_id")
   private List<Task> tasks = new ArrayList<>();
 
   @OneToOne(cascade = CascadeType.ALL)

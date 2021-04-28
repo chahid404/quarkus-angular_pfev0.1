@@ -1,3 +1,5 @@
+import { Users } from "./project/user.module";
+
 export class Task {
     comments: string;
     createdBy: string;
@@ -6,7 +8,7 @@ export class Task {
     document: string;
     dueDate: Date;
     id: number;
-    membres: string;
+    membres: Users [] =[];
     name: string;
     priority: string;
     progress: number;
@@ -14,7 +16,7 @@ export class Task {
     startDate: Date;
     status: string;
     tags: string;
-    visibility: boolean
+    visibility: boolean;
 }
 export class TaskRequest {
     id: number;
@@ -23,7 +25,6 @@ export class TaskRequest {
     description: string;
     document: string;
     dueDate: string;
-    membres: string;
     name: string;
     priority: string;
     progress: number;
@@ -31,7 +32,8 @@ export class TaskRequest {
     startDate: string;
     status: string;
     tags: string;
-    visibility: boolean
+    visibility: boolean;
+    membres: string [] =[];
 }
 
 export class TaskDirectEditRequest {
@@ -42,4 +44,7 @@ export class TaskDirectEditRequest {
     startDate: string;
     status: string;
     tags: string;
+    priority: string;
+    score:number;
+    membres: string [] =[];
 }

@@ -16,7 +16,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import org.advyteam.entites.Logs;
 import org.advyteam.repositorys.LogsRepository;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 @Path("logs")
 public class LogsRessource {
@@ -60,7 +59,7 @@ public class LogsRessource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Logs createLogs(@RequestBody Logs logs) {
+    public Logs createLogs(Logs logs) {
         Logs newLogs = new Logs();
         newLogs.setAction(logs.getAction());
         newLogs.setIdCreator(logs.getIdCreator());

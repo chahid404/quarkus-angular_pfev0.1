@@ -4,3 +4,19 @@
     height: 25px;
     border-radius: 50%;
   }
+
+  .greenBar.ui-progressbar .ui-progressbar-value {
+    background: green;
+ }
+ 
+ .yellowBar.ui-progressbar .ui-progressbar-value {
+    background: yellow;
+ }
+ 
+ .redBar.ui-progressbar .ui-progressbar-value {
+    background: red;
+ }
+ .example-additional-selection {
+   opacity: 0.75;
+   font-size: 0.75em;
+ }

@@ -47,6 +47,15 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { KeycloakSecurityService } from './services/keycloak-security.service';
 import { TooltipModule } from 'primeng/tooltip';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {MatMenuModule} from '@angular/material/menu';
+
+
+
+
+
+
+
 
 export function kcFactory(kcSecurity: KeycloakSecurityService) {
   return () => kcSecurity.init();
@@ -76,8 +85,9 @@ const routes: Routes = [
     BrowserModule, MatSliderModule, BrowserAnimationsModule, MatTabsModule, MatGridListModule, MatInputModule, MatDatepickerModule,
     RouterModule.forRoot(routes), FormsModule, ReactiveFormsModule, MatNativeDateModule, MatCardModule, HttpClientModule, MatSnackBarModule,
     AngularEditorModule, DialogModule, ButtonModule, FileUploadModule, NgxMatTagInputModule, MatSelectModule, SliderModule, TagModule, MatProgressBarModule,
-    RatingModule, AvatarModule, AvatarGroupModule, MultiSelectModule, MatSelectModule, MatSelectModule, MatFormFieldModule, NgxMatSelectSearchModule,
-    TableModule, ToastModule, CalendarModule, ContextMenuModule, DropdownModule, ProgressBarModule, InputTextModule, TooltipModule, NgbModule
+    RatingModule, AvatarModule, AvatarGroupModule, MultiSelectModule, MatFormFieldModule, NgxMatSelectSearchModule,
+    TableModule, ToastModule, CalendarModule, ContextMenuModule, DropdownModule, ProgressBarModule, InputTextModule, TooltipModule, NgbModule,
+    ConfirmDialogModule,MatMenuModule,
 
   ],
   providers: [DatePipe, { provide: APP_INITIALIZER, deps: [KeycloakSecurityService], useFactory: kcFactory, multi: true }],

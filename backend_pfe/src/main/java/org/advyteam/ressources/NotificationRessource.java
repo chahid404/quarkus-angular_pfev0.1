@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.advyteam.entites.Notifis;
 import org.advyteam.repositorys.NotificationRepository;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 @Path("/notif")
 public class NotificationRessource {
@@ -40,16 +39,17 @@ public class NotificationRessource {
         return notificationRepository.findById(id);
     }
 
-    @Path("/save/")
+    @Path("/save")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
-    public Notifis createNotif(@RequestBody Notifis notifis) {
+    public Notifis createNotif(Notifis notifis) {
         Notifis newNotif = new Notifis();
         newNotif.setAction(notifis.getAction());
         newNotif.setIdCreator(notifis.getIdCreator());
         newNotif.setIdRecever(notifis.getIdRecever());
+        newNotif.setTargetProjectid(notifis.getTargetProjectid());
         notificationRepository.persist(newNotif);
         return notificationRepository.findById(newNotif.getId());
     }
@@ -179,6 +179,22 @@ public class NotificationRessource {
         }
         notifis.setIsShow(false);
         return Response.Status.ACCEPTED;
+    }
+
+    @Path("/returnisshowbyuser/{idRecever}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Notifis> retrunOnlySowed(@PathParam("idRecever") String idRecever) {
+        return notificationRepository.find("idRecever = ?1 and isShow = ?2 order by createdAt DESC", idRecever, true).list();
+    }
+
+    @Path("/returnunreadnotif/{idRecever}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Notifis> returnUnReadNotif(@PathParam("idRecever") String idRecever) {
+
+        return notificationRepository.find("idRecever = ?1 and isShow = ?2 and isRead = ?3", idRecever, true, false)
+                .list();
     }
 
 }
