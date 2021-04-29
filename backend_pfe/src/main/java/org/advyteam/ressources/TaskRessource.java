@@ -72,22 +72,14 @@ public class TaskRessource {
         if (newTask == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-
-        newTask.setName(task.getName());
         newTask.setDescription(task.getDescription());
         newTask.setMembres(task.getMembres());
         newTask.setTags(task.getTags());
-        newTask.setComments(task.getComments());
-        newTask.setDocument(task.getDocument());
-        newTask.setVisibility(task.getVisibility());
         newTask.setPriority(task.getPriority());
         newTask.setStatus(task.getStatus());
-        newTask.setProgress(task.getProgress());
         newTask.setScore(task.getScore());
         newTask.setStartDate(task.getStartDate());
         newTask.setDueDate(task.getDueDate());
-        newTask.setCreatedDate(task.getCreatedDate());
-        newTask.setCreatedBy(task.getCreatedBy());
         newTask.setName(task.getName());
         return taskRepository.findById(id);
     }

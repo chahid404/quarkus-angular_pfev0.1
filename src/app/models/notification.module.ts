@@ -1,3 +1,5 @@
+import { Users } from "./project/user.module";
+
 export class Notification {
     public id: number;
     public idRecever: string;
@@ -8,6 +10,7 @@ export class Notification {
     public isShow: Boolean;
     public datedifference: Datedifference;
     public targetProjectid: number;
+    public userRecever:Users = new Users();
 
 }
 

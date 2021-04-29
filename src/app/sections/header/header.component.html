@@ -320,8 +320,8 @@
                                     <img src="assets/img/avatar62-sm.jpg" alt="author">
                                 </div>
                                 <div class="notification-event">
-                                    <div><a href="#" class="h6 notification-friend">{{notif.idRecever}}</a>
-                                        {{notif.action}} <a href="#" class="h6 notification-friend"> profile status</a>.
+                                    <div><a *ngIf="notif.userRecever" href="#" class="h6 notification-friend">{{notif.userRecever.firstName}}  {{notif.userRecever.lastName}}</a>
+                                        {{notif.action}} <a routerLink="./project" class="h6 notification-friend"> Project Task</a>.
                                     </div>
 
                                     <ng-container *ngIf="notif.datedifference.diffDays !=0; else elseif1"><span

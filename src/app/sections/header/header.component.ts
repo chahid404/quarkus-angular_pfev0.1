@@ -5,6 +5,7 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { interval, Subscription } from 'rxjs';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -23,7 +24,7 @@ export class HeaderComponent implements OnInit {
   mySubscription: Subscription;
 
 
-  constructor(private _snackBar: MatSnackBar,public kcService: KeycloakSecurityService, private notifService: NotificationService, private lc: LocalStorageService) {
+  constructor(private userService:UserService,private _snackBar: MatSnackBar,public kcService: KeycloakSecurityService, private notifService: NotificationService, private lc: LocalStorageService) {
     this.mySubscription = interval(5000).subscribe((x => {
       this.doStuff();
     }));
@@ -54,18 +55,27 @@ export class HeaderComponent implements OnInit {
     this.kcService.kc.login();
   }
   onMarkAllAsRead() {
-    this.notifService.markAllAsRead(this.currentUserId).subscribe();
+    this.notifService.markAllAsRead(this.currentUserId).subscribe(x=>{
+      this.notifnumber = 0;
+    },err=>{
+      console.log(err);
+      
+    });
     //this.countNotifUnRead(this.lc.getCurrentUser());
-    this.getNotifs(this.lc.getCurrentUser());
-    this.notifnumber = 0;
-    this.notifList = [];
+    //this.getNotifs(this.lc.getCurrentUser());
+
   }
   onClearAllNotification() {
-    this.notifService.cleanAllNotifFoUser(this.currentUserId).subscribe();
+    this.notifService.cleanAllNotifFoUser(this.currentUserId).subscribe(x=>{
+      this.notifnumber = 0;
+      this.notifList = [];
+    },err=>{
+      console.log(err);
+      
+    });
     //this.countNotifUnRead(this.lc.getCurrentUser());
-    this.getNotifs(this.lc.getCurrentUser());
-    this.notifnumber = 0;
-    this.notifList = [];
+    //this.getNotifs(this.lc.getCurrentUser());
+
   }
 
   deletenotif(idnotif) {
@@ -76,11 +86,13 @@ export class HeaderComponent implements OnInit {
   }
 
   getNotifs(iduser) {
-    this.notifList = [];
-    this.notifService.retrunOnlySowed(this.currentUserId).subscribe(notif => {
+    this.notifService.retrunOnlySowed(iduser).subscribe(notif => {
       this.notifList2 = notif;
       this.notifList2.forEach(notif => {
         notif.datedifference = this.calculDiffDate(notif.createdAt);
+        this.userService.getUserById(notif.idCreator).subscribe(x=>{
+          notif.userRecever=x;
+        })
         this.notifList.push(notif);
       });
     });

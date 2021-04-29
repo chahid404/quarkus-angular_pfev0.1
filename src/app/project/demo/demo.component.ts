@@ -32,6 +32,10 @@ export class DemoComponent implements OnInit {
   displayEditTaskDialog: boolean = false;
   projectsList: Projects[] = [];
   frozenCols: any[];
+  selectedTask: Task = new Task();
+  taskForUpdate: Task = new Task();
+  currentProject: Projects = new Projects();
+  userOfSelectedTask: Users = new Users();
   status: Status[] = [
     { value: 'Not Started', viewValue: 'Not Started' },
     { value: 'In Progress', viewValue: 'In Progress' },
@@ -44,6 +48,7 @@ export class DemoComponent implements OnInit {
     { value: 'MEDIUM', viewValue: 'MEDIUM' },
     { value: 'HIGH', viewValue: 'HIGH' },
   ];
+  Ondetails: boolean;
 
   constructor(private confirmationService: ConfirmationService, private _snackBar: MatSnackBar, private datepipe: DatePipe, private taskService: TasksService, private productService: ProductService,
     private serviceProject: ProjectService, private userService: UserService, private notifService: NotificationService, private lc: LocalStorageService) { }
@@ -53,7 +58,7 @@ export class DemoComponent implements OnInit {
     this.initProjectsList();
     this.frozenCols = [
       { field: 'name', header: 'name' }
-  ];
+    ];
   }
 
   private initProjectsList() {
@@ -61,7 +66,7 @@ export class DemoComponent implements OnInit {
       this.projectsList = projects;
       this.projectsList.forEach(proj => {
         proj.membres = this.listOfMembers(proj.membres);
-        proj.tasks.forEach(task =>{
+        proj.tasks.forEach(task => {
           task.membres = this.listOfMembers(task.membres);
         })
       });
@@ -115,7 +120,7 @@ export class DemoComponent implements OnInit {
   dateFromat(date) {
     return this.datepipe.transform(date, 'yyyy-MM-dd');
   }
-  onchowdate(project: Projects, task:Task, num: number) {
+  onchowdate(project: Projects, task: Task, num: number) {
     const newTask: TaskDirectEditRequest = new TaskDirectEditRequest()
     newTask.dueDate = this.dateFromat(task.dueDate);
     newTask.startDate = this.dateFromat(task.startDate);
@@ -125,7 +130,8 @@ export class DemoComponent implements OnInit {
     newTask.status = task.status;
     newTask.tags = task.tags;
     newTask.priority = task.priority;
-    task.membres.forEach(x=>{
+    newTask.score=task.score;
+    task.membres.forEach(x => {
       newTask.membres.push(x.id);
     });
     switch (num) {
@@ -186,7 +192,7 @@ export class DemoComponent implements OnInit {
           horizontalPosition: this.horizontalPosition,
           verticalPosition: this.verticalPosition,
         }); break;
-        case 8:
+      case 8:
         this.notifService.sendNotifsForMultiUsersidvs(task.membres, project.id, "add you to" + newTask.score + " stars", project.creator);
         this._snackBar.open("Task members Update Succesfully", "close", {
           duration: 5000,
@@ -225,13 +231,49 @@ export class DemoComponent implements OnInit {
     });
   }
   selectCar(event) {
-   console.log(event);
-   
+    console.log(event);
+
   }
-  showDetailTaskDialog() {
-      this.displayDetailTaskDialog = true;
+  showEditTaskDialog(task: Task, project: Projects) {
+    this.currentProject = project;
+    this.taskForUpdate = task;
+    this.userService.getUserById(this.taskForUpdate.createdBy).subscribe(x => {
+      this.userOfSelectedTask = x;
+    });
+    this.displayDetailTaskDialog = true;
+    this.Ondetails = false;
   }
-  showEditTaskDialog() {
-      this.displayEditTaskDialog = true;
+  showDetailTaskDialog(task: Task, project: Projects) {
+    this.currentProject = project;
+    this.taskForUpdate = task;
+    this.userService.getUserById(this.taskForUpdate.createdBy).subscribe(x => {
+      this.userOfSelectedTask = x;
+      this.Ondetails = true;
+    });
+    this.displayDetailTaskDialog = true;
+  }
+  OnEditSelectedTask(task: Task, project: Projects) {
+    let taskforedit: TaskRequest = new TaskRequest();
+    taskforedit.description=this.taskForUpdate.description;
+    taskforedit.dueDate=this.dateFromat(this.taskForUpdate.dueDate);
+    taskforedit.name=this.taskForUpdate.name;
+    taskforedit.priority=this.taskForUpdate.priority;
+    taskforedit.score=this.taskForUpdate.score;
+    taskforedit.startDate=this.dateFromat(this.taskForUpdate.startDate);
+    taskforedit.status=this.taskForUpdate.status;
+    taskforedit.tags=this.taskForUpdate.tags;
+    this.taskForUpdate.membres.forEach(u=>{
+      taskforedit.membres.push(u.id);
+    });
+    this.taskService.updateTask(task.id,taskforedit).subscribe(x=>{
+      this._snackBar.open("Task Update Succesfully", "close", {
+        duration: 5000,
+        horizontalPosition: this.horizontalPosition,
+        verticalPosition: this.verticalPosition,
+      });
+      this.initProjectsList();
+      this.displayDetailTaskDialog = false;
+    });
+    this.notifService.sendNotifsForMultiUsersidvs(project.membres, project.id, "Update Task", project.creator);
   }
 }

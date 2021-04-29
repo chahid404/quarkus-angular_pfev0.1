@@ -2,6 +2,7 @@ package org.acme;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.MappingsRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -51,6 +52,10 @@ public class KeycloakRessource {
     @Path("/getuserbyid/{userid}")
     @Produces(MediaType.APPLICATION_JSON)
     public UserRepresentation getUserById (@PathParam("userid")String userid){
+        // UserResource userResource = keycloak.realm(realmName).users().get(userid);
+        // UserRepresentation ur = new UserRepresentation();
+        // ur.getAttributes();
+        // userResource.update(ur);
         return keycloak.realm(realmName).users().get(userid).toRepresentation();
     }
 

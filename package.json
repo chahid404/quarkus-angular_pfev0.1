@@ -1,4 +1,4 @@
-{
+ {
   "name": "test-integration",
   "version": "0.0.0",
   "scripts": {
@@ -35,6 +35,7 @@
     "propper": "^1.0.4",
     "rxjs": "~6.6.0",
     "zone.js": "~0.10.2"
+
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1100.5",

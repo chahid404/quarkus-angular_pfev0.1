@@ -56,7 +56,6 @@ import {MatMenuModule} from '@angular/material/menu';
 
 
 
-
 export function kcFactory(kcSecurity: KeycloakSecurityService) {
   return () => kcSecurity.init();
 }
@@ -65,7 +64,8 @@ export function kcFactory(kcSecurity: KeycloakSecurityService) {
 
 
 const routes: Routes = [
-  { path: "project", component: AddProjectComponent },
+  { path: "project", component: DemoComponent },
+  {path:"newproject",component:NewProjectComponent}
 
 ];
 

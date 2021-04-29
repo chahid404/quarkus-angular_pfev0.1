@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Project } from '../models/project/project.module';
 import { Projects } from '../models/project/projects.module';
-import { Task, TaskDirectEditRequest } from '../models/task.module';
+import { Task, TaskDirectEditRequest, TaskRequest } from '../models/task.module';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +23,9 @@ export class TasksService {
 
   public createNewTask(idproject: number, iduser: string) {
     return this.httpClient.get(this.host + "/tasks/createnewtask/" + idproject + "/" + iduser);
+  }
+  public updateTask(idtask,task:TaskRequest){
+   return this.httpClient.put(this.host+"/tasks/"+idtask,task);
   }
 
 }
