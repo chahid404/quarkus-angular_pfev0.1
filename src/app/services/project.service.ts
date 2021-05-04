@@ -27,4 +27,14 @@ export class ProjectService {
   public createNewTask(idproject) {
     return this.httpClient.get(this.host + "/projects" + "/createnewtask/" + idproject);
   }
+  public getProjectWithFiltredTasks(name:string,status:string,priority:string,startDate:string,dueDate:string,membres:string,score:string){
+    if (dueDate ===null) {
+      dueDate="";
+    }
+    if (startDate ===null) {
+      startDate="";
+    }
+    return this.httpClient.get<Projects[]>(this.host + "/projects/taskfilter?name="+name+"&status="+status+"&priority="+priority+"&startDate="+startDate+"&membres="+membres+"&dueDate="+dueDate+"&score="+score);
+
+  }
 }

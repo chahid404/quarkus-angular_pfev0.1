@@ -1,5 +1,6 @@
 export class Document {
+    public id:string;
     public documentName: String;
-    public uploadDate: Date;
+    public uploadDate: string;
     public path: String;
 }

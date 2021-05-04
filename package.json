@@ -1,4 +1,4 @@
- {
+{
   "name": "test-integration",
   "version": "0.0.0",
   "scripts": {
@@ -34,8 +34,8 @@
     "primeng": "^11.3.1",
     "propper": "^1.0.4",
     "rxjs": "~6.6.0",
-    "zone.js": "~0.10.2"
-
+    "zone.js": "~0.10.2",
+    "ng-zorro-antd": "^11.4.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1100.5",

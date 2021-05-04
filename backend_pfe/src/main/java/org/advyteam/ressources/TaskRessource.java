@@ -1,21 +1,20 @@
 package org.advyteam.ressources;
 
+import org.advyteam.entites.Document;
 import org.advyteam.entites.Project;
 import org.advyteam.entites.Task;
 import org.advyteam.otherClasses.TaskPercentage;
+import org.advyteam.repositorys.DocumentRepository;
 import org.advyteam.repositorys.ProjectRepository;
 import org.advyteam.repositorys.TaskRepository;
 import org.advyteam.requestBody.TaskReqDirectEditBody;
-
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import java.util.List;
-
 @Path("/tasks")
 public class TaskRessource {
 
@@ -24,6 +23,9 @@ public class TaskRessource {
 
     @Inject
     ProjectRepository projectRepository;
+
+    @Inject
+    DocumentRepository documentRepository;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -48,9 +50,9 @@ public class TaskRessource {
     }
 
     @Path("/deletetaskby/{id}")
-    @GET
+    @DELETE
     @Transactional
-    public Status DeleteTask(@PathParam("id") Long idtask) {
+    public Status deleteTask(@PathParam("id") Long idtask) {
         Task newTask = taskRepository.findById(idtask);
         if (newTask == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -110,7 +112,7 @@ public class TaskRessource {
     }
 
     @Path("/createnewtask/{idProject}/{iduser}")
-    @GET
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Transactional
@@ -126,5 +128,26 @@ public class TaskRessource {
         TaskPercentage percentage = projectRepository.calculProjectProgressPersent(project.getTasks());
         project.setProgress(percentage.getFinished());
         return projectRepository.findById(idProject);
+    }
+
+    @Path("/adddocment/{idtask}")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Task addDocumentToTask(@PathParam("idtask") Long id, Document doc) {
+        Task newTask = taskRepository.findById(id);
+        if (newTask == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        doc.setTask(taskRepository.findById(id));
+        documentRepository.persist(doc);
+        List<Document> docs = newTask.getDocument();
+        docs.add(doc);
+        newTask.setDocument(docs);
+        Project project = projectRepository.findById(newTask.project.id);
+        TaskPercentage percentage = projectRepository.calculProjectProgressPersent(project.getTasks());
+        project.setProgress(percentage.getFinished());
+        return taskRepository.findById(id);
     }
 }

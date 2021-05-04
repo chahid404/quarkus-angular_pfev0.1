@@ -1,11 +1,13 @@
 package org.advyteam.entites;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.time.LocalDate;
+import javax.persistence.ManyToOne;
 
+import java.time.LocalDateTime;
 
 @Entity
 public class Comment {
@@ -13,8 +15,11 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     public String comment;
-    public LocalDate commentDate;
-    public String task;
+    public LocalDateTime commentDate = LocalDateTime.now();
+
+    @ManyToOne
+    @JsonbTransient
+    public Task task;
     public String createdBy;
 
     public Comment() {
@@ -36,19 +41,19 @@ public class Comment {
         this.comment = comment;
     }
 
-    public LocalDate getCommentDate() {
+    public LocalDateTime getCommentDate() {
         return commentDate;
     }
 
-    public void setCommentDate(LocalDate commentDate) {
+    public void setCommentDate(LocalDateTime commentDate) {
         this.commentDate = commentDate;
     }
 
-    public String getTask() {
+    public Task getTask() {
         return task;
     }
 
-    public void setTask(String task) {
+    public void setTask(Task task) {
         this.task = task;
     }
 

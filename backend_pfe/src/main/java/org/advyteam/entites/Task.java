@@ -3,6 +3,10 @@ package org.advyteam.entites;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Task {
@@ -13,8 +17,6 @@ public class Task {
     public String name = "";
     public String description = "";
     public String tags = "";
-    public String comments = "";
-    public String document = "";
     public Boolean visibility = true;
     public String priority = "LOW";
     public String status = "Not Started";
@@ -26,6 +28,14 @@ public class Task {
     public String[] membres = {};
     public String createdBy;
     
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "task_id")
+    public Set<Comment> comments  =new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "task_id")
+    public List<Document> document = new ArrayList<Document>();
+
     @ManyToOne
     @JsonbTransient
     public Project project;
@@ -82,19 +92,19 @@ public class Task {
         this.tags = tags;
     }
 
-    public String getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(String comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
-    public String getDocument() {
+    public List<Document> getDocument() {
         return document;
     }
 
-    public void setDocument(String document) {
+    public void setDocument(List<Document> document) {
         this.document = document;
     }
 

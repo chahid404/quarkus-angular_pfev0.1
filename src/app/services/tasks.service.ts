@@ -15,17 +15,20 @@ export class TasksService {
   constructor(private httpClient: HttpClient) { }
 
   public deleteTask(taskid: number) {
-    return this.httpClient.get(this.host + "/tasks/deletetaskby/" + taskid);
+    return this.httpClient.delete(this.host + "/tasks/deletetaskby/" + taskid);
   }
   public directUpdateTask(taskid: number, taskBody: TaskDirectEditRequest) {
     return this.httpClient.put(this.host + "/tasks/directedittask/" + taskid, taskBody);
   }
 
   public createNewTask(idproject: number, iduser: string) {
-    return this.httpClient.get(this.host + "/tasks/createnewtask/" + idproject + "/" + iduser);
+    return this.httpClient.post(this.host + "/tasks/createnewtask/" + idproject + "/" + iduser,{});
   }
   public updateTask(idtask,task:TaskRequest){
    return this.httpClient.put(this.host+"/tasks/"+idtask,task);
+  }
+  public addDocumentToTask(idTask,doc){
+    return this.httpClient.put(this.host+"/tasks/adddocment/"+idTask,doc);
   }
 
 }

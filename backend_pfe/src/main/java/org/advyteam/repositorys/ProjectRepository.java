@@ -62,34 +62,48 @@ public class ProjectRepository implements PanacheRepositoryBase<Project, Long> {
             projectPercentage.setInProgress((int)0);
             projectPercentage.setNotStarted((int)0);
             projectPercentage.setOnHold((int)0);
-            return projectPercentage;
-        }
-        for (Task task : tasks) {
-            switch (task.status) {
-            case "Not Started":
-            numOfNotStartedTask++;
-                break;
-            case "In Progress":
-            numOfInProgressTask++;
-                break;
-            case "On Hold":
-            numOfOnHoldTask++;
-                break;
-            case "Cancelled":
-            numOfCancelledTask++;
-                break;
-            case "Finished":
-            numOfFinishedTask++;
-                break;
-            default:
-                break;
+        }else if (numberOfTasks == 1) {
+            for (Task task : tasks) {
+                if(task.getStatus()=="Finished"){
+                    projectPercentage.setFinished(0);
+                    projectPercentage.setCancelled((int)0);
+                    projectPercentage.setInProgress((int)0);
+                    projectPercentage.setNotStarted((int)0);
+                    projectPercentage.setOnHold((int)0);
+                }
             }
+        }else{
+            numberOfTasks =numberOfTasks-1;
+
+            for (Task task : tasks) {
+                switch (task.status) {
+                case "Not Started":
+                numOfNotStartedTask++;
+                    break;
+                case "In Progress":
+                numOfInProgressTask++;
+                    break;
+                case "On Hold":
+                numOfOnHoldTask++;
+                    break;
+                case "Cancelled":
+                numOfCancelledTask++;
+                    break;
+                case "Finished":
+                numOfFinishedTask++;
+                    break;
+                default:
+                    break;
+                }
+            }
+            projectPercentage.setFinished((int)((numOfFinishedTask/numberOfTasks)*100));
+            projectPercentage.setCancelled((int)((numOfCancelledTask/numberOfTasks)*100));
+            projectPercentage.setInProgress((int)((numOfInProgressTask/numberOfTasks)*100));
+            projectPercentage.setNotStarted((int)((numOfNotStartedTask/numberOfTasks)*100));
+            projectPercentage.setOnHold((int)((numOfOnHoldTask/numberOfTasks)*100));
         }
-        projectPercentage.setFinished((int)((numOfFinishedTask/numberOfTasks)*100));
-        projectPercentage.setCancelled((int)((numOfCancelledTask/numberOfTasks)*100));
-        projectPercentage.setInProgress((int)((numOfInProgressTask/numberOfTasks)*100));
-        projectPercentage.setNotStarted((int)((numOfNotStartedTask/numberOfTasks)*100));
-        projectPercentage.setOnHold((int)((numOfOnHoldTask/numberOfTasks)*100));
+
+       
         return projectPercentage;
     }
 

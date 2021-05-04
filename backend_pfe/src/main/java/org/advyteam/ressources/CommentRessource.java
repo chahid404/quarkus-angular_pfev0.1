@@ -3,6 +3,7 @@ package org.advyteam.ressources;
 
 import org.advyteam.entites.Comment;
 import org.advyteam.repositorys.CommentRepository;
+import org.advyteam.repositorys.TaskRepository;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -16,6 +17,9 @@ public class CommentRessource {
 
     @Inject
     CommentRepository commentRepository;
+
+    @Inject
+    TaskRepository taskRepository;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -67,5 +71,30 @@ public class CommentRessource {
         return commentRepository.findAll().list();
     }
 
+    @Path("addcomment/{idtask}")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Comment AddNewComment(@PathParam("idtask") Long idtask,Comment comment) {
+        Comment newComment= new Comment();
+        newComment.setComment(comment.getComment());
+        newComment.setCreatedBy(comment.getCreatedBy());
+        newComment.setTask(taskRepository.findById(idtask));
+        commentRepository.persist(newComment);
+        return commentRepository.findById(newComment.id);
+    }
 
+
+    @Path("getcommentsbytask/{idtask}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public List<Comment> getCommentsByTask(@PathParam("idtask") Long idtask) {
+        
+        if (taskRepository.findById(idtask)==null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        return commentRepository.find("task_id =?1 order by commentDate DESC",idtask).list();
+    }
 }

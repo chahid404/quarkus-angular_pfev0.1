@@ -1,11 +1,13 @@
+import { Comment, CommentEntiy, CommentRequest } from "./comment.module";
+import { Document } from "./document.module";
 import { Users } from "./project/user.module";
 
 export class Task {
-    comments: string;
+    comments: Comment[]=[];
     createdBy: string;
     createdDate: Date;
     description: string;
-    document: string;
+    document: Document[]=[];
     dueDate: Date;
     id: number;
     membres: Users [] =[];
@@ -47,4 +49,14 @@ export class TaskDirectEditRequest {
     priority: string;
     score:number;
     membres: string [] =[];
+}
+
+export class TaskFilter {
+    dueDate: string="";
+    name: string="";
+    startDate: string="";
+    status: string="";
+    priority: string="";
+    score:string="";
+    membres: string="";
 }

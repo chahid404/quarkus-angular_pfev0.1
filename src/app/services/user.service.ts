@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Users } from '../models/project/user.module';
 
 @Injectable({
@@ -10,7 +9,6 @@ export class UserService {
 
   constructor(private httpClient: HttpClient) { }
   SERVER_URL = "http://localhost:8083/users";
-  private user:Users;
   public getAllUsers() {
     return this.httpClient.get<Users[]>(this.SERVER_URL);
   }
@@ -29,11 +27,13 @@ export class UserService {
     });
     return usersAssigned;
   }
-  public returnUserFullName(userid):Users{
-    this.getUserById(userid).subscribe(x=>{
-      this.user=x;
+  public returnUserFullName(userid: string): Users {
+    let user: Users;
+
+    this.getUserById(userid).subscribe(x => {
+      user = x;
     });
-    console.log(this.user);
-    return this.user;
+    console.log(user);
+    return user;
   }
 }

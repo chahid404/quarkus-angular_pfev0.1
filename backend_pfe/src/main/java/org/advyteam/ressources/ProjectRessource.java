@@ -148,6 +148,38 @@ public class ProjectRessource {
     return projectRepository.findAll().list();
   }
 
+  @Path("/taskfilter")
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<Project> getProjectTasksByFilter(@QueryParam("name") String name, @QueryParam("status") String status,
+      @QueryParam("priority") String priority, @QueryParam("startDate") String startDate,
+      @QueryParam("membres") String membres, @QueryParam("dueDate") String dueDate, @QueryParam("score") String score) {
+
+    List<Project> projects = projectRepository.findAll().list();
+    List<Project> projectWithFiltertTasks = new ArrayList<Project>();
+    for (Project project : projects) {
+      List<Task> filtertTasks = new ArrayList<Task>();
+      for (Task task : project.getTasks()) {
+        if (task.name.toLowerCase().matches("(.*)" + name.toLowerCase() + "(.*)")
+            && task.getPriority().toLowerCase().matches("(.*)" + priority.toLowerCase() + "(.*)")
+            && task.getStatus().toLowerCase().matches("(.*)" + status.toLowerCase() + "(.*)")
+            && task.getStartDate().toString().toLowerCase().matches("(.*)" + startDate.toLowerCase() + "(.*)")
+            && task.getDueDate().toString().toLowerCase().matches("(.*)" + dueDate.toLowerCase() + "(.*)")
+            && task.getScore().toString().toLowerCase().matches("(.*)" + score.toLowerCase() + "(.*)")) {
+          if (!membres.matches("")) {
+            if (Arrays.asList(task.getMembres()).contains(membres)) {
+              filtertTasks.add(task);
+            }
+          } else
+            filtertTasks.add(task);
+        }
+      }
+      project.setTasks(filtertTasks);
+      projectWithFiltertTasks.add(project);
+    }
+    return projectWithFiltertTasks;
+  }
+
   public String ConvertDescriptionToHtmlFile(String descriptionBody, String projectName) throws IOException {
     byte[] bytes = descriptionBody.getBytes(StandardCharsets.UTF_8);
     Random random = new Random();

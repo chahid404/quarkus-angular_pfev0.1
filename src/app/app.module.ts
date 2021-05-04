@@ -19,7 +19,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
-import { DatePipe } from '@angular/common'
+import { DatePipe, registerLocaleData } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AngularEditorModule } from '@kolkov/angular-editor';
@@ -49,6 +49,23 @@ import { TooltipModule } from 'primeng/tooltip';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {MatMenuModule} from '@angular/material/menu';
+import { NZ_I18N } from 'ng-zorro-antd/i18n';
+import { en_US } from 'ng-zorro-antd/i18n';
+import en from '@angular/common/locales/en';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzCommentModule } from 'ng-zorro-antd/comment';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzListModule } from 'ng-zorro-antd/list';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+
+
+
+registerLocaleData(en);
 
 
 
@@ -79,7 +96,7 @@ const routes: Routes = [
     NewProjectComponent,
     ListProjectComponent,
     UploadComponent,
-    DemoComponent
+    DemoComponent,
   ],
   imports: [
     BrowserModule, MatSliderModule, BrowserAnimationsModule, MatTabsModule, MatGridListModule, MatInputModule, MatDatepickerModule,
@@ -87,10 +104,12 @@ const routes: Routes = [
     AngularEditorModule, DialogModule, ButtonModule, FileUploadModule, NgxMatTagInputModule, MatSelectModule, SliderModule, TagModule, MatProgressBarModule,
     RatingModule, AvatarModule, AvatarGroupModule, MultiSelectModule, MatFormFieldModule, NgxMatSelectSearchModule,
     TableModule, ToastModule, CalendarModule, ContextMenuModule, DropdownModule, ProgressBarModule, InputTextModule, TooltipModule, NgbModule,
-    ConfirmDialogModule,MatMenuModule,
+    ConfirmDialogModule,MatMenuModule,NzButtonModule,NzDatePickerModule,NzPopoverModule,NzSelectModule,NzIconModule,
+    NzCommentModule,NzFormModule,NzAvatarModule,NzListModule,InputTextareaModule
+
 
   ],
-  providers: [DatePipe, { provide: APP_INITIALIZER, deps: [KeycloakSecurityService], useFactory: kcFactory, multi: true }],
+  providers: [DatePipe, { provide: APP_INITIALIZER, deps: [KeycloakSecurityService], useFactory: kcFactory, multi: true }, { provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

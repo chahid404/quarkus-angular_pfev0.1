@@ -16,4 +16,5 @@ export class DocumentService {
   public addDocument(document): Observable<any> {
     return this.httpClient.post<any>(this.SERVER_URL, document);
   }
+  public downloadUrl:string = this.SERVER_URL+"/download/";
 }

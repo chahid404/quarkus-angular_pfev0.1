@@ -31,8 +31,114 @@
 <ul *ngFor="let bank of bankMultiCtrl?.value">
     <li>{{bank.name}}</li>
 </ul> -->
-<button pButton  routerLink="/newproject" label=" Add new Project" class="btn btn-success mt-4 mb-4"><i class="pi pi-plus"></i></button>
-<p-dialog [closeOnEscape]="false" header="Task Details" [style]="{width: '450px', height: '70%'}"
+<p-dialog appendTo="body" header="Comments" [(visible)]="displayModal" [modal]="true" [style]="{width: '50vw'}"
+    [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <nz-list *ngIf="commentList.length" [nzDataSource]="commentList" [nzRenderItem]="item"
+        [nzItemLayout]="'horizontal'">
+        <ng-template #item let-item>
+            <nz-comment [nzAuthor]="item.createdBy" [nzDatetime]="item.displayTime">
+                <nz-avatar nz-comment-avatar nzIcon="user" nzSrc="assets/img/author-page.jpg"></nz-avatar>
+                <nz-comment-content>
+                    <p><b>{{ item.comment }}</b></p>
+                </nz-comment-content>
+            </nz-comment>
+        </ng-template>
+    </nz-list>
+    <nz-comment>
+        <nz-avatar nz-comment-avatar nzIcon="user" nzSrc="assets/img/author-page.jpg"></nz-avatar>
+        <nz-comment-content>
+            <nz-form-item>
+                <span class="p-float-label">
+                    <textarea [rows]="2" [cols]="55" pInputTextarea [(ngModel)]="commentValue"></textarea>
+                    <label for="float-input">Add Comment here ...</label>
+                </span>
+            </nz-form-item>
+            <nz-form-item>
+                <button nz-button nzType="primary" [nzLoading]="submitting" [disabled]="!commentValue"
+                    (click)="onAddComment()">
+                    Add Comment
+                </button>
+            </nz-form-item>
+        </nz-comment-content>
+    </nz-comment>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="displayModal=false" label="Close" styleClass="p-button-text"></p-button>
+    </ng-template>
+</p-dialog>
+<div class="d-flex justify-content-between mb-5">
+    <button nz-button nzType="primary" routerLink="/newproject"><i class="pi pi-plus mr-2"
+            style="font-size: 0.8rem"></i>Add new Project</button>
+
+    <div class="d-flex justify-content-end">
+        <button (click)="initProjectsList()" nz-button class="mr-2"><i class="pi pi-filter-slash mr-2"
+                style="font-size: 0.8rem"></i>Clear</button>
+        <button nz-button nz-popover nzPopoverTrigger="click" nzPopoverTitle="Task Filter" nzType="primary"
+            [(nzPopoverVisible)]="filterVisible" [nzPopoverContent]="contentTemplate" nzPopoverPlacement="left"><i
+                class="pi pi-filter mr-2" style="font-size: 0.8rem"></i>Filter</button>
+    </div>
+</div>
+
+<ng-template #contentTemplate>
+    <!-- ////////////////////////////////////////////// -->
+
+    <div class="form-row">
+        <div class="col mb-3">
+            <nz-select [(ngModel)]="TaskFilter.membres" id="member" style="width: 150px;" ngModel="prioritys"
+                nzAllowClear nzPlaceHolder="choose user">
+                <nz-option *ngFor="let option of usersForTaskFilter" nzLabel="{{option.firstName}} {{option.lastName}}"
+                    [nzValue]="option.id"></nz-option>
+            </nz-select>
+        </div>
+        <div class="col mb-3">
+            <nz-select [(ngModel)]="TaskFilter.status" style="width: 150px;" id="status" nzAllowClear
+                nzPlaceHolder="choose status">
+                <nz-option *ngFor="let option of status" [nzLabel]="option.viewValue" [nzValue]="option.value">
+                </nz-option>
+            </nz-select>
+        </div>
+        <div class="col mb-3">
+            <nz-select [(ngModel)]="TaskFilter.priority" id="priority" style="width: 150px;" nzAllowClear
+                nzPlaceHolder="choose prioritys">
+                <nz-option *ngFor="let option of prioritys" [nzLabel]="option.viewValue" [nzValue]="option.value">
+                </nz-option>
+            </nz-select>
+        </div>
+        <div class="col mb-3">
+            <nz-form-label [nzSpan]="6" nzFor="startDate">Start Date</nz-form-label>
+            <nz-date-picker [(ngModel)]="TaskFilter.startDate" id="startDate" style="width: 150px;"></nz-date-picker>
+
+        </div>
+        <div class="col mb-3">
+            <nz-form-label [nzSpan]="6" nzFor="dueDate">Due Date</nz-form-label>
+            <nz-date-picker [(ngModel)]="TaskFilter.dueDate" id="dueDate" style="width: 150px;"></nz-date-picker>
+
+
+        </div>
+
+    </div>
+    <div class="form-row">
+
+        <div class="col mb-3">
+            <mat-form-field>
+                <mat-label>Task Name</mat-label>
+                <input [(ngModel)]="TaskFilter.name" matInput type="text">
+                <button mat-button matSuffix mat-icon-button aria-label="Clear">
+                </button>
+            </mat-form-field>
+        </div>
+        <div class="col mb-3">
+            <nz-form-label [nzSpan]="6" nzFor="rating">Rating</nz-form-label>
+            <p-rating [(ngModel)]="TaskFilter.score" id="rating"></p-rating>
+        </div>
+        <div class="col mb-3">
+            <button (click)="onTaskFilter()" nz-button nzType="primary"><i class="pi pi-plus mr-2"
+                    style="font-size: 0.8rem"></i>Filter</button>
+        </div>
+    </div>
+
+
+</ng-template>
+<p-dialog appendTo="body" [closeOnEscape]="false" header="Task Details" [style]="{width: '450px', height: '70%'}"
     [(visible)]="displayDetailTaskDialog">
     <ng-template pTemplate="content" *ngIf="currentProject && taskForUpdate && userOfSelectedTask">
         <div class="d-flex flex-row">
@@ -65,15 +171,15 @@
             </mat-form-field>
         </div>
         <div class="p-field">
-            <mat-form-field style="width: 370px;" appearance="fill">
+            <mat-form-field appendTo="body" style="width: 370px;" appearance="fill">
                 <mat-label>Enter a date range</mat-label>
-                <mat-date-range-input [rangePicker]="picker">
+                <mat-date-range-input [rangePicker]="pickerv2">
                     <input [disabled]="Ondetails" [(ngModel)]="taskForUpdate.startDate" matStartDate
                         placeholder="Start date">
                     <input [disabled]="Ondetails" [(ngModel)]="taskForUpdate.dueDate" matEndDate placeholder="End date">
                 </mat-date-range-input>
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-date-range-picker #picker></mat-date-range-picker>
+                <mat-datepicker-toggle matSuffix [for]="pickerv2"></mat-datepicker-toggle>
+                <mat-date-range-picker appendTo="body" #pickerv2></mat-date-range-picker>
             </mat-form-field>
         </div>
         <div class="dropdown-divider mt-1 mb-1"></div>
@@ -91,10 +197,11 @@
         </div>
         <div class="dropdown-divider mt-1 mb-3"></div>
         <div *ngIf="!Ondetails" class="p-field">
-            <mat-form-field style="width: 370px;" appearance="fill">
+            <mat-form-field appendTo="body" style="width: 370px;" appearance="fill">
                 <mat-label><i class="pi pi-user"></i> Members :</mat-label>
                 <mat-select [(ngModel)]="taskForUpdate.membres" multiple>
-                    <mat-option *ngFor="let user of currentProject.membres" [value]="user">{{user.firstName}}
+                    <mat-option appendTo="body" *ngFor="let user of currentProject.membres" [value]="user">
+                        {{user.firstName}}
                         {{user.lastName}}
                     </mat-option>
                 </mat-select>
@@ -105,9 +212,34 @@
             <div class="d-flex flex-column">
                 <div *ngFor="let user of taskForUpdate.membres" class="p-2">
                     <p-avatar pBadge value="4" severity="danger" image="assets/img/author-page.jpg"></p-avatar>
-                    <b>    :  {{user.firstName}}   {{user.lastName}}</b>
+                    <b> : {{user.firstName}} {{user.lastName}}</b>
                 </div>
             </div>
+        </div>
+        <div>
+            <div class="clearfix">
+
+
+                <div class="d-flex flex-row">
+                    <p-fileUpload showCancelButton="true" #fubauto mode="basic" name="demo[]" customUpload="true"
+                        (uploadHandler)="myUploader($event,taskForUpdate.id);fubauto.clear()" chooseLabel="Upload File">
+                    </p-fileUpload>
+                </div>
+                <ul *ngIf="uploadedFileList.length" class="list-group list-group-flush">
+                    <li *ngFor="let file of uploadedFileList"
+                        class="list-group-item d-flex justify-content-between align-items-center">
+
+                        <div class="d-flex justify-content-between">
+                            <div> <a href="{{file.url}}">{{file.fileName}}</a></div>
+                            <div>
+                                <button (click)="fubauto.clear()" pButton pRipple type="button" icon="pi pi-times"
+                                    class="p-button-rounded p-button-text p-button-plain p-button-danger "></button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
         </div>
         <div class="p-field">
             <mat-form-field style="width: 370px;">
@@ -124,13 +256,15 @@
             label="Save" icon="pi pi-check" class="p-button-text"></button>
     </ng-template>
 </p-dialog>
+
+
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000" rejectButtonStyleClass="p-button-text">
 </p-confirmDialog>
 <p-table [value]="projectsList" dataKey="name">
     <ng-template pTemplate="header">
         <tr>
             <th style="width: 3rem"></th>
-            <th pSortableColumn="name2">Name <p-sortIcon field="name2"></p-sortIcon>
+            <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon>
             </th>
             <th>membres</th>
             <th pSortableColumn="deadline">deadline <p-sortIcon field="deadline"></p-sortIcon>
@@ -183,8 +317,9 @@
                     <p-table [scrollable]="true" [style]="{width:'auto'}" [value]="project.tasks" dataKey="name">
                         <ng-template pTemplate="colgroup" let-columns>
                             <colgroup>
-                                <col style="width: 3rem;">
+                                <col style="width: 1.8rem;">
                                 <col style="width:250px">
+                                <col style="width: 2.5rem;">
                                 <col style="width:250px">
                                 <col style="width: 125px;">
                                 <col style="width: 125px;">
@@ -192,7 +327,6 @@
                                 <col style="width:250px">
                                 <col style="width:250px">
                                 <col style="width:250px">
-
                                 <col style="width:6rem">
                             </colgroup>
                         </ng-template>
@@ -201,6 +335,7 @@
             <th>#</th>
             <th pSortableColumn="name">Title <p-sortIcon field="name"></p-sortIcon>
             </th>
+            <th></th>
             <th pSortableColumn="members">Members<p-sortIcon field="members"></p-sortIcon>
             </th>
             <th pSortableColumn="priority">priority <p-sortIcon field="priority"></p-sortIcon>
@@ -253,6 +388,10 @@
                 </p-cellEditor>
 
             </td>
+            <td><button (click)="onShowCommentsModal(task)" pButton pRipple type="button" icon="pi pi-comments"
+                    class="p-button-rounded p-button-text p-button-plain"></button>
+            </td>
+
             <td pEditableColumn>
                 <p-cellEditor>
                     <ng-template pTemplate="output">
@@ -312,9 +451,9 @@
                         </ng-container>
                     </ng-template>
                     <ng-template pTemplate="input">
-                        <p-dropdown (onChange)="onchowdate(project,task,6)" [(ngModel)]="taskToUpdate.priority"
-                            placeholder="{{task.priority}}" [options]="prioritys" optionLabel="viewValue"
-                            optionValue="value"></p-dropdown>
+                        <p-dropdown appendTo="body" (onChange)="onchowdate(project,task,6)"
+                            [(ngModel)]="taskToUpdate.priority" placeholder="{{task.priority}}" [options]="prioritys"
+                            optionLabel="viewValue" optionValue="value"></p-dropdown>
                     </ng-template>
                 </p-cellEditor>
             </td>
@@ -344,9 +483,9 @@
                         </ng-container>
                     </ng-template>
                     <ng-template pTemplate="input">
-                        <p-dropdown (onChange)="onchowdate(project,task,5)" [(ngModel)]="taskToUpdate.status"
-                            placeholder="{{task.status}}" [options]="status" optionLabel="viewValue"
-                            optionValue="value"></p-dropdown>
+                        <p-dropdown appendTo="body" (onChange)="onchowdate(project,task,5)"
+                            [(ngModel)]="taskToUpdate.status" placeholder="{{task.status}}" [options]="status"
+                            optionLabel="viewValue" optionValue="value"></p-dropdown>
                     </ng-template>
                 </p-cellEditor>
             </td>
@@ -359,18 +498,8 @@
                 <p-cellEditor>
                     <ng-template pTemplate="output">{{task.startDate}}</ng-template>
                     <ng-template pTemplate="input" class="btn-toolbar mb-2">
-                        <!-- <input class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #d="ngbDatepicker"> -->
-                        <!-- <p-calendar (onSelect)="onchowdate(project,task,2)" dateFormat="yy-mm-dd"
-                            [style]="{'width':'110%','border-color':'#4CAF50'}"
-                            [panelStyle]="{'width':'320px','z-index': '-1'}" icon="pi pi-spin pi-spinner"
-                            [showIcon]="true" [(ngModel)]="taskToUpdate.startDate">
-                        </p-calendar> -->
-                        <mat-form-field appearance="fill">
-                            <input (dateChange)="onchowdate(project,task,2)" [(ngModel)]="taskToUpdate.startDate"
-                                matInput [matDatepicker]="picker1">
-                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                            <mat-datepicker [(ngModel)]="taskToUpdate.startDate" #picker1></mat-datepicker>
-                        </mat-form-field>
+                        <nz-date-picker nzDefaultPickerValue="{{task.startDate}}" [(ngModel)]="taskToUpdate.startDate"
+                            (ngModelChange)="onchowdate(project,task,2)"></nz-date-picker>
                     </ng-template>
                 </p-cellEditor>
             </td>
@@ -378,18 +507,8 @@
                 <p-cellEditor>
                     <ng-template pTemplate="output">{{task.dueDate}}</ng-template>
                     <ng-template pTemplate="input" class="btn-toolbar mb-2">
-                        <!-- <input class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker #d="ngbDatepicker"> -->
-                        <!-- <p-calendar (onSelect)="onchowdate(project,task,3)" dateFormat="yy-mm-dd"
-                            [style]="{'width':'110%','border-color':'#4CAF50'}"
-                            [panelStyle]="{'width':'320px','z-index': '-1'}" icon="pi pi-spin pi-spinner"
-                            [showIcon]="true" [(ngModel)]="taskToUpdate.dueDate">
-                        </p-calendar> -->
-                        <mat-form-field appearance="fill">
-                            <input (dateChange)="onchowdate(project,task,3)" [(ngModel)]="taskToUpdate.dueDate" matInput
-                                [matDatepicker]="picker2">
-                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                            <mat-datepicker #picker2></mat-datepicker>
-                        </mat-form-field>
+                        <nz-date-picker [(ngModel)]="taskToUpdate.dueDate" (ngModelChange)="onchowdate(project,task,3)">
+                        </nz-date-picker>
                     </ng-template>
                 </p-cellEditor>
             </td>
@@ -437,7 +556,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
         <tr>
-            <td colspan="6">There are no order for this product yet.</td>
+            <td colspan="6">There are no task for this project yet.</td>
         </tr>
     </ng-template>
 </p-table>
