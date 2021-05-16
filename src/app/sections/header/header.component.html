@@ -308,8 +308,8 @@
                 <div class="more-dropdown more-with-triangle triangle-top-center">
                     <div class="ui-block-title ui-block-title-small">
                         <h6 class="title">Notifications</h6>
-                        <a  (click)="onMarkAllAsRead()">Mark all as read</a>
-                        <a  (click)="onClearAllNotification()">Clear notifs</a>
+                        <a (click)="onMarkAllAsRead()">Mark all as read</a>
+                        <a (click)="onClearAllNotification()">Clear notifs</a>
                     </div>
 
                     <div class="mCustomScrollbar" data-mcs-theme="dark">
@@ -320,8 +320,11 @@
                                     <img src="assets/img/avatar62-sm.jpg" alt="author">
                                 </div>
                                 <div class="notification-event">
-                                    <div><a *ngIf="notif.userRecever" href="#" class="h6 notification-friend">{{notif.userRecever.firstName}}  {{notif.userRecever.lastName}}</a>
-                                        {{notif.action}} <a routerLink="./project" class="h6 notification-friend"> Project Task</a>.
+                                    <div><a *ngIf="notif.userRecever" href="#"
+                                            class="h6 notification-friend">{{notif.userRecever.firstName}}
+                                            {{notif.userRecever.lastName}}</a>
+                                        {{notif.action}} <a routerLink="./project" class="h6 notification-friend">
+                                            Project Task</a>.
                                     </div>
 
                                     <ng-container *ngIf="notif.datedifference.diffDays !=0; else elseif1"><span

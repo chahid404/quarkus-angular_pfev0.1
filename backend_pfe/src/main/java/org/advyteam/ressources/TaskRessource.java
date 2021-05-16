@@ -14,7 +14,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import java.time.LocalDate;
 import java.util.List;
+
 @Path("/tasks")
 public class TaskRessource {
 
@@ -149,5 +152,12 @@ public class TaskRessource {
         TaskPercentage percentage = projectRepository.calculProjectProgressPersent(project.getTasks());
         project.setProgress(percentage.getFinished());
         return taskRepository.findById(id);
+    }
+    @GET
+    @Path("/getnotfinishedtasksbyduedate/{date}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Task> getNotFinishedTasksByDueDate(@PathParam("date") String date){
+        LocalDate localDate =  LocalDate.parse(date);
+          return taskRepository.find("dueDate = ?1 and status != 'Finished'", localDate).list();      
     }
 }

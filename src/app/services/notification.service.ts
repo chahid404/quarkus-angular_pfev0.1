@@ -10,7 +10,7 @@ import { LocalStorageService } from './local-storage.service';
 })
 export class NotificationService {
 
-  private host: string = "http://localhost:8083";
+  private host: string = "http://localhost:8084";
   constructor(private http: HttpClient, private lc: LocalStorageService) { }
 
 
