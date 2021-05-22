@@ -82,7 +82,9 @@ export function kcFactory(kcSecurity: KeycloakSecurityService) {
 
 const routes: Routes = [
   { path: "project", component: DemoComponent },
-  {path:"newproject",component:NewProjectComponent}
+  {path:"newproject",component:NewProjectComponent},
+  { path: 'profile', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule) }
+
 
 ];
 
@@ -96,7 +98,7 @@ const routes: Routes = [
     NewProjectComponent,
     ListProjectComponent,
     UploadComponent,
-    DemoComponent,
+    DemoComponent
   ],
   imports: [
     BrowserModule, MatSliderModule, BrowserAnimationsModule, MatTabsModule, MatGridListModule, MatInputModule, MatDatepickerModule,

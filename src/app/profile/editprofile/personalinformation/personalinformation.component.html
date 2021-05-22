@@ -1,0 +1,123 @@
+<div class="ui-block-title">
+    <div class="h5 title">Personal Information</div>
+</div>
+<div class="ui-block-content">
+
+
+    <!-- Personal Information Form  -->
+
+    <form [formGroup]="currentUserForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+
+            <div class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <mat-form-field style="width: 100%" appearance="outline">
+                        <mat-label>Username</mat-label>
+                        <input [value]="currentUser.username" name="username" disabled matInput
+                            placeholder="Input placeholder" />
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <mat-form-field style="width: 100%" appearance="outline">
+                        <mat-label>First Name</mat-label>
+                        <input formControlName="firstName" name="firstName" matInput placeholder="Your first Name" />
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <mat-form-field style="width: 100%" appearance="outline">
+                        <mat-label>Last Name</mat-label>
+                        <input formControlName="lastName" name="lastName" matInput placeholder="Your last Name" />
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <mat-form-field style="width: 100%" appearance="outline">
+                        <mat-label>Email</mat-label>
+                        <input formControlName="email" name="email" matInput placeholder="Your email" />
+                    </mat-form-field>
+                </div>
+            </div>
+
+
+
+            <div formGroupName="attributes" class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <!-- <mat-form-field style="width: 100%" appearance="outline">
+                                <mat-label>Country</mat-label>
+                                <input formControlName="nationality" name="nationality" matInput
+                                    placeholder="Your Nationality" />
+                            </mat-form-field> -->
+                    <mat-form-field style="width: 100%" appearance="outline">
+                        <mat-label>Country</mat-label>
+                        <mat-select formControlName="nationality" name="nationality">
+                            <mat-option *ngFor="let country of allCountries" [value]="country.name">{{country.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div formGroupName="attributes" class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <!-- <mat-form-field style="width: 100%" appearance="outline">
+                                <mat-label>Gender</mat-label>
+                                <input formControlName="gender" name="gender" matInput
+                                    placeholder="Input placeholder" />
+                            </mat-form-field> -->
+                    <mat-form-field style="width: 100%" appearance="outline">
+                        <mat-label>Gender</mat-label>
+                        <mat-select formControlName="gender" name="gender">
+                            <mat-option *ngFor="let gender of genderList" [value]="gender">{{gender}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div formGroupName="attributes" class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <mat-form-field style="width: 100%" appearance="outline">
+                        <mat-label>Phone number</mat-label>
+                        <input formControlName="telephone" name="telephone" matInput placeholder="Your phone number" />
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div formGroupName="attributes" class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <mat-form-field style="width: 100%" appearance="outline">
+                        <mat-label>Zip Code</mat-label>
+                        <input formControlName="zip_code" name="zip_code" matInput placeholder="Your zip code" />
+                    </mat-form-field>
+                </div>
+            </div>
+            <div formGroupName="attributes" class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="form-group">
+                    <label for="icon">Your birthday</label>
+                    <input formControlName="birthday" type="date" name="icon" id="">
+                    <!-- <p-calendar formControlName="birthday" [showIcon]="true" inputId="icon"></p-calendar> -->
+                </div>
+            </div>
+            <div class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <h5>Status</h5>
+                <p-inputSwitch formControlName="enabled" name="enabled"></p-inputSwitch>
+            </div>
+            <div class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <button type="button" (click)="onRestForm()" class="btn btn-secondary btn-lg full-width">Restore all
+                    Attributes</button>
+            </div>
+            <div class="col col-lg-6 col-md-6 col-sm-12 col-12">
+                <button type="submit" class="btn btn-primary btn-lg full-width ">
+                    <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 1.3rem"></i>
+                    Save all Changes</button>
+            </div>
+
+        </div>
+    </form>
+    <!-- ... end Personal Information Form  -->
+    <p-toast appendTo="body"></p-toast>
+</div>

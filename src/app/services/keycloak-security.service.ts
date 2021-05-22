@@ -23,9 +23,13 @@ export class KeycloakSecurityService {
       //onLoad: 'check-sso'
     });
     this.ls.saveItem("userId", this.kc.tokenParsed.sub);
+    
     //this.ls.saveItem("")
     //console.log(this.kc.loadUserInfo());
     // console.log(this.kc.hasRealmRole("admin"));
+  }
+  getUserId():string{
+    return this.kc.tokenParsed.sub;
   }
 }
 

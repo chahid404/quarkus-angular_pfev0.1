@@ -370,7 +370,7 @@
 
             <div class="author-page author vcard inline-items more">
                 <div class="author-thumb">
-                    <img alt="author" src="assets/img/author-page.jpg" class="avatar">
+                    <img alt="author" style="max-height: 42px;max-width: 42px;" src="assets/img/user-avatar.png" class="avatar">
                     <span class="icon-status online"></span>
                     <div class="more-dropdown more-with-triangle">
                         <div class="mCustomScrollbar" data-mcs-theme="dark">
@@ -380,7 +380,7 @@
 
                             <ul class="account-settings">
                                 <li>
-                                    <a href="29-YourAccount-AccountSettings.html">
+                                    <a routerLink="/profile/edit/personalinformations">
 
                                         <svg class="olymp-menu-icon">
                                             <use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-menu-icon"></use>
@@ -389,16 +389,7 @@
                                         <span>Profile Settings</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="36-FavPage-SettingsAndCreatePopup.html">
-                                        <svg class="olymp-star-icon left-menu-icon" data-toggle="tooltip"
-                                            data-placement="right" data-original-title="FAV PAGE">
-                                            <use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-star-icon"></use>
-                                        </svg>
-
-                                        <span>Create Fav Page</span>
-                                    </a>
-                                </li>
+   
                                 <li>
                                     <a routerLink="./">
                                         <svg class="olymp-logout-icon">
@@ -411,91 +402,17 @@
                                 </li>
                             </ul>
 
-                            <div class="ui-block-title ui-block-title-small">
-                                <h6 class="title">Chat Settings</h6>
-                            </div>
-
-                            <ul class="chat-settings">
-                                <li>
-                                    <a href="#">
-                                        <span class="icon-status online"></span>
-                                        <span>Online</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="icon-status away"></span>
-                                        <span>Away</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="icon-status disconected"></span>
-                                        <span>Disconnected</span>
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a href="#">
-                                        <span class="icon-status status-invisible"></span>
-                                        <span>Invisible</span>
-                                    </a>
-                                </li>
-                            </ul>
-
-                            <div class="ui-block-title ui-block-title-small">
-                                <h6 class="title">Custom Status</h6>
-                            </div>
-
-                            <form class="form-group with-button custom-status">
-                                <input class="form-control" placeholder="" type="text" value="Space Cowboy">
-
-                                <button class="bg-purple">
-                                    <svg class="olymp-check-icon">
-                                        <use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-check-icon"></use>
-                                    </svg>
-                                </button>
-                            </form>
-
-                            <div class="ui-block-title ui-block-title-small">
-                                <h6 class="title">About Olympus</h6>
-                            </div>
-
-                            <ul>
-                                <li>
-                                    <a href="#">
-                                        <span>Terms and Conditions</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span>FAQs</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span>Careers</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span>Contact</span>
-                                    </a>
-                                </li>
-                            </ul>
                         </div>
 
                     </div>
                 </div>
                 <a *ngIf="kcService.kc.authenticated" href="02-ProfilePage.html" class="author-name fn">
-                    <div *ngIf="kcService.kc.authenticated; else elseBlock" class="author-title">
+                    <div *ngIf="kcService.kc.authenticated; else elseBlock" class="author-title">Welcome
                         {{kcService.kc.tokenParsed.preferred_username}}
                         <ng-template #elseBlock #elseBlock>Login</ng-template> <svg class="olymp-dropdown-arrow-icon">
                             <use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-dropdown-arrow-icon"></use>
                         </svg>
                     </div>
-                    <span class="author-subtitle"
-                        *ngIf="kcService.kc.authenticated">{{kcService.kc.tokenParsed.email}}</span>
                 </a>
             </div>
 
