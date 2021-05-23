@@ -30,6 +30,7 @@ interface Status {
   styleUrls: ['./demo.component.css']
 })
 export class DemoComponent implements OnInit {
+  public loadingData: boolean = true;
   horizontalPosition: MatSnackBarHorizontalPosition = 'end';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
   taskToUpdate: TaskRequest = new TaskRequest();
@@ -100,6 +101,7 @@ export class DemoComponent implements OnInit {
   }
 
   public initProjectsList() {
+    this.loadingData = true;
     this.serviceProject.getProjectWithFiltredTasks("", "", "", "", "", "", "").subscribe(projects => {
       this.projectsList = projects;
       this.projectsList.forEach(proj => {
@@ -108,6 +110,7 @@ export class DemoComponent implements OnInit {
           task.membres = this.listOfMembers(task.membres);
         })
       });
+      this.loadingData = false;
     }, err => {
       console.log(err);
     });
@@ -326,6 +329,7 @@ export class DemoComponent implements OnInit {
     this.notifService.sendNotifsForMultiUsersidvs(project.membres, project.id, "Update Task", project.creator);
   }
   onTaskFilter() {
+    this.loadingData = true;
     this.TaskFilter.dueDate = this.dateFromat(this.TaskFilter.dueDate);
     this.TaskFilter.startDate = this.dateFromat(this.TaskFilter.startDate);
     this.serviceProject.getProjectWithFiltredTasks(this.TaskFilter.name, this.TaskFilter.status, this.TaskFilter.priority, this.TaskFilter.startDate, this.TaskFilter.dueDate, this.TaskFilter.membres, this.TaskFilter.score).subscribe(x => {
@@ -336,8 +340,10 @@ export class DemoComponent implements OnInit {
           task.membres = this.listOfMembers(task.membres);
         })
       });
+      this.loadingData = false;
     })
     this.filterVisible = false;
+    
   }
   onShowCommentsModal(task: Task) {
     this.displayModal = true;

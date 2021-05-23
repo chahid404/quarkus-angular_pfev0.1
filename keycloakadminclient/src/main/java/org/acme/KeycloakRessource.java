@@ -1,23 +1,20 @@
 package org.acme;
 
 import org.acme.requestBody.User;
-import org.acme.requestBody.User.Attributes;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
-import org.keycloak.authorization.client.resource.AuthorizationResource;
-import org.keycloak.representations.AccessTokenResponse;
+import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.MappingsRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,9 +23,11 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.StatusType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,8 +85,6 @@ public class KeycloakRessource {
     @Path("/getuserbyid/{userid}")
     @Produces(MediaType.APPLICATION_JSON)
     public User getUserById(@PathParam("userid") String userid) {
-        String password = new Random().ints(10, 33, 122).mapToObj(i -> String.valueOf((char) i))
-                .collect(Collectors.joining());
         User currentUser = new User();
         UserRepresentation userR = keycloak.realm(realmName).users().get(userid).toRepresentation();
         currentUser.setId(userR.getId());
@@ -100,6 +97,7 @@ public class KeycloakRessource {
             currentUser.setAttributes(userR.getAttributes());
         }
         return currentUser;
+
     }
 
     @PUT
@@ -140,10 +138,10 @@ public class KeycloakRessource {
             });
         }
         attributes.put("imgUrl", Arrays.asList(this.imgUrl));
-        if (attributes!= null) {
+        if (attributes != null) {
             user.setAttributes(attributes);
         }
-        
+
         keycloak.realm("quarkus").users().get(userid).update(user);
         UserRepresentation userR = keycloak.realm("quarkus").users().get(userid).toRepresentation();
 
@@ -159,72 +157,95 @@ public class KeycloakRessource {
         return userBody;
     }
 
-    @PUT
-    @Path("/createuser/{userid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void createUser(User userBody) {
-        CredentialRepresentation credential = new CredentialRepresentation();
-        credential.setType(CredentialRepresentation.PASSWORD);
-        credential.setValue("aaaaaaaaaa");
-        credential.setTemporary(true);
-        UserRepresentation keycloakUser = new UserRepresentation();
-        keycloakUser.setUsername(userBody.getUsername());
-        keycloakUser.setFirstName(userBody.getFirstName());
-        keycloakUser.setLastName(userBody.getLastName());
-        keycloakUser.setEmail(userBody.getEmail());
-        keycloakUser.setCredentials(Arrays.asList(credential));
-        keycloakUser.setEnabled(true);
-        keycloakUser.setRealmRoles(Arrays.asList("user"));
-        // Get realm
-        RealmResource realmResource = keycloak.realm("quarkus");
-        UsersResource usersRessource = realmResource.users();
-
-        // assign role
-        RoleRepresentation testerRealmRole = keycloak.realm(realmName).roles().get("user").toRepresentation();
-        // UserResource userResource = keycloak.realm(realmName).users().get(userid);
-        // userResource.roles().realmLevel().remove(Arrays.asList(testerRealmRole));
-        //
-        // Create Keycloak user
-        Response result = null;
-        try {
-            result = usersRessource.create(keycloakUser);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        if (result == null || result.getStatus() != 201) {
-            System.err.println("Couldn't create Keycloak user.");
-        } else {
-            System.out.println("Keycloak user created.... verify in keycloak!");
-        }
-
-        // return user;
-
-    }
-
     @GET
     @Path("/restpassword/{userid}/{oldpass}/{newpass}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Status restPassword(@PathParam("userid") String userid,@PathParam("oldpass") String oldpass,@PathParam("newpass") String newpass) {
+    public Status restPassword(@PathParam("userid") String userid, @PathParam("oldpass") String oldpass,
+            @PathParam("newpass") String newpass) {
         Map<String, Object> clientCredentials = new HashMap<>();
         clientCredentials.put("secret", "2b8bbd21-27d0-4680-8a69-5dee3d48d566");
         clientCredentials.put("grant_type", "password");
         Configuration configuration = new Configuration(serverUrl, "quarkus", "backenduser", clientCredentials, null);
-        AuthzClient authzClient = AuthzClient.create(configuration);       
+        AuthzClient authzClient = AuthzClient.create(configuration);
         UserRepresentation connectedUser = keycloak.realm("quarkus").users().get(userid).toRepresentation();
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
-        if (authzClient.obtainAccessToken(connectedUser.getUsername(), oldpass).getToken()!=null) {
+        if (authzClient.obtainAccessToken(connectedUser.getUsername(), oldpass).getToken() != null) {
             credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
             credentialRepresentation.setValue(newpass);
             credentialRepresentation.setTemporary(false);
-        }
-        else{
-             throw new WebApplicationException(Response.Status.NOT_FOUND);
+        } else {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         keycloak.realm("quarkus").users().get(userid).resetPassword(credentialRepresentation);
         return Response.Status.OK;
 
+    }
+
+    @POST
+    @Path("/createuser")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public StatusType createUser(User userBody) {
+        List<UserRepresentation> userRepresentations = keycloak.realm("quarkus").users().search(userBody.getUsername(),
+                null, null, null, 0, 1);
+        if (!userRepresentations.isEmpty()) {
+            throw new WebApplicationException(Response.Status.FOUND);
+        }
+        Map<String, List<String>> attributes = new HashMap<String, List<String>>();
+        attributes.put("imgUrl", Arrays.asList(" "));
+        UserRepresentation newUser = new UserRepresentation();
+        newUser.setUsername(userBody.getUsername());
+        newUser.setFirstName(userBody.getFirstName());
+        newUser.setLastName(userBody.getLastName());
+        newUser.setEmail(userBody.getEmail());
+        newUser.setEnabled(true);
+
+        // Get realm
+        RealmResource realmResource = keycloak.realm("quarkus");
+        UsersResource userRessource = realmResource.users();
+
+        // Create user (requires manage-users role)
+        Response response = userRessource.create(newUser);
+        System.out.println("Repsonse: " + response.getStatusInfo());
+        String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+        System.out.printf("User created with userId: %s%n", userId);
+
+        // Get realm role "user" (requires view-realm role)
+        RoleRepresentation testerRealmRole = realmResource.roles()//
+                .get("user").toRepresentation();
+
+        // Assign realm role user(role) to user
+        userRessource.get(userId).roles().realmLevel() //
+                .add(Arrays.asList(testerRealmRole));
+
+        // Define password credential
+        CredentialRepresentation passwordCred = new CredentialRepresentation();
+        String password = new Random().ints(10, 33, 122).mapToObj(i -> String.valueOf((char) i))
+                .collect(Collectors.joining());
+        passwordCred.setType(CredentialRepresentation.PASSWORD);
+        passwordCred.setValue(password);
+        passwordCred.setTemporary(true);
+
+        // Set password credential
+        userRessource.get(userId).resetPassword(passwordCred);
+        System.out.print("Password :" + password);
+        UserRepresentation userR = keycloak.realm("quarkus").users().get(userId).toRepresentation();
+        userR.setAttributes(attributes);
+        keycloak.realm("quarkus").users().get(userId).update(userR);
+        return response.getStatusInfo();
+
+    }
+
+    @PUT
+    @Path("/changeuserstatus/{userid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Status changeUserStatus(@PathParam("userid") String userid) {
+        UserRepresentation userR = keycloak.realm("quarkus").users().get(userid).toRepresentation();
+        if (userR == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        userR.setEnabled(!userR.isEnabled());
+        keycloak.realm("quarkus").users().get(userid).update(userR);
+        return Response.Status.OK;
     }
 }

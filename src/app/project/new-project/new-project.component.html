@@ -1,4 +1,4 @@
-<button pButton routerLink="/project" class="btn btn-success mt-2 mb-2" label=" Project List"><i class="pi pi-plus"></i></button>
+<button nz-button nzType="primary" routerLink="/project"><i class="pi pi-plus mr-2" style="font-size: 0.8rem"></i>Project List</button>
 <div class="d-flex bd-highlight mt-3 ml-3">
     <div class="p-2 flex-fill bd-highlight">
         <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
@@ -191,4 +191,3 @@
             styleClass="p-button-text"></p-button>
     </ng-template>
 </p-dialog>
-timestamp

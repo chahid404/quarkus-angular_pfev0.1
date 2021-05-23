@@ -104,13 +104,11 @@
             </nz-select>
         </div>
         <div class="col mb-3">
-            <nz-form-label [nzSpan]="6" nzFor="startDate">Start Date</nz-form-label>
-            <nz-date-picker [(ngModel)]="TaskFilter.startDate" id="startDate" style="width: 150px;"></nz-date-picker>
+            <nz-date-picker  nzPlaceHolder="Start Date" [(ngModel)]="TaskFilter.startDate" id="startDate" style="width: 150px;"></nz-date-picker>
 
         </div>
         <div class="col mb-3">
-            <nz-form-label [nzSpan]="6" nzFor="dueDate">Due Date</nz-form-label>
-            <nz-date-picker [(ngModel)]="TaskFilter.dueDate" id="dueDate" style="width: 150px;"></nz-date-picker>
+            <nz-date-picker nzPlaceHolder="Due Date" [(ngModel)]="TaskFilter.dueDate" id="dueDate" style="width: 150px;"></nz-date-picker>
 
 
         </div>
@@ -127,10 +125,9 @@
             </mat-form-field>
         </div>
         <div class="col mb-3">
-            <nz-form-label [nzSpan]="6" nzFor="rating">Rating</nz-form-label>
             <p-rating [(ngModel)]="TaskFilter.score" id="rating"></p-rating>
         </div>
-        <div class="col mb-3">
+        <div class="col">
             <button (click)="onTaskFilter()" nz-button nzType="primary"><i class="pi pi-plus mr-2"
                     style="font-size: 0.8rem"></i>Filter</button>
         </div>
@@ -260,6 +257,8 @@
 
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000" rejectButtonStyleClass="p-button-text">
 </p-confirmDialog>
+    
+<nz-spin [nzSpinning]="loadingData" [nzSize]="'large'">
 <p-table [value]="projectsList" dataKey="name">
     <ng-template pTemplate="header">
         <tr>
@@ -277,6 +276,7 @@
             </th>
         </tr>
     </ng-template>
+    
     <ng-template pTemplate="body" let-project let-expanded="expanded">
         <tr>
             <td>
@@ -310,6 +310,7 @@
             </td>
         </tr>
     </ng-template>
+    
     <ng-template pTemplate="rowexpansion" let-project>
         <tr>
             <td colspan="7">
@@ -564,4 +565,6 @@
 </td>
 </tr>
 </ng-template>
+
 </p-table>
+</nz-spin>

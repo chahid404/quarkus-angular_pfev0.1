@@ -13,19 +13,30 @@ export class UserService {
 
 
   public getAllUsers() {
-    return this.httpClient.get<Users[]>(this.SERVER_URL+"/getallusers");
+    return this.httpClient.get<Users[]>(this.SERVER_URL + "/getallusers");
   }
 
   public getUserById(id) {
     return this.httpClient.get<Users>(this.SERVER_URL + "/getuserbyid/" + id);
   }
+  createuser
 
-  public updateUser(id,user:any) {
-    return this.httpClient.put<Users>(this.SERVER_URL + "/updateuser/" + id,user);
+  public createUser(newUser) {
+    return this.httpClient.post(this.SERVER_URL + "/createuser", newUser);
   }
 
-  public resetPassword(iduser:string,oldpass:string,newpass:string) {
-    return this.httpClient.get<Users>(this.SERVER_URL + "/restpassword/" + iduser+"/"+oldpass+"/"+newpass);
+  public updateUser(id, user: any) {
+    return this.httpClient.put<Users>(this.SERVER_URL + "/updateuser/" + id, user);
+  }
+
+  public changeUserStatus(id) {
+    return this.httpClient.put<Users>(this.SERVER_URL + "/changeuserstatus/" + id, {});
+  }
+
+
+
+  public resetPassword(iduser: string, oldpass: string, newpass: string) {
+    return this.httpClient.get<Users>(this.SERVER_URL + "/restpassword/" + iduser + "/" + oldpass + "/" + newpass);
   }
 
   public listOfMembers(array): Users[] {

@@ -18,6 +18,7 @@ export class PersonalinformationComponent implements OnInit {
   public currentUser:Users = new Users();
   public genderList: string[] = ['Female', 'Male'];
   public allCountries = CountryList;
+  public loadingData: boolean = true;
   currentUserForm = new FormGroup({
     firstName: new FormControl(''),
     lastName: new FormControl(''),
@@ -44,8 +45,10 @@ export class PersonalinformationComponent implements OnInit {
     this.userService.getUserById(this.kcService.getUserId()).subscribe(user=>{
       this.currentUser = user;
       this.currentUserForm.patchValue(user);
+      this.loadingData = false;
     },err=>{
       console.log(err);
+      this.messageService.add({severity:'error', summary: err.statusText, detail:"Please try again"});
     });
     
   }
@@ -57,11 +60,11 @@ export class PersonalinformationComponent implements OnInit {
       this.currentUserForm.patchValue(user);
       this.currentUser= user;
       this.messageService.add({severity:'success', summary:'success', detail:'Profile update successfully'});
-      this.isLoading = false;
     },err=>{
       console.log(err);
       this.messageService.add({severity:'error', summary: err.statusText, detail:err.status});
     })
+    this.isLoading = false;
   }
   onRestForm(){
     this.currentUserForm.patchValue(this.currentUser);

@@ -62,6 +62,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzListModule } from 'ng-zorro-antd/list';
 import {InputTextareaModule} from 'primeng/inputtextarea';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 
 
 
@@ -83,7 +84,8 @@ export function kcFactory(kcSecurity: KeycloakSecurityService) {
 const routes: Routes = [
   { path: "project", component: DemoComponent },
   {path:"newproject",component:NewProjectComponent},
-  { path: 'profile', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule) }
+  { path: 'profile', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule) },
+  { path: 'dashbord', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) }
 
 
 ];
@@ -107,7 +109,7 @@ const routes: Routes = [
     RatingModule, AvatarModule, AvatarGroupModule, MultiSelectModule, MatFormFieldModule, NgxMatSelectSearchModule,
     TableModule, ToastModule, CalendarModule, ContextMenuModule, DropdownModule, ProgressBarModule, InputTextModule, TooltipModule, NgbModule,
     ConfirmDialogModule,MatMenuModule,NzButtonModule,NzDatePickerModule,NzPopoverModule,NzSelectModule,NzIconModule,
-    NzCommentModule,NzFormModule,NzAvatarModule,NzListModule,InputTextareaModule
+    NzCommentModule, NzFormModule, NzAvatarModule, NzListModule, InputTextareaModule, NzSpinModule
 
 
   ],
