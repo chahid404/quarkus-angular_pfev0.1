@@ -16,6 +16,12 @@ export class UserService {
     return this.httpClient.get<Users[]>(this.SERVER_URL + "/getallusers");
   }
 
+  public getAllUsersMinesCurrentUserWithSearch(currentUser: string, searchParam: string) {
+    return this.httpClient.get<Users[]>(this.SERVER_URL + "/getallusers?currentuser=" + currentUser + "&search=" + searchParam);
+  }
+
+
+
   public getUserById(id) {
     return this.httpClient.get<Users>(this.SERVER_URL + "/getuserbyid/" + id);
   }
@@ -38,6 +44,13 @@ export class UserService {
   public resetPassword(iduser: string, oldpass: string, newpass: string) {
     return this.httpClient.get<Users>(this.SERVER_URL + "/restpassword/" + iduser + "/" + oldpass + "/" + newpass);
   }
+
+  public updateUserPic(userid: string, formData) {
+    return this.httpClient.put<Users>(this.SERVER_URL + "/updateuserpic?userid=" + userid, formData);
+  }
+
+
+
 
   public listOfMembers(array): Users[] {
     let usersAssigned: Users[] = [];

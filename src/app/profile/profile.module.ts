@@ -12,6 +12,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { RestpasswordComponent } from './editprofile/restpassword/restpassword.component';
 import { PersonalinformationComponent } from './editprofile/personalinformation/personalinformation.component';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NgxFileDragDropModule } from 'ngx-file-drag-drop';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 
 
@@ -39,7 +45,8 @@ const routes: Routes = [
     CalendarModule,
     ToastModule,
     MatSelectModule,
-    NzSpinModule,
+    NzSpinModule, NzUploadModule, NzModalModule,
+    NzInputModule, NzPopconfirmModule, NzIconModule, NgxFileDragDropModule,
     RouterModule.forChild(routes)
   ]
 })

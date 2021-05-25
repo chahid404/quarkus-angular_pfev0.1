@@ -1,19 +1,37 @@
 <nz-spin [nzSpinning]="isLoadingData" [nzSize]="'large'">
     <div class="container">
         <div class="row">
-
-            <div class="col col-xl-3 order-xl-3 col-lg-6 order-lg-3 col-md-6 col-sm-12 col-12">
+            <div class="col col-xl-4 order-xl-4 col-lg-6 order-lg-4 col-md-6 col-sm-12 col-12">
                 <div class="ui-block">
                     <div class="ui-block-content">
                         <ul class="statistics-list-count">
                             <li>
                                 <div class="points">
                                     <span>
-                                        Last Month Visitors
+                                        Number Of Users
                                     </span>
                                 </div>
-                                <div class="count-stat">28.432
-                                    <span class="indicator positive"> + 4.207</span>
+                                <div class="count-stat">{{dashbordInformations?.CountUser}}
+                                    <span class="indicator positive"> {{dashbordInformations?.active}} connected</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-xl-4 order-xl-4 col-lg-6 order-lg-4 col-md-6 col-sm-12 col-12">
+                <div class="ui-block">
+                    <div class="ui-block-content">
+                        <ul class="statistics-list-count">
+                            <li>
+                                <div class="points">
+                                    <span>
+                                        Number of Projects
+                                    </span>
+                                </div>
+                                <div class="count-stat">{{dashbordInformations?.CountProject}}
+                                    <span class="indicator positive"> + {{dashbordInformations?.CountProject-2}}
+                                        new</span>
                                 </div>
                             </li>
                         </ul>
@@ -21,56 +39,19 @@
                 </div>
             </div>
 
-            <div class="col col-xl-3 order-xl-3 col-lg-6 order-lg-3 col-md-6 col-sm-12 col-12">
+            <div class="col col-xl-4 order-xl-4 col-lg-6 order-lg-4 col-md-6 col-sm-12 col-12">
                 <div class="ui-block">
                     <div class="ui-block-content">
                         <ul class="statistics-list-count">
                             <li>
                                 <div class="points">
                                     <span>
-                                        Last Year Visitors
+                                        Number Of Tasks
                                     </span>
                                 </div>
-                                <div class="count-stat">450.623
-                                    <span class="indicator negative"> - 12.352</span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col col-xl-3 order-xl-3 col-lg-6 order-lg-3 col-md-6 col-sm-12 col-12">
-                <div class="ui-block">
-                    <div class="ui-block-content">
-                        <ul class="statistics-list-count">
-                            <li>
-                                <div class="points">
-                                    <span>
-                                        Last Month Posts
-                                    </span>
-                                </div>
-                                <div class="count-stat">16.502
-                                    <span class="indicator positive"> + 1.056</span>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col col-xl-3 order-xl-3 col-lg-6 order-lg-3 col-md-6 col-sm-12 col-12">
-                <div class="ui-block">
-                    <div class="ui-block-content">
-                        <ul class="statistics-list-count">
-                            <li>
-                                <div class="points">
-                                    <span>
-                                        Last Year Posts
-                                    </span>
-                                </div>
-                                <div class="count-stat">390.822
-                                    <span class="indicator positive"> + 2.847</span>
+                                <div class="count-stat">{{dashbordInformations?.CountTasks}}
+                                    <span class="indicator positive"> + {{dashbordInformations?.CountTasks-3}}
+                                        new</span>
                                 </div>
                             </li>
                         </ul>
@@ -80,85 +61,104 @@
 
         </div>
     </div>
-    <div class="container">
-        <div class="row">
-            <div class="col col-lg-12 col-sm-12 col-12">
-                <div class="ui-block responsive-flex">
-                    <div class="ui-block-title">
-                        <div class="h6 title">Monthly Bar Graphic</div>
-                    </div>
+</nz-spin>
+<div class="container">
+    <div class="row">
+        <div class="col col-lg-12 col-sm-12 col-12">
+            <div class="ui-block responsive-flex">
+                <div class="ui-block-title">
+                    <div class="h6 title">Monthly Bar Graphic</div>
+                </div>
 
-                    <div class="ui-block-content">
+                <div class="ui-block-content">
+                    <div class="d-flex justify-content-between">
+
                         <button (click)="showModal()" nz-button nzType="primary"><i style="font-size: 1rem;"
                                 class="pi pi-plus mr-2"></i> Add
                             new user</button>
                         <br />
                         <br />
-                        <nz-spin [nzSpinning]="isLoadingTable" [nzSize]="'large'">
-                            <nz-table #basicTable [nzData]="userList">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Picture</th>
-                                        <th>Username</th>
-                                        <th>Full Name</th>
-                                        <th>Email</th>
-                                        <th>status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let user of userList; let i = index">
-                                        <td style="width: 1rem;">{{i+1}}</td>
-                                        <td>
-                                            <div
-                                                *ngIf="user?.attributes?.imgUrl  == ' ' || user?.attributes?.imgUrl  == ''; then thenBlock else elseBlock">
-                                            </div>
-                                            <ng-template #thenBlock>
-                                                <p-avatar image="assets\img\user-avatar.png" styleClass="p-mr-2"
-                                                    size="large" shape="circle">
-                                                </p-avatar>
-                                            </ng-template>
-                                            <ng-template #elseBlock>
-                                                <p-avatar [image]="user?.attributes?.imgUrl" styleClass="p-mr-2"
-                                                    size="large" shape="circle">
-                                                </p-avatar>
-                                            </ng-template>
-                                        </td>
-                                        <td>{{ user.username }}</td>
-                                        <td>{{ user.firstName }} {{ user.lastName }}</td>
-                                        <td>{{user.email}}</td>
-                                        <td>
-                                            <ng-container *ngIf="user.enabled; else elseif1">
-                                                <p-tag styleClass="p-mr-2" severity="info" value="Enabled">
-                                                </p-tag>
-                                            </ng-container>
-                                            <ng-template #elseif1>
-                                                <p-tag styleClass="p-mr-2" severity="danger" value="Disabled"></p-tag>
-                                            </ng-template>
-                                        </td>
-                                        <td>
-                                            <ng-container *ngIf="user.enabled; else elseif2">
-                                                <button (click)="changeUserStatus(user.id)"><i
-                                                        style="color: red;font-size: 1.2rem"
-                                                        class="pi pi-trash"></i></button>
-                                            </ng-container>
-                                            <ng-template #elseif2>
-                                                <button (click)="changeUserStatus(user.id)"><i
-                                                        style="color: lawngreen;font-size: 1.2rem"
-                                                        class="pi pi-power-off"></i></button>
-                                            </ng-template>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </nz-table>
-                        </nz-spin>
+                        <mat-form-field style="width: 30%;" appearance="outline">
+                            <input (ngModelChange)="getAllUser()" [(ngModel)]="searchQuary" name="searchQuary" matInput
+                                placeholder="Search for user" />
+                            <button mat-button *ngIf="searchQuary" matSuffix mat-icon-button aria-label="Clear"
+                                (click)="searchQuary='';getAllUser()">
+                                <mat-icon matSuffix>close</mat-icon>
+                            </button>
+                            <button mat-button *ngIf="!searchQuary" matSuffix mat-icon-button aria-label="search"
+                                (click)="searchQuary=''">
+                                <mat-icon matSuffix>search</mat-icon>
+                            </button>
+                        </mat-form-field>
                     </div>
+                    <nz-spin [nzSpinning]="isLoadingTable" [nzSize]="'large'">
+                        <nz-table class="table" #basicTable [nzData]="userList">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Picture</th>
+                                    <th>Username</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of userList; let i = index">
+                                    <td style="width: 1rem;">{{i+1}}</td>
+                                    <td>
+                                        <div
+                                            *ngIf="user?.attributes?.imgUrl  == ' ' || user?.attributes?.imgUrl  == ''; then thenBlock else elseBlock">
+                                        </div>
+                                        <ng-template #thenBlock>
+                                            <p-avatar image="assets\img\user-avatar.png" styleClass="p-mr-2"
+                                                size="large" shape="circle">
+                                            </p-avatar>
+                                        </ng-template>
+                                        <ng-template #elseBlock>
+                                            <p-avatar [image]="urlserver(user?.attributes?.imgUrl)" styleClass="p-mr-2"
+                                                size="large" shape="circle">
+                                            </p-avatar>
+                                        </ng-template>
+                                    </td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.firstName }} {{ user.lastName }}</td>
+                                    <td>{{user.email}}</td>
+                                    <td>
+                                        <ng-container *ngIf="user.enabled; else elseif1">
+                                            <p-tag styleClass="p-mr-2" severity="info" value="Enabled">
+                                            </p-tag>
+                                        </ng-container>
+                                        <ng-template #elseif1>
+                                            <p-tag styleClass="p-mr-2" severity="danger" value="Disabled">
+                                            </p-tag>
+                                        </ng-template>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="user.enabled; else elseif2">
+                                            <button nz-popconfirm nzPopconfirmTitle="Are you sure?" nzOkText="ok"
+                                                nzCancelText="cancel" (nzOnConfirm)="hangeUserStatus(user.id)">
+                                                <i nz-icon style="font-size: 1.2rem" nzType="delete"
+                                                    [nzTheme]="'twotone'"
+                                                    [nzTwotoneColor]="'rgb(209, 33, 33)'"></i></button>
+                                        </ng-container>
+                                        <ng-template #elseif2>
+                                            <button nz-popconfirm nzPopconfirmTitle="Are you sure?" nzOkText="ok"
+                                                nzCancelText="cancel" (nzOnConfirm)="hangeUserStatus(user.id)">
+                                                <i nz-icon style="font-size: 1.2rem" [nzType]="'check-circle'"
+                                                    [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'"></i></button>
+                                        </ng-template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </nz-table>
+                    </nz-spin>
                 </div>
             </div>
         </div>
     </div>
-</nz-spin>
+</div>
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Create new user account" (nzOnCancel)="handleCancel()"
     (nzOnOk)="handleOk()">
     <ng-container *nzModalContent>
@@ -187,8 +187,6 @@
                                 First Name is required
                             </mat-error>
                         </mat-form-field>
-
-
                         <mat-form-field style="width: 100%" appearance="outline">
                             <mat-label>Last Name</mat-label>
                             <input formControlName="lastName" name="lastName" matInput placeholder="Your last Name" />
@@ -219,7 +217,8 @@
     </ng-container>
     <div *nzModalFooter>
         <button nz-button nzType="default" (click)="handleCancel()">Cancel</button>
-        <button nz-button nzType="primary" (click)="handleOk()" [nzLoading]="isConfirmLoading">Save</button>
+        <button [disabled]="!newUserForm.valid" nz-button nzType="primary" (click)="handleOk()"
+            [nzLoading]="isConfirmLoading">Save</button>
     </div>
 </nz-modal>
 <p-toast appendTo="body"></p-toast>

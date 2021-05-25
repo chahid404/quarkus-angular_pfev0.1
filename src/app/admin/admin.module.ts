@@ -14,6 +14,9 @@ import { AvatarModule } from 'primeng/avatar';
 import { TagModule } from 'primeng/tag';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { MatIconModule } from '@angular/material/icon';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 const routes: Routes = [
   { path: '', component: AdminComponent }
@@ -34,8 +37,8 @@ const routes: Routes = [
     NzTableModule,
     AvatarModule,
     TagModule,
-    NzButtonModule,
-    NzModalModule,
+    NzButtonModule, NzIconModule,
+    NzModalModule, MatIconModule, NzPopconfirmModule,
     RouterModule.forChild(routes)
   ]
 

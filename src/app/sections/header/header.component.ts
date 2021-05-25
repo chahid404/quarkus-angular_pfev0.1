@@ -6,6 +6,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { interval, Subscription } from 'rxjs';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { UserService } from 'src/app/services/user.service';
+import { Users } from 'src/app/models/project/user.module';
 
 @Component({
   selector: 'app-header',
@@ -22,9 +23,16 @@ export class HeaderComponent implements OnInit {
   notifnumber: number = 0;
   newNotifnumber: number = 0;
   mySubscription: Subscription;
+  currentUser: Users;
+  public SERVER_URL = "http://localhost:8082/keycloak/download?filename=";
 
 
-  constructor(private userService:UserService,private _snackBar: MatSnackBar,public kcService: KeycloakSecurityService, private notifService: NotificationService, private lc: LocalStorageService) {
+  constructor(private userService: UserService,
+    private _snackBar: MatSnackBar,
+    public kcService: KeycloakSecurityService,
+    private notifService: NotificationService,
+    private lc: LocalStorageService,
+  ) {
     this.mySubscription = interval(5000).subscribe((x => {
       this.doStuff();
     }));
@@ -47,6 +55,9 @@ export class HeaderComponent implements OnInit {
     this.currentUserId = this.lc.getCurrentUser();
     this.getNotifs(this.lc.getCurrentUser());
     this.countNotifUnRead(this.lc.getCurrentUser());
+    this.userService.getUserById(this.currentUserId).subscribe(user => {
+      this.currentUser = user;
+    })
   }
   onLogout() {
     this.kcService.kc.logout();
@@ -55,23 +66,23 @@ export class HeaderComponent implements OnInit {
     this.kcService.kc.login();
   }
   onMarkAllAsRead() {
-    this.notifService.markAllAsRead(this.currentUserId).subscribe(x=>{
+    this.notifService.markAllAsRead(this.currentUserId).subscribe(x => {
       this.notifnumber = 0;
-    },err=>{
+    }, err => {
       console.log(err);
-      
+
     });
     //this.countNotifUnRead(this.lc.getCurrentUser());
     //this.getNotifs(this.lc.getCurrentUser());
 
   }
   onClearAllNotification() {
-    this.notifService.cleanAllNotifFoUser(this.currentUserId).subscribe(x=>{
+    this.notifService.cleanAllNotifFoUser(this.currentUserId).subscribe(x => {
       this.notifnumber = 0;
       this.notifList = [];
-    },err=>{
+    }, err => {
       console.log(err);
-      
+
     });
     //this.countNotifUnRead(this.lc.getCurrentUser());
     //this.getNotifs(this.lc.getCurrentUser());
@@ -90,8 +101,8 @@ export class HeaderComponent implements OnInit {
       this.notifList2 = notif;
       this.notifList2.forEach(notif => {
         notif.datedifference = this.calculDiffDate(notif.createdAt);
-        this.userService.getUserById(notif.idCreator).subscribe(x=>{
-          notif.userRecever=x;
+        this.userService.getUserById(notif.idCreator).subscribe(x => {
+          notif.userRecever = x;
         })
         this.notifList.push(notif);
       });
@@ -102,12 +113,12 @@ export class HeaderComponent implements OnInit {
     this.notifService.returnUnReadNotif(iduser).subscribe(notif => {
       this.notifnumber = notif.length;
     });
-    
+
   }
-  countNotifUnReadSync(iduser){
+  countNotifUnReadSync(iduser) {
     this.notifService.returnUnReadNotif(iduser).subscribe(notif => {
-      this.newNotifnumber=notif.length;
-      this.notifList=notif;
+      this.newNotifnumber = notif.length;
+      this.notifList = notif;
     });
 
   }
@@ -120,5 +131,8 @@ export class HeaderComponent implements OnInit {
     datedifference.diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
     datedifference.diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
     return datedifference;
+  }
+  urlserver(imgUrl): string {
+    return this.SERVER_URL + imgUrl;
   }
 }

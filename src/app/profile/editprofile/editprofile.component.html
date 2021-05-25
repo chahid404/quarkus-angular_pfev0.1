@@ -18,16 +18,27 @@
                         </div>
                     </div>
                     <div class="top-header-author">
-                        <div class="author-thumb">
-                            <img style="max-width: 124px;max-height: 124px;"
-                                [src]="currentUser?.attributes?.imgUrl==='string'  || currentUser?.attributes?.imgUrl===''? 'assets/img/user-avatar.png' : currentUser?.attributes?.imgUrl"
-                                alt="author">
-                        </div>
-                        <div class="author-content">
-                            <a href="02-ProfilePage.html" class="h4 author-name">{{currentUser.firstName}}
-                                {{currentUser.lastName}}</a>
-                            <div class="country">{{currentUser.email}}</div>
-                        </div>
+                        <nz-spin [nzSpinning]="onLoadPhoto" [nzSize]="'large'">
+
+                            <div class="author-thumb">
+                                <img style="max-width: 124px;max-height: 124px;"
+                                    [src]="currentUser?.attributes?.imgUrl==='string'  || currentUser?.attributes?.imgUrl===''? 'assets/img/user-avatar.png' : urlserver(currentUser?.attributes?.imgUrl)"
+                                    alt="author">
+                                <i nz-icon data-toggle="modal" data-target="#update-header-photo"
+                                    [nzType]="'exclamation-circle'" [nzTheme]="'twotone'"
+                                    style=" position: fixed; margin-top: -10% ;margin-left: 10%; font-size: 1.5rem;"
+                                    nzTheme="twotone"></i>
+                            </div>
+
+                            <!-- <i nz-icon nzType="edit" style="position: absolute;" nzTheme="outline"></i> -->
+                            <div class="author-content">
+
+                                <a routerLink="/profile/edit/personalinformations"
+                                    class="h4 author-name">{{currentUser.firstName}}
+                                    {{currentUser.lastName}}</a>
+                                <div class="country">{{currentUser.email}}</div>
+                            </div>
+                        </nz-spin>
                     </div>
                 </div>
             </div>
@@ -104,3 +115,39 @@
 </div>
 
 <!-- ... end Your Account Personal Information -->
+<div class="modal fade" id="update-header-photo" tabindex="-1" role="dialog" aria-labelledby="update-header-photo"
+    aria-hidden="true">
+    <div class="modal-dialog window-popup update-header-photo" role="document">
+        <div class="modal-content">
+            <a href="#" class="close icon-close" data-dismiss="modal" aria-label="Close">
+                <svg class="olymp-close-icon">
+                    <use xlink:href="assets/svg-icons/sprites/icons.svg#olymp-close-icon"></use>
+                </svg>
+            </a>
+
+            <div class="modal-header">
+                <h4 class="title">Update Header Photo</h4>
+            </div>
+            <div style="height: 120%;" class="modal-body">
+                <!-- <nz-upload [nzLimit]="1" nzListType="picture-card" [nzPreview]="handlePreview">
+                    <div>
+                        <i nz-icon nzType="plus"></i>
+                        <div style="margin-top: 8px">Upload</div>
+                    </div>
+                </nz-upload>
+                <img *ngIf="previewVisible" [src]="previewImage" [ngStyle]="{ width: '100%' }" /> -->
+                <ngx-file-drag-drop accept='image/*' [formControl]="fileControl" activeBorderColor="#3F51B5"
+                    (valueChanged)="onValueChange($event,$event)">
+                </ngx-file-drag-drop>
+            </div>
+            <div class="d-flex flex-row-reverse bd-highlight">
+                <div class="p-2 bd-highlight">
+                    <button data-dismiss="modal" aria-label="Close" class="btn btn-secondary">Cancel</button>
+                    <button (click)="uploadProfilePic()" [disabled]="fileControl.invalid" data-dismiss="modal"
+                        aria-label="Close" class="btn btn-primary">Confirm
+                        Photo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -370,7 +370,9 @@
 
             <div class="author-page author vcard inline-items more">
                 <div class="author-thumb">
-                    <img alt="author" style="max-height: 42px;max-width: 42px;" src="assets/img/user-avatar.png" class="avatar">
+                    <img alt="author" style="max-height: 42px;max-width: 42px;"
+                        [src]="currentUser?.attributes?.imgUrl===' '  || currentUser?.attributes?.imgUrl===''? 'assets/img/user-avatar.png' : urlserver(currentUser?.attributes?.imgUrl)"
+                        class="avatar">
                     <span class="icon-status online"></span>
                     <div class="more-dropdown more-with-triangle">
                         <div class="mCustomScrollbar" data-mcs-theme="dark">
@@ -389,7 +391,7 @@
                                         <span>Profile Settings</span>
                                     </a>
                                 </li>
-   
+
                                 <li>
                                     <a routerLink="./">
                                         <svg class="olymp-logout-icon">

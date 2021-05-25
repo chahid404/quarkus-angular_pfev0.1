@@ -84,10 +84,10 @@ public class DocumentRessource {
     FileParams fileParams = new FileParams();
     int randomNumber = random.nextInt(1000 - 10) + 10;
     LocalDate localDate = LocalDate.now();
-    writeFile(bytes, path + randomNumber + "-" + localDate + "-" + bodyFile.getFileName());
+    writeFile(bytes, path + randomNumber + "-" + localDate + "-" + bodyFile.getFileName().replace(" ", ""));
     fileParams.setFileName(bodyFile.getFileName());
-    fileParams.setFullPath(path + randomNumber + "-" + localDate + "-" + bodyFile.getFileName());
-    fileParams.setRegenaratedFileName(randomNumber + "-" + localDate + "-" + bodyFile.getFileName());
+    fileParams.setFullPath(path + randomNumber + "-" + localDate + "-" + bodyFile.getFileName().replace(" ", ""));
+    fileParams.setRegenaratedFileName(randomNumber + "-" + localDate + "-" + bodyFile.getFileName().replace(" ", ""));
     return fileParams;
   }
 
@@ -122,12 +122,12 @@ public class DocumentRessource {
 
   @GET
   @Path("/download/{filename}")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
   public Response loadFile(@PathParam("filename") String filename) {
 
-    File file = new File("../uploads/"+filename);  
-        ResponseBuilder response = Response.ok((Object) file);  
-        response.header("Content-Disposition", "attachment;filename=" + file);
-        return response.build(); 
+    File file = new File("../uploads/" + filename);
+    ResponseBuilder response = Response.ok((Object) file);
+    response.header("Content-Disposition", "attachment;filename=" + file);
+    return response.build();
   }
 }

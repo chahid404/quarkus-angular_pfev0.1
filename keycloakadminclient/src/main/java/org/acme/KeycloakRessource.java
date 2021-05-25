@@ -1,5 +1,6 @@
 package org.acme;
 
+import org.acme.requestBody.ImageFormParam;
 import org.acme.requestBody.User;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -7,11 +8,10 @@ import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
-import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.MappingsRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,15 +19,20 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
-
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,43 +47,43 @@ public class KeycloakRessource {
     Keycloak keycloak = KeycloakBuilder.builder().serverUrl(serverUrl).realm("master").clientId("admin-cli")
             .username("admin").password("admin").clientSecret(clientSecret).build();
     private String imgUrl;
-
-    @GET
-    public MappingsRepresentation hello() {
-
-        return keycloak.realm("quarkus").users().get("5c5df9b2-04a0-416d-a90c-fc659ed478b3").roles().getAll();
-    }
-
-    @GET
-    @Path("v2")
-    @Produces(MediaType.APPLICATION_JSON)
-    public UserRepresentation hello2() {
-        UserRepresentation user = keycloak.realm("quarkus").users().get("5c5df9b2-04a0-416d-a90c-fc659ed478b3")
-                .toRepresentation();
-        Map<String, List<String>> attributes = new HashMap<String, List<String>>();
-        if (user.getAttributes() != null) {
-            attributes = user.getAttributes();
-        }
-        List<String> value = new ArrayList<String>();
-        value.add("aaa");
-        value.add("bbbb");
-        attributes.put("birthday", value);
-        attributes.put("nationality", value);
-        attributes.put("gender", value);
-        attributes.put("email", value);
-        attributes.put("telephone", value);
-        attributes.put("zip_code", value);
-        attributes.put("imgUrl", value);
-        user.setAttributes(attributes);
-        keycloak.realm("quarkus").users().get("5c5df9b2-04a0-416d-a90c-fc659ed478b3").update(user);
-        return keycloak.realm("quarkus").users().get("5c5df9b2-04a0-416d-a90c-fc659ed478b3").toRepresentation();
-    }
+    public String path = "../../../../../uploads/";
 
     @GET
     @Path("/getallusers")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserRepresentation> getAllUsers() {
-        return keycloak.realm(realmName).users().list();
+    public List<UserRepresentation> getAllUsers(@QueryParam("currentuser") String userId,
+            @QueryParam("search") String search) {
+        List<UserRepresentation> listUsers = new ArrayList<UserRepresentation>();
+        if (search != "") {
+            listUsers = keycloak.realm(realmName).users().search(search, 0, 10);
+        } else {
+            listUsers = keycloak.realm(realmName).users().list();
+        }
+        if (userId != "") {
+            if (keycloak.realm(realmName).users().get(userId).toRepresentation() != null) {
+                int currentUserIndex = returnIndexOfUserInListOfUsers(listUsers,
+                        keycloak.realm(realmName).users().get(userId).toRepresentation());
+                if (currentUserIndex != -1) {
+                    listUsers.remove(currentUserIndex);
+                }
+            }
+        }
+        return sortListOfUsersByCreatedDate(listUsers);
+    }
+
+    @GET
+    @Path("/getRealmSession")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, String> getRealmSession() {
+        Map<String, String> newAtt = new HashMap<>();
+        List<Map<String, String>> sessionInfomation = keycloak.realm(realmName).getClientSessionStats();
+        int numberOfuser = keycloak.realm(realmName).users().count();
+        newAtt.put("numberOfuser", Integer.toString(numberOfuser));
+        sessionInfomation.get(0).put("CountUser", Integer.toString(numberOfuser));
+        sessionInfomation.get(0).put("CountProject", Integer.toString(numberOfuser));
+        sessionInfomation.get(0).put("CountTasks", Integer.toString(numberOfuser));
+        return sessionInfomation.get(0);
     }
 
     @GET
@@ -247,5 +252,74 @@ public class KeycloakRessource {
         userR.setEnabled(!userR.isEnabled());
         keycloak.realm("quarkus").users().get(userid).update(userR);
         return Response.Status.OK;
+    }
+
+    @PUT
+    @Path("/updateuserpic")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response updateUserPic(@QueryParam("userid") String userid, @MultipartForm ImageFormParam fileBody)
+            throws IOException {
+        UserRepresentation userR = keycloak.realm(realmName).users().get(userid).toRepresentation();
+        if (userR == null) {
+            throw new WebApplicationException("user not found", Response.Status.NOT_FOUND);
+        }
+        if (fileBody == null) {
+            throw new WebApplicationException("please select profile picture", Response.Status.NO_CONTENT);
+        }
+        // upload pic
+        byte[] bytes = fileBody.file.readAllBytes();
+        LocalDateTime localDate = LocalDateTime.now();
+        String picFullpath = localDate.toString().replace(":", "") + fileBody.getFileName().replace(" ", "");
+        writeFile(bytes, path + picFullpath);
+        // update profile
+        if (userR.getAttributes() != null) {
+            userR.getAttributes().entrySet().forEach(key -> {
+                if (key.getValue() != null && key.getKey().matches("imgUrl")) {
+                    userR.getAttributes().replace("imgUrl", Arrays.asList(picFullpath));
+                }
+            });
+        }
+        userR.setAttributes(userR.getAttributes());
+        keycloak.realm(realmName).users().get(userid).update(userR);
+        return Response.ok(userR).build();
+    }
+
+    @GET
+    @Path("/download")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response loadFile(@QueryParam("filename") String filename) {
+        File file = new File(path + filename);
+        ResponseBuilder response = Response.ok((Object) file);
+        response.header("Content-Disposition", "attachment;filename=" + file);
+        return response.build();
+    }
+
+    int returnIndexOfUserInListOfUsers(List<UserRepresentation> users, UserRepresentation user) {
+        int i = 0;
+        for (UserRepresentation userRepresentation : users) {
+            if (userRepresentation.getId().equalsIgnoreCase(user.getId())) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
+    List<UserRepresentation> sortListOfUsersByCreatedDate(List<UserRepresentation> users) {
+        List<UserRepresentation> sortedUsers = users.stream()
+                .sorted(Comparator.comparing(UserRepresentation::getCreatedTimestamp)).collect(Collectors.toList());
+        return sortedUsers;
+    }
+
+    private void writeFile(byte[] content, String filename) throws IOException {
+        File file = new File(filename);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        FileOutputStream fop = new FileOutputStream(file);
+        fop.write(content);
+        fop.flush();
+        fop.close();
     }
 }
