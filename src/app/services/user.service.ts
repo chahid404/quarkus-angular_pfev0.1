@@ -1,19 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Users } from '../models/project/user.module';
+import { KeycloakSecurityService } from './keycloak-security.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient,
+    private ks: KeycloakSecurityService) { }
   SERVER_URL = "http://localhost:8082/keycloak";
 
 
 
   public getAllUsers() {
-    return this.httpClient.get<Users[]>(this.SERVER_URL + "/getallusers");
+    return this.httpClient.get<Users[]>(this.SERVER_URL + "/getallusers?currentuser=" + this.ks.getUserId());
   }
 
   public getAllUsersMinesCurrentUserWithSearch(currentUser: string, searchParam: string) {

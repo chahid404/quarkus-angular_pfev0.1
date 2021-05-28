@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { KeycloakSecurityService } from 'src/app/services/keycloak-security.service';
 import { UserService } from 'src/app/services/user.service';
@@ -13,15 +13,20 @@ import { UserService } from 'src/app/services/user.service';
 export class RestpasswordComponent implements OnInit {
   public isLoading: boolean = false;
   public restPasswordForum = new FormGroup({
-    oldpassword: new FormControl(''),
-    newPassword: new FormControl(''),
-    repeatnewPassword: new FormControl('')
+    oldpassword: new FormControl('', [
+      Validators.required,
+      ]),
+    newPassword: new FormControl('', [
+      Validators.required,
+      ]),
+    repeatnewPassword: new FormControl('', [
+      Validators.required,
+      ])
   });
   constructor(
     private userService: UserService,
-    private kcService: KeycloakSecurityService,
-    private messageService: MessageService
-  ) { }
+    private kcService: KeycloakSecurityService,  private messageService: MessageService
+    ) { }
 
   ngOnInit(): void {
     this.restPasswordForum.reset();
@@ -46,10 +51,9 @@ export class RestpasswordComponent implements OnInit {
         console.log(err);
         this.messageService.add({ severity: 'error', summary: "Worng Password", detail: "Please try again" });
       });
-      this.restPasswordForum.reset();
+      
     } 
     this.isLoading = false;
+    this.restPasswordForum.reset();
   }
-
-
 }

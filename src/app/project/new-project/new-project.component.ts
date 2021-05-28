@@ -276,6 +276,8 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
         this.usersList = users;
         var indexOfSepecificUser = this.usersList.findIndex(u => u.id === user.id);
         this.usersList.splice(indexOfSepecificUser, 1);
+        console.log(this.usersList);
+
       }, error => {
         console.log(error);
       });

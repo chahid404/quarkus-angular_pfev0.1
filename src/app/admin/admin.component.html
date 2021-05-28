@@ -137,15 +137,15 @@
                                     </td>
                                     <td>
                                         <ng-container *ngIf="user.enabled; else elseif2">
-                                            <button nz-popconfirm nzPopconfirmTitle="Are you sure?" nzOkText="ok"
-                                                nzCancelText="cancel" (nzOnConfirm)="hangeUserStatus(user.id)">
+                                            <button nz-popconfirm nzPopconfirmTitle="Are you sure?" nzOkText="ok" 
+                                                nzCancelText="cancel" (nzOnConfirm)="changeUserStatus(user.id)">
                                                 <i nz-icon style="font-size: 1.2rem" nzType="delete"
                                                     [nzTheme]="'twotone'"
                                                     [nzTwotoneColor]="'rgb(209, 33, 33)'"></i></button>
                                         </ng-container>
                                         <ng-template #elseif2>
                                             <button nz-popconfirm nzPopconfirmTitle="Are you sure?" nzOkText="ok"
-                                                nzCancelText="cancel" (nzOnConfirm)="hangeUserStatus(user.id)">
+                                                nzCancelText="cancel" (nzOnConfirm)="changeUserStatus(user.id)">
                                                 <i nz-icon style="font-size: 1.2rem" [nzType]="'check-circle'"
                                                     [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'"></i></button>
                                         </ng-template>

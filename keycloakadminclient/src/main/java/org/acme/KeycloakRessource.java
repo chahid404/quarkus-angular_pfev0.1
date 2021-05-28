@@ -47,7 +47,7 @@ public class KeycloakRessource {
     Keycloak keycloak = KeycloakBuilder.builder().serverUrl(serverUrl).realm("master").clientId("admin-cli")
             .username("admin").password("admin").clientSecret(clientSecret).build();
     private String imgUrl;
-    public String path = "../../../../../uploads/";
+    //public String path = "../../../../../uploads/";
 
     @GET
     @Path("/getallusers")
@@ -271,7 +271,7 @@ public class KeycloakRessource {
         byte[] bytes = fileBody.file.readAllBytes();
         LocalDateTime localDate = LocalDateTime.now();
         String picFullpath = localDate.toString().replace(":", "") + fileBody.getFileName().replace(" ", "");
-        writeFile(bytes, path + picFullpath);
+        writeFile(bytes,picFullpath);
         // update profile
         if (userR.getAttributes() != null) {
             userR.getAttributes().entrySet().forEach(key -> {
@@ -289,7 +289,7 @@ public class KeycloakRessource {
     @Path("/download")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response loadFile(@QueryParam("filename") String filename) {
-        File file = new File(path + filename);
+        File file = new File(filename);
         ResponseBuilder response = Response.ok((Object) file);
         response.header("Content-Disposition", "attachment;filename=" + file);
         return response.build();
