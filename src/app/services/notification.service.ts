@@ -69,7 +69,7 @@ export class NotificationService {
     return this.http.get<Notification[]>(this.host + "/notif/returnunreadnotif/" + idRecever);
   }
 
-  public sendNotifsForMultiUsersid(membres: string[], targetProject: number, action: string,projectCreator:string) {
+  public sendNotifsForMultiUsersid(membres: string[], targetProject: number, action: string, projectCreator: string) {
     let newNotif: Notification = new Notification();
     membres.forEach(user => {
       if (this.lc.getCurrentUser() != user) {
@@ -77,26 +77,26 @@ export class NotificationService {
         newNotif.targetProjectid = targetProject;
         newNotif.action = action;
         newNotif.idCreator = this.lc.getCurrentUser();
-        this.createNotif(newNotif).subscribe(res=>{
+        this.createNotif(newNotif).subscribe(res => {
           console.log("notif send avec succé");
-        },err=>{
+        }, err => {
           console.log(err);
         });
       }
     });
-    if (this.lc.getCurrentUser()!=projectCreator) {
+    if (this.lc.getCurrentUser() != projectCreator) {
       newNotif.idRecever = projectCreator;
-        newNotif.targetProjectid = targetProject;
-        newNotif.action = action;
-        newNotif.idCreator = this.lc.getCurrentUser();
-        this.createNotif(newNotif).subscribe(res=>{
-          console.log(projectCreator);
-        },err=>{
-          console.log(err);
-        });
+      newNotif.targetProjectid = targetProject;
+      newNotif.action = action;
+      newNotif.idCreator = this.lc.getCurrentUser();
+      this.createNotif(newNotif).subscribe(res => {
+        console.log(projectCreator);
+      }, err => {
+        console.log(err);
+      });
     }
   }
-  public sendNotifsForMultiUsersidvs(membres: Users[], targetProject: number, action: string,projectCreator:string) {
+  public sendNotifsForMultiUsersidvs(membres: Users[], targetProject: number, action: string, projectCreator: string) {
     let newNotif: Notification = new Notification();
     membres.forEach(user => {
       if (this.lc.getCurrentUser() != user.id) {
@@ -104,24 +104,28 @@ export class NotificationService {
         newNotif.targetProjectid = targetProject;
         newNotif.action = action;
         newNotif.idCreator = this.lc.getCurrentUser();
-        this.createNotif(newNotif).subscribe(res=>{
+        this.createNotif(newNotif).subscribe(res => {
           console.log("notif send avec succé");
-        },err=>{
+        }, err => {
           console.log(err);
         });
       }
     });
-    if (this.lc.getCurrentUser()!=projectCreator) {
+    if (this.lc.getCurrentUser() != projectCreator) {
       newNotif.idRecever = projectCreator;
-        newNotif.targetProjectid = targetProject;
-        newNotif.action = action;
-        newNotif.idCreator = this.lc.getCurrentUser();
-        this.createNotif(newNotif).subscribe(res=>{
-          console.log(projectCreator);
-        },err=>{
-          console.log(err);
-        });
+      newNotif.targetProjectid = targetProject;
+      newNotif.action = action;
+      newNotif.idCreator = this.lc.getCurrentUser();
+      this.createNotif(newNotif).subscribe(res => {
+        console.log(projectCreator);
+      }, err => {
+        console.log(err);
+      });
     }
+  }
+
+  public sendCongratEmailToUser(email) {
+    return this.http.get(this.host + "/sendmail/sendcongratulationsmail?email=" + email);
   }
 }
 

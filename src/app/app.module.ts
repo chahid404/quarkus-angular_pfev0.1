@@ -47,8 +47,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { KeycloakSecurityService } from './services/keycloak-security.service';
 import { TooltipModule } from 'primeng/tooltip';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {ConfirmDialogModule} from 'primeng/confirmdialog';
-import {MatMenuModule} from '@angular/material/menu';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MatMenuModule } from '@angular/material/menu';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { en_US } from 'ng-zorro-antd/i18n';
 import en from '@angular/common/locales/en';
@@ -61,29 +61,33 @@ import { NzCommentModule } from 'ng-zorro-antd/comment';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzListModule } from 'ng-zorro-antd/list';
-import {InputTextareaModule} from 'primeng/inputtextarea';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { FullCalendarModule } from '@fullcalendar/angular'; // the main connector. must go first
+import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin
+import interactionPlugin from '@fullcalendar/interaction'; // a plugin
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { NzResultModule } from 'ng-zorro-antd/result';
+
 
 
 
 registerLocaleData(en);
-
-
-
-
-
-
-
 export function kcFactory(kcSecurity: KeycloakSecurityService) {
   return () => kcSecurity.init();
 }
 
 
-
+FullCalendarModule.registerPlugins([ // register FullCalendar plugins
+  dayGridPlugin,
+  interactionPlugin,
+  timeGridPlugin
+]);
 
 const routes: Routes = [
   { path: "project", component: DemoComponent },
-  {path:"newproject",component:NewProjectComponent},
+  { path: "newproject", component: NewProjectComponent },
   { path: 'profile', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule) },
   { path: 'dashbord', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) }
 
@@ -108,8 +112,8 @@ const routes: Routes = [
     AngularEditorModule, DialogModule, ButtonModule, FileUploadModule, NgxMatTagInputModule, MatSelectModule, SliderModule, TagModule, MatProgressBarModule,
     RatingModule, AvatarModule, AvatarGroupModule, MultiSelectModule, MatFormFieldModule, NgxMatSelectSearchModule,
     TableModule, ToastModule, CalendarModule, ContextMenuModule, DropdownModule, ProgressBarModule, InputTextModule, TooltipModule, NgbModule,
-    ConfirmDialogModule,MatMenuModule,NzButtonModule,NzDatePickerModule,NzPopoverModule,NzSelectModule,NzIconModule,
-    NzCommentModule, NzFormModule, NzAvatarModule, NzListModule, InputTextareaModule, NzSpinModule
+    ConfirmDialogModule, MatMenuModule, NzButtonModule, NzDatePickerModule, NzPopoverModule, NzSelectModule, NzIconModule,
+    NzCommentModule, NzFormModule, NzAvatarModule, NzListModule, InputTextareaModule, NzSpinModule, FullCalendarModule, NzModalModule, NzResultModule
 
 
   ],

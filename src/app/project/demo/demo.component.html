@@ -70,6 +70,10 @@
             style="font-size: 0.8rem"></i>Add new Project</button>
 
     <div class="d-flex justify-content-end">
+        <button *ngIf="!isCalendar" (click)="tasksViewMode()" nz-button class="mr-2"><i class="pi pi-calendar mr-2"
+                style="font-size: 0.8rem"></i>Calander</button>
+        <button *ngIf="isCalendar" (click)="tasksViewMode()" nz-button class="mr-2"><i class="pi pi-list mr-2"
+                style="font-size: 0.8rem"></i>List</button>
         <button (click)="initProjectsList()" nz-button class="mr-2"><i class="pi pi-filter-slash mr-2"
                 style="font-size: 0.8rem"></i>Clear</button>
         <button nz-button nz-popover nzPopoverTrigger="click" nzPopoverTitle="Task Filter" nzType="primary"
@@ -260,7 +264,7 @@
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000" rejectButtonStyleClass="p-button-text">
 </p-confirmDialog>
 
-<nz-spin [nzSpinning]="loadingData" [nzSize]="'large'">
+<nz-spin *ngIf="!isCalendar" [nzSpinning]="loadingData" [nzSize]="'large'">
     <p-table [value]="projectsList" dataKey="name">
         <ng-template pTemplate="header">
             <tr>
@@ -305,7 +309,6 @@
                 <td>{{project.status}}</td>
                 <td>
                     <p-progressBar [value]="project.progress"></p-progressBar>
-
                     <!-- <p>{{project.progress}}</p> -->
                 </td>
                 <td><span>{{project.createdDate}}</span>
@@ -574,3 +577,30 @@
 
     </p-table>
 </nz-spin>
+<nz-spin *ngIf="isCalendar" [nzSpinning]="loadingData" [nzSize]="'large'">
+    <full-calendar [options]="calendarOptions"></full-calendar>
+</nz-spin>
+<nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null"
+    (nzOnCancel)="previewVisible = false">
+    <ng-template #modalContent>
+        <!-- <img [src]="previewImage" [ngStyle]="{ width: '100%' }" /> -->
+        <nz-result nzStatus="success" nzTitle="Successfully this project is done !"
+            nzSubTitle="You can here select the best membre of the project !">
+            <div nz-result-extra>
+                <nz-list nzItemLayout="horizontal" [nzLoading]="loadingUsers">
+                    <nz-list-item *ngFor="let user of listUsersOfCompletedProject">
+                        <nz-list-item-meta
+                            [nzAvatar]="user?.attributes?.imgUrl===' '  || user?.attributes?.imgUrl===''? 'assets/img/user-avatar.png' : urlserver(user?.attributes?.imgUrl)"
+                            nzDescription="{{user.email}}">
+                            <nz-list-item-meta-title>
+                                <button (click)="sendCongradEmail(user.email)">{{ user.firstName }} {{ user.lastName
+                                    }}</button>
+                            </nz-list-item-meta-title>
+                        </nz-list-item-meta>
+                    </nz-list-item>
+                    <button nz-button nzType="primary">Go Console</button>
+                </nz-list>
+            </div>
+        </nz-result>
+    </ng-template>
+</nz-modal>

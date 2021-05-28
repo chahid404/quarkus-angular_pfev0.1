@@ -1,10 +1,16 @@
-/* You can add global styles to this file, and also import other style files */ 
-@import"./assets/Bootstrap/dist/css/bootstrap.css";
-@import"./assets/Bootstrap/dist/css/bootstrap-grid.css";
-@import"./assets/Bootstrap/dist/css/bootstrap-reboot.css";
+/* You can add global styles to this file, and also import other style files */
+@import "./assets/Bootstrap/dist/css/bootstrap.css";
+@import "./assets/Bootstrap/dist/css/bootstrap-grid.css";
+@import "./assets/Bootstrap/dist/css/bootstrap-reboot.css";
 /* @import "../node_modules/flatpickr/dist/flatpickr.css"; */
- /* regular style toast */
+/* regular style toast */
 @import "~ng-zorro-antd/ng-zorro-antd.min.css";
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+@import "../node_modules/@fullcalendar/daygrid/main.css";
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

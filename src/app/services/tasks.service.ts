@@ -12,6 +12,7 @@ export class TasksService {
 
   public host: string = "http://localhost:8083";
 
+
   constructor(private httpClient: HttpClient) { }
 
   public deleteTask(taskid: number) {
@@ -22,13 +23,17 @@ export class TasksService {
   }
 
   public createNewTask(idproject: number, iduser: string) {
-    return this.httpClient.post(this.host + "/tasks/createnewtask/" + idproject + "/" + iduser,{});
+    return this.httpClient.post(this.host + "/tasks/createnewtask/" + idproject + "/" + iduser, {});
   }
-  public updateTask(idtask,task:TaskRequest){
-   return this.httpClient.put(this.host+"/tasks/"+idtask,task);
+  public updateTask(idtask, task: TaskRequest) {
+    return this.httpClient.put(this.host + "/tasks/" + idtask, task);
   }
-  public addDocumentToTask(idTask,doc){
-    return this.httpClient.put(this.host+"/tasks/adddocment/"+idTask,doc);
+  public addDocumentToTask(idTask, doc) {
+    return this.httpClient.put(this.host + "/tasks/adddocment/" + idTask, doc);
+  }
+
+  public getTaskById(idtask) {
+    return this.httpClient.get<Task>(this.host + "/tasks/" + idtask);
   }
 
 }

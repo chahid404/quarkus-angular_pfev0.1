@@ -120,9 +120,9 @@ public class KeycloakRessource {
         user.setFirstName(userBody.getFirstName());
         user.setLastName(userBody.getLastName());
         user.setEnabled(userBody.getEnabled());
-        if (userBody.getAttributes().birthday != null) {
-            attributes.put("birthday", Arrays.asList(userBody.getAttributes().birthday));
-        }
+        // if (userBody.getAttributes().birthday != null) {
+        //     attributes.put("birthday", Arrays.asList("2021-02-03");
+        // }
         if (userBody.getAttributes().nationality != null) {
             attributes.put("nationality", Arrays.asList(userBody.getAttributes().nationality));
         }

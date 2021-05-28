@@ -11,7 +11,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("/keycloak")
 @RegisterRestClient(baseUri = "http://localhost:8082")
-public interface userService {
+public interface UserService {
 
   @GET
   @Path("/getallusers")

@@ -1,9 +1,9 @@
 package org.acme.service;
 
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.acme.emailBody.RappelTask;
@@ -24,11 +24,19 @@ public class MailService {
         return Response.accepted().build();
     }
 
-
-    public Response sendRappelTaskHtml(String taskname,String emailResiver) {
+    public Response sendRappelTaskHtml(String taskname, String emailResiver) {
         RappelTask rt = new RappelTask();
         String body = rt.bodyEmail(taskname, 0);
-        mailer.send(Mail.withHtml(emailResiver, taskname+" is due in a day", body));
+        mailer.send(Mail.withHtml(emailResiver, taskname + " is due in a day", body));
+        return Response.accepted().build();
+    }
+
+    @GET
+    @Path("/sendcongratulationsmail")
+    public Response sendCongratulationsHtml(@QueryParam("email") String email) {
+        RappelTask rt = new RappelTask();
+        String body = rt.congratulationsBodyEmail("", 0);
+        mailer.send(Mail.withHtml(email, "Congratulations !", body));
         return Response.accepted().build();
     }
 

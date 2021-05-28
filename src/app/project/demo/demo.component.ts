@@ -17,7 +17,7 @@ import { CommentService } from 'src/app/services/comment.service';
 import { CommentEntiy, CommentRequest } from 'src/app/models/comment.module';
 import { DocumentService } from 'src/app/services/document.service';
 import { Document } from 'src/app/models/document.module';
-
+import { CalendarOptions } from '@fullcalendar/angular';
 
 interface Status {
   value: string;
@@ -30,45 +30,56 @@ interface Status {
   styleUrls: ['./demo.component.css']
 })
 export class DemoComponent implements OnInit {
+  public SERVER_URL = "http://localhost:8082/keycloak/download?filename=";
   public loadingData: boolean = true;
-  horizontalPosition: MatSnackBarHorizontalPosition = 'end';
-  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
-  taskToUpdate: TaskRequest = new TaskRequest();
-  products: Product[];
-  displayDetailTaskDialog: boolean = false;
-  displayEditTaskDialog: boolean = false;
-  projectsList: Projects[] = [];
-  selectedTask: Task = new Task();
-  taskForUpdate: Task = new Task();
-  currentProject: Projects = new Projects();
-  userOfSelectedTask: Users = new Users();
-  usersForTaskFilter: Users[] = [];
-  uploadedFileList:any[]=[];
-  Ondetails: boolean;
-  filterVisible: boolean = false;
-  TaskFilter: TaskFilter = new TaskFilter();
-  clickOnFilter: Boolean = false;
-  displayModal: boolean = false;
-  status: Status[] = [
+  public horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+  public verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+  public taskToUpdate: TaskRequest = new TaskRequest();
+  public products: Product[];
+  public displayDetailTaskDialog: boolean = false;
+  public displayEditTaskDialog: boolean = false;
+  public projectsList: Projects[] = [];
+  public selectedTask: Task = new Task();
+  public taskForUpdate: Task = new Task();
+  public currentProject: Projects = new Projects();
+  public projectIsDone: Projects = new Projects();
+  public userOfSelectedTask: Users = new Users();
+  public usersForTaskFilter: Users[] = [];
+  public uploadedFileList: any[] = [];
+  public Ondetails: boolean;
+  public filterVisible: boolean = false;
+  public TaskFilter: TaskFilter = new TaskFilter();
+  public clickOnFilter: Boolean = false;
+  public displayModal: boolean = false;
+  public loadingUsers: boolean = true;
+  public isCalendar: boolean = false;
+  public previewVisible = false;
+  public listUsersOfCompletedProject: Users[] = [];
+  public status: Status[] = [
     { value: 'Not Started', viewValue: 'Not Started' },
     { value: 'In Progress', viewValue: 'In Progress' },
     { value: 'On Hold', viewValue: 'On Hold' },
     { value: 'Cancelled', viewValue: 'Cancelled' },
     { value: 'Finished', viewValue: 'Finished' }
   ];
-  prioritys: Status[] = [
+  public prioritys: Status[] = [
     { value: 'LOW', viewValue: 'LOW' },
     { value: 'MEDIUM', viewValue: 'MEDIUM' },
     { value: 'HIGH', viewValue: 'HIGH' },
   ];
-  public document :Document = new Document();
+  public document: Document = new Document();
   ///////////////////////////////////////////////
   //commentList: any[] = [];
-  commentList: CommentEntiy[] = [];
-  submitting = false;
-  commentValue = '';
+  public commentList: CommentEntiy[] = [];
+  public submitting = false;
+  public commentValue = '';
 
-
+  //full callendar//
+  public calendarOptions: CalendarOptions;
+  public events: any[] = [];
+  public taskEvent: any;
+  public projectEvent: any;
+  public loadingCalendar: boolean = true;
   ///////////////////////////////////////////////
   constructor(private confirmationService: ConfirmationService,
     private _snackBar: MatSnackBar,
@@ -80,7 +91,7 @@ export class DemoComponent implements OnInit {
     private notifService: NotificationService,
     private lc: LocalStorageService,
     private commentService: CommentService,
-    private documentService:DocumentService
+    private documentService: DocumentService
   ) { }
 
   clickMe(): void {
@@ -93,6 +104,21 @@ export class DemoComponent implements OnInit {
   ngOnInit(): void {
     this.initProjectsList();
     this.getAllUsers();
+
+    //this.taskEvent = { title: 'laylay', start: "2021-05-28" };
+    // this.events.push(this.taskEvent);
+    // this.ekherEvent = [
+    //   { title: 'event 1', date: '2021-05-30' },
+    //   { title: 'event 2', date: '2021-05-20' }
+    // ];
+
+    console.log(this.calendarOptions);
+    console.log(this.events);
+
+  }
+
+  handleDateClick(arg) {
+    alert(arg);
   }
   getAllUsers() {
     this.userService.getAllUsers().subscribe(x => {
@@ -110,6 +136,7 @@ export class DemoComponent implements OnInit {
           task.membres = this.listOfMembers(task.membres);
         })
       });
+      this.handleCalendar(this.projectsList);
       this.loadingData = false;
     }, err => {
       console.log(err);
@@ -247,9 +274,28 @@ export class DemoComponent implements OnInit {
     this.taskService.directUpdateTask(newTask.id, newTask).subscribe(task => {
       this.initProjectsList();
       this.taskToUpdate = new TaskRequest();
+      this.serviceProject.getProjectById(project.id).subscribe(newProj => {
+        if (project.progress < 100 && newProj.progress === 100) {
+          this.loadingUsers = false;
+          this.projectIsDone = newProj;
+          this.projectIsDone.membres.forEach(user => {
+            this.userService.getUserById(user).subscribe(x => {
+              this.listUsersOfCompletedProject.push(x);
+
+            }, err => {
+              console.log(err);
+            })
+          });
+
+          this.previewVisible = true;
+        }
+      }, err => {
+        console.log(err);
+      });
     }, err => {
       console.log(err);
     });
+    this.loadingUsers = false;
   }
   deleteConfirm(idtask, project) {
     this.confirmationService.confirm({
@@ -283,13 +329,13 @@ export class DemoComponent implements OnInit {
     });
     this.displayDetailTaskDialog = true;
     this.Ondetails = false;
-    this.uploadedFileList=[];
-    task.document.forEach(doc=>{
-      this.uploadedFileList=[
+    this.uploadedFileList = [];
+    task.document.forEach(doc => {
+      this.uploadedFileList = [
         ...this.uploadedFileList,
         {
-          fileName:doc.documentName,
-          url:this.documentService.downloadUrl+doc.documentName
+          fileName: doc.documentName,
+          url: this.documentService.downloadUrl + doc.documentName
         }
       ];
     })
@@ -340,10 +386,11 @@ export class DemoComponent implements OnInit {
           task.membres = this.listOfMembers(task.membres);
         })
       });
+      this.handleCalendar(this.projectsList);
       this.loadingData = false;
     })
     this.filterVisible = false;
-    
+
   }
   onShowCommentsModal(task: Task) {
     this.displayModal = true;
@@ -401,26 +448,77 @@ export class DemoComponent implements OnInit {
     this.commentService.addcomment(this.selectedTask.id, comment).subscribe(x => {
     });
   }
-  myUploader(event,idtask) {
+  myUploader(event, idtask) {
     const formData = new FormData();
     formData.append('file', event.files[0]);
     formData.append('fileName', event.files[0].name);
     this.documentService.uploadFile(formData).subscribe(data => {
       console.log(data);
-      this.uploadedFileList=[
+      this.uploadedFileList = [
         ...this.uploadedFileList,
         {
-          fileName:data.fileName,
-          url:this.documentService.downloadUrl+data.regenaratedFileName
+          fileName: data.fileName,
+          url: this.documentService.downloadUrl + data.regenaratedFileName
         }
       ];
       this.document.uploadDate = this.dateFromat(new Date());;
       this.document.path = data.fullPath;
       this.document.documentName = data.regenaratedFileName;
-      this.taskService.addDocumentToTask(idtask,this.document).subscribe();
+      this.taskService.addDocumentToTask(idtask, this.document).subscribe();
     }, err => {
       console.log(err);
     });
-    
+
+  }
+
+  handleCalendar(listProjects: Projects[]) {
+    this.loadingCalendar = true;
+    this.events = [];
+    listProjects.forEach(proj => {
+      proj.tasks.forEach(task => {
+        this.events = [
+          ...this.events,
+          { title: proj.name, start: proj.startDate, end: proj.deadline }
+        ];
+        this.events = [
+          ...this.events,
+          { title: task.name, start: task.startDate, color: '#ff5e3a', id: task.id }
+        ];
+      });
+    });
+    this.calendarOptions = {
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'dayGridMonth,timeGridWeek,timeGridDay',
+        center: 'title',
+        right: 'prevYear,prev,next,nextYear'
+      },
+      //plugins: [],
+      eventClick: (e) => {
+        console.log(e.event._def);
+        this.taskService.getTaskById(e.event._def.publicId.toString()).subscribe(task => {
+          this.showEditTaskDialog(task, this.currentProject);
+        })
+      }, // bind is important!
+      dateClick: (e) => {
+        console.log(e);
+      },
+      events: this.events
+    };
+    this.loadingCalendar = false
+  }
+
+  sendCongradEmail(email) {
+    this.notifService.sendCongratEmailToUser(email).subscribe(x => {
+      console.log("email succés");
+    }, err => {
+      console.log(err);
+    });
+  }
+  tasksViewMode() {
+    this.isCalendar = !this.isCalendar;
+  }
+  urlserver(imgUrl): string {
+    return this.SERVER_URL + imgUrl;
   }
 }
