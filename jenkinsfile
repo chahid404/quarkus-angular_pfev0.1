@@ -1,0 +1,48 @@
+@Library('shared-library') _
+pipeline {
+    agent {
+        kubernetes {
+            defaultContainer 'maven'
+            yaml libraryResource('maven-template.yaml')
+        }
+    }
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '5', artifactNumToKeepStr: '1'))
+        timeout(time: 1, unit: 'HOURS')
+        disableConcurrentBuilds() 
+        skipStagesAfterUnstable()
+    }
+    environment {
+        ARTIFACT = readMavenPom().getArtifactId()
+        TEAMLEAD = readMavenPom().getProperties().getProperty('projectManager')
+        VERSION = readMavenPom().getVersion()
+        USER_CREDENTIALS= credentials('jenkins-user')
+    }
+
+    stages {
+        stage('Check java') {
+            steps {
+                container('maven') {
+                    sh 'java -version'
+                }
+            }
+        }
+        stage('clean') {
+            steps {
+                container('maven') {
+                    sh "chmod +x mvnw"
+                    sh "./mvnw clean"
+                }
+            }
+        }
+        stage('packaging') {
+            steps {
+                container('maven') {
+                    sh "./mvnw clean package -DskipTests"
+                }
+            }
+        }        
+
+    }
+
+}
