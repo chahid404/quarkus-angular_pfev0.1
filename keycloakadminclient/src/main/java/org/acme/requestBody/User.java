@@ -17,21 +17,21 @@ public class User {
   private Boolean enabled;
   private Attributes attributes;
 
-  public static class  Attributes {
+  public static class Attributes {
     public String birthday;
     public String nationality;
     public String gender;
     public String telephone;
     public String zip_code;
     public String imgUrl;
-    
-  }
 
+  }
 
   public User() {
   }
 
-  public User(String id, String username, String lastName, String firstName, String email, Boolean enabled, Attributes attributes) {
+  public User(String id, String username, String lastName, String firstName, String email, Boolean enabled,
+      Attributes attributes) {
     this.id = id;
     this.username = username;
     this.lastName = lastName;
@@ -104,29 +104,29 @@ public class User {
   public void setAttributes(Map<String, List<String>> atte) {
     Attributes Newattributes = new Attributes();
 
-    atte.entrySet().forEach(key->{
-      if (!key.getValue().isEmpty() && key.getKey().matches("birthday") ) {
-        Newattributes.birthday=key.getValue().get(0);
+    atte.entrySet().forEach(key -> {
+      if (!key.getValue().isEmpty() && key.getKey().matches("birthday")) {
+        Newattributes.birthday = key.getValue().get(0);
       }
       if (!key.getValue().isEmpty() && key.getKey().matches("gender")) {
-        Newattributes.gender=key.getValue().get(0);
+        Newattributes.gender = key.getValue().get(0);
       }
       if (!key.getValue().isEmpty() && key.getKey().matches("imgUrl")) {
-        Newattributes.imgUrl=key.getValue().get(0);
+        Newattributes.imgUrl = key.getValue().get(0);
       }
       if (!key.getValue().isEmpty() && key.getKey().matches("nationality")) {
-        Newattributes.nationality=key.getValue().get(0);
+        Newattributes.nationality = key.getValue().get(0);
       }
       if (!key.getValue().isEmpty() && key.getKey().matches("telephone")) {
-        Newattributes.telephone=key.getValue().get(0);
+        Newattributes.telephone = key.getValue().get(0);
       }
       if (!key.getValue().isEmpty() && key.getKey().matches("zip_code")) {
-        Newattributes.zip_code=key.getValue().get(0);
+        Newattributes.zip_code = key.getValue().get(0);
       }
       if (!key.getValue().isEmpty() && key.getKey().matches("birthday")) {
-        Newattributes.birthday=key.getValue().get(0);
+        Newattributes.birthday = key.getValue().get(0);
       }
-  });
+    });
     this.attributes = Newattributes;
   }
 
@@ -166,14 +166,17 @@ public class User {
   }
 
   @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof User)) {
-            return false;
-        }
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(lastName, user.lastName) && Objects.equals(firstName, user.firstName) && Objects.equals(email, user.email) && Objects.equals(enabled, user.enabled) && Objects.equals(attributes, user.attributes);
+  public boolean equals(Object o) {
+    if (o == this)
+      return true;
+    if (!(o instanceof User)) {
+      return false;
+    }
+    User user = (User) o;
+    return Objects.equals(id, user.id) && Objects.equals(username, user.username)
+        && Objects.equals(lastName, user.lastName) && Objects.equals(firstName, user.firstName)
+        && Objects.equals(email, user.email) && Objects.equals(enabled, user.enabled)
+        && Objects.equals(attributes, user.attributes);
   }
 
   @Override
@@ -183,16 +186,9 @@ public class User {
 
   @Override
   public String toString() {
-    return "{" +
-      " id='" + getId() + "'" +
-      ", username='" + getUsername() + "'" +
-      ", lastName='" + getLastName() + "'" +
-      ", firstName='" + getFirstName() + "'" +
-      ", email='" + getEmail() + "'" +
-      ", enabled='" + isEnabled() + "'" +
-      ", attributes='" + getAttributes() + "'" +
-      "}";
+    return "{" + " id='" + getId() + "'" + ", username='" + getUsername() + "'" + ", lastName='" + getLastName() + "'"
+        + ", firstName='" + getFirstName() + "'" + ", email='" + getEmail() + "'" + ", enabled='" + isEnabled() + "'"
+        + ", attributes='" + getAttributes() + "'" + "}";
   }
 
-  
 }

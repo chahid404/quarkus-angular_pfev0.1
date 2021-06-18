@@ -297,8 +297,8 @@
                 <td>
                     <p-avatarGroup styleClass="p-mb-3">
                         <p-avatar pTooltip="{{member.firstName}} {{member.lastName}}" tooltipPosition="top"
-                            *ngFor="let member of project.membres| slice:0:3" image="assets/img/author-page.jpg"
-                            shape="circle">
+                            *ngFor="let member of project.membres| slice:0:3"
+                            [image]="urlserver(member?.attributes?.imgUrl)" shape="circle">
                         </p-avatar>
                         <p-avatar *ngIf="project.membres.length >3" label="{{'+'}}{{project.membres.length-3}}"
                             shape="circle" [style]="{'background-color':'#9c27b0', 'color': '#ffffff'}">
@@ -406,7 +406,7 @@
                                 <p-avatarGroup styleClass="p-mb-3">
                                     <p-avatar pTooltip="{{member.firstName}} {{member.lastName}}" tooltipPosition="top"
                                         *ngFor="let member of task.membres| slice:0:3"
-                                        image="assets/img/author-page.jpg" shape="circle">
+                                        [image]="urlserver(member?.attributes?.imgUrl)" shape="circle">
                                     </p-avatar>
                                     <p-avatar *ngIf="task.membres.length >3" label="{{'+'}}{{task.membres.length-3}}"
                                         shape="circle" [style]="{'background-color':'#9c27b0', 'color': '#ffffff'}">

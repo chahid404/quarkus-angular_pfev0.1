@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { Users } from 'src/app/models/project/user.module';
+import { Users, UsersForUpdate } from 'src/app/models/project/user.module';
 import { KeycloakSecurityService } from 'src/app/services/keycloak-security.service';
 import { UserService } from 'src/app/services/user.service';
 import { CountryList } from '../countryList.module';
@@ -14,8 +14,8 @@ import { CountryList } from '../countryList.module';
 })
 export class PersonalinformationComponent implements OnInit {
 
-  public isLoading:boolean = false;
-  public currentUser:Users = new Users();
+  public isLoading: boolean = false;
+  public currentUser: Users = new Users();
   public genderList: string[] = ['Female', 'Male'];
   public allCountries = CountryList;
   public loadingData: boolean = true;
@@ -36,37 +36,45 @@ export class PersonalinformationComponent implements OnInit {
 
 
   constructor(
-    private userService:UserService,
-    private kcService:KeycloakSecurityService,
+    private userService: UserService,
+    private kcService: KeycloakSecurityService,
     private messageService: MessageService
-    ) { }
+  ) { }
 
-  ngOnInit(): void {    
-    this.userService.getUserById(this.kcService.getUserId()).subscribe(user=>{
+  ngOnInit(): void {
+    this.userService.getUserById(this.kcService.getUserId()).subscribe(user => {
       this.currentUser = user;
       this.currentUserForm.patchValue(user);
       this.loadingData = false;
-    },err=>{
+    }, err => {
       console.log(err);
-      this.messageService.add({severity:'error', summary: err.statusText, detail:"Please try again"});
+      this.messageService.add({ severity: 'error', summary: err.statusText, detail: "Please try again" });
     });
-    
+
   }
 
-  onSubmit(){
+  onSubmit() {
     this.isLoading = true;
     console.log(this.currentUserForm.value);
-    this.userService.updateUser(this.kcService.getUserId(),this.currentUserForm.value).subscribe(user=>{
+    let userBody: UsersForUpdate;
+    userBody = this.currentUserForm.value;
+    userBody.attributes.birthday = [this.currentUserForm.value.attributes.birthday];
+    userBody.attributes.gender = [this.currentUserForm.value.attributes.gender];
+    userBody.attributes.nationality = [this.currentUserForm.value.attributes.nationality];
+    userBody.attributes.telephone = [this.currentUserForm.value.attributes.telephone];
+    userBody.attributes.zip_code = [this.currentUserForm.value.attributes.zip_code];
+    console.log(userBody);
+    this.userService.updateUser(this.kcService.getUserId(), userBody).subscribe(user => {
       this.currentUserForm.patchValue(user);
-      this.currentUser= user;
-      this.messageService.add({severity:'success', summary:'success', detail:'Profile update successfully'});
-    },err=>{
+      this.currentUser = user;
+      this.messageService.add({ severity: 'success', summary: 'success', detail: 'Profile update successfully' });
+    }, err => {
       console.log(err);
-      this.messageService.add({severity:'error', summary: err.statusText, detail:err.status});
+      this.messageService.add({ severity: 'error', summary: err.statusText, detail: err.status });
     })
     this.isLoading = false;
   }
-  onRestForm(){
+  onRestForm() {
     this.currentUserForm.patchValue(this.currentUser);
   }
 

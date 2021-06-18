@@ -15,18 +15,18 @@ export class RestpasswordComponent implements OnInit {
   public restPasswordForum = new FormGroup({
     oldpassword: new FormControl('', [
       Validators.required,
-      ]),
+    ]),
     newPassword: new FormControl('', [
       Validators.required,
-      ]),
+    ]),
     repeatnewPassword: new FormControl('', [
       Validators.required,
-      ])
+    ])
   });
   constructor(
     private userService: UserService,
-    private kcService: KeycloakSecurityService,  private messageService: MessageService
-    ) { }
+    private kcService: KeycloakSecurityService, private messageService: MessageService
+  ) { }
 
   ngOnInit(): void {
     this.restPasswordForum.reset();
@@ -51,9 +51,11 @@ export class RestpasswordComponent implements OnInit {
         console.log(err);
         this.messageService.add({ severity: 'error', summary: "Worng Password", detail: "Please try again" });
       });
-      
-    } 
+
+    }
+    this.restPasswordForum.setValue({
+
+    });
     this.isLoading = false;
-    this.restPasswordForum.reset();
   }
 }

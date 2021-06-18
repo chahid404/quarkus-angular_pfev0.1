@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Path("/projects")
@@ -153,11 +154,31 @@ public class ProjectRessource {
   @Produces(MediaType.APPLICATION_JSON)
   public List<Project> getProjectTasksByFilter(@QueryParam("name") String name, @QueryParam("status") String status,
       @QueryParam("priority") String priority, @QueryParam("startDate") String startDate,
-      @QueryParam("membres") String membres, @QueryParam("dueDate") String dueDate, @QueryParam("score") String score) {
-
-    List<Project> projects = projectRepository.findAll().list();
+      @QueryParam("membres") String membres, @QueryParam("dueDate") String dueDate, @QueryParam("score") String score,
+      @QueryParam("currentuser") String currentUserId) {
+    if (currentUserId == null) {
+      currentUserId = "";
+    }
+    List<Project> projects = projectRepository.find("status != ?1", "archive").list();
+    List<Project> projetctsOfCurrentUser = new ArrayList<Project>();
     List<Project> projectWithFiltertTasks = new ArrayList<Project>();
-    for (Project project : projects) {
+    if (!currentUserId.matches("")) {
+      for (Project proj : projects) {
+        if (proj.getCreator().matches("(.*)" + currentUserId + "(.*)")
+            || Arrays.asList(proj.getMembres()).contains(currentUserId)) {
+          projetctsOfCurrentUser.add(proj);
+        } else {
+          for (Task task : proj.getTasks()) {
+            if (Arrays.asList(task.getMembres()).contains(currentUserId)) {
+              projetctsOfCurrentUser.add(proj);
+            }
+          }
+        }
+      }
+    } else {
+      projetctsOfCurrentUser = projects;
+    }
+    for (Project project : projetctsOfCurrentUser) {
       List<Task> filtertTasks = new ArrayList<Task>();
       for (Task task : project.getTasks()) {
         if (task.name.toLowerCase().matches("(.*)" + name.toLowerCase() + "(.*)")
@@ -182,12 +203,11 @@ public class ProjectRessource {
 
   public String ConvertDescriptionToHtmlFile(String descriptionBody, String projectName) throws IOException {
     byte[] bytes = descriptionBody.getBytes(StandardCharsets.UTF_8);
-    Random random = new Random();
-    int randomNumber = random.nextInt(1000000000 - 10) + 10;
-    LocalDate localDate = LocalDate.now();
-    String fullPath = path + localDate + randomNumber + projectName + ".html";
-    writeFile(bytes, fullPath);
-    return fullPath;
+    LocalDateTime localDate = LocalDateTime.now();
+    String picFullpath = localDate.toString().replace(":", "") + projectName.replace(" ", "") + ".html";
+    writeFile(bytes, picFullpath);
+    System.out.println(picFullpath);
+    return picFullpath;
   }
 
   private void writeFile(byte[] content, String filename) throws IOException {

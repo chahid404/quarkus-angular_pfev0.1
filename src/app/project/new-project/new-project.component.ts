@@ -27,6 +27,7 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     public datepipe: DatePipe, public projectService: ProjectService, private _snackBar: MatSnackBar, private userService: UserService) {
 
   }
+  private SERVER_URL = "http://localhost:8082/keycloak/download?filename=";
   public todayDate = new Date();
   horizontalPosition: MatSnackBarHorizontalPosition = 'end';
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
@@ -154,7 +155,7 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
       this.project.createdDate = this.dateFromat(this.todayDate);
       this.project.startDate = this.dateFromat(this.projectForm.value.startDate);
       this.project.deadline = this.dateFromat(this.projectForm.value.deadline);
-      this.project.creator = this.currentUser.id;
+      this.project.creator = this.currentUserId;
       this.project.subProject = "projectsub1";
       this.project.tags = this.tagsValues;
       //create membreslist
@@ -201,7 +202,7 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     height: 'auto',
     minHeight: '150px',
     maxHeight: 'auto',
-    width: 'auto',
+    width: '700px',
     minWidth: '0',
     translate: 'yes',
     enableToolbar: true,
@@ -270,20 +271,21 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
    * Sets the initial value after the filteredBanks are loaded initially
    */
   protected setInitialValue() {
-    this.userService.getUserById(this.currentUserId).subscribe(user => {
-      this.currentUser = user;
-      this.userService.getAllUsers().subscribe(users => {
-        this.usersList = users;
-        var indexOfSepecificUser = this.usersList.findIndex(u => u.id === user.id);
-        this.usersList.splice(indexOfSepecificUser, 1);
-        console.log(this.usersList);
+    this.userService.getAllUsers().subscribe(users => {
+      this.usersList = users;
+      // console.log(users);
+      // console.log(this.usersList);
+      // var indexOfSepecificUser = this.usersList.findIndex(u => u.id === user.id);
+      // this.usersList.splice(indexOfSepecificUser, 1);
+      // console.log(this.usersList);
 
-      }, error => {
-        console.log(error);
-      });
-    }, err => {
-      console.log(err);
+    }, error => {
+      console.log(error);
     });
+
+  }
+  urlserver(imgUrl): string {
+    return this.SERVER_URL + imgUrl;
   }
 
   protected filterUsersMulti() {
@@ -298,7 +300,7 @@ export class NewProjectComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       search = search.toLowerCase();
     }
-    this.usersList = this.usersList.filter(user => user.username.toLowerCase().indexOf(search) > -1);
+    this.usersList = this.usersList.filter(user => (user.firstName + user.lastName).toLowerCase().indexOf(search) > -1);
 
   }
   // endUsers

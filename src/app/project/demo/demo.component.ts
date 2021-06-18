@@ -18,6 +18,7 @@ import { CommentEntiy, CommentRequest } from 'src/app/models/comment.module';
 import { DocumentService } from 'src/app/services/document.service';
 import { Document } from 'src/app/models/document.module';
 import { CalendarOptions } from '@fullcalendar/angular';
+import { KeycloakSecurityService } from 'src/app/services/keycloak-security.service';
 
 interface Status {
   value: string;
@@ -91,7 +92,8 @@ export class DemoComponent implements OnInit {
     private notifService: NotificationService,
     private lc: LocalStorageService,
     private commentService: CommentService,
-    private documentService: DocumentService
+    private documentService: DocumentService,
+    private kcService: KeycloakSecurityService,
   ) { }
 
   clickMe(): void {
@@ -128,7 +130,7 @@ export class DemoComponent implements OnInit {
 
   public initProjectsList() {
     this.loadingData = true;
-    this.serviceProject.getProjectWithFiltredTasks("", "", "", "", "", "", "").subscribe(projects => {
+    this.serviceProject.getProjectWithFiltredTasks(this.kcService.getUserId(), "", "", "", "", "", "", "").subscribe(projects => {
       this.projectsList = projects;
       this.projectsList.forEach(proj => {
         proj.membres = this.listOfMembers(proj.membres);
@@ -378,7 +380,7 @@ export class DemoComponent implements OnInit {
     this.loadingData = true;
     this.TaskFilter.dueDate = this.dateFromat(this.TaskFilter.dueDate);
     this.TaskFilter.startDate = this.dateFromat(this.TaskFilter.startDate);
-    this.serviceProject.getProjectWithFiltredTasks(this.TaskFilter.name, this.TaskFilter.status, this.TaskFilter.priority, this.TaskFilter.startDate, this.TaskFilter.dueDate, this.TaskFilter.membres, this.TaskFilter.score).subscribe(x => {
+    this.serviceProject.getProjectWithFiltredTasks(this.kcService.getUserId(), this.TaskFilter.name, this.TaskFilter.status, this.TaskFilter.priority, this.TaskFilter.startDate, this.TaskFilter.dueDate, this.TaskFilter.membres, this.TaskFilter.score).subscribe(x => {
       this.projectsList = x;
       this.projectsList.forEach(proj => {
         proj.membres = this.listOfMembers(proj.membres);
@@ -519,6 +521,11 @@ export class DemoComponent implements OnInit {
     this.isCalendar = !this.isCalendar;
   }
   urlserver(imgUrl): string {
-    return this.SERVER_URL + imgUrl;
+    if (imgUrl == "" || imgUrl == " ") {
+      return "assets/img/user-avatar.png";
+    } else {
+      return this.SERVER_URL + imgUrl;
+    }
+
   }
 }

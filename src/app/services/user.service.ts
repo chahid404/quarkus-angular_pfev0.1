@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Users } from '../models/project/user.module';
 import { KeycloakSecurityService } from './keycloak-security.service';
 
@@ -14,10 +15,12 @@ export class UserService {
 
 
 
-  public getAllUsers() {
-    return this.httpClient.get<Users[]>(this.SERVER_URL + "/getallusers?currentuser=" + this.ks.getUserId());
+  public getAllUsers(): Observable<Users[]> {
+    return this.httpClient.get<Users[]>(this.SERVER_URL + "/getallusers?search=&currentuser=" + this.ks.getUserId());
   }
-
+  public getAllUsersv2() {
+    return this.httpClient.get(this.SERVER_URL + "/getallusers?currentuser=" + this.ks.getUserId());
+  }
   public getAllUsersMinesCurrentUserWithSearch(currentUser: string, searchParam: string) {
     return this.httpClient.get<Users[]>(this.SERVER_URL + "/getallusers?currentuser=" + currentUser + "&search=" + searchParam);
   }

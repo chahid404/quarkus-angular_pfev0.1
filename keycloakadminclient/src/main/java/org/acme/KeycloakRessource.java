@@ -42,18 +42,17 @@ import java.util.stream.Collectors;
 @Path("/keycloak")
 public class KeycloakRessource {
     final String serverUrl = "http://localhost:8080";
-    final String clientSecret = "2b48d9db-9ccf-4e3f-9ccd-f7a824334633";
+    final String clientSecret = "b7c7a5b8-a89e-437c-96c3-17334f508027";
     final String realmName = "quarkus";
     Keycloak keycloak = KeycloakBuilder.builder().serverUrl(serverUrl).realm("master").clientId("admin-cli")
             .username("admin").password("admin").clientSecret(clientSecret).build();
     private String imgUrl;
-    //public String path = "../../../../../uploads/";
+    // public String path = "../../../../../uploads/";
 
     @GET
     @Path("/getallusers")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<UserRepresentation> getAllUsers(@QueryParam("currentuser") String userId,
-            @QueryParam("search") String search) {
+    public List<User> getAllUsers(@QueryParam("currentuser") String userId, @QueryParam("search") String search) {
         List<UserRepresentation> listUsers = new ArrayList<UserRepresentation>();
         if (search != "") {
             listUsers = keycloak.realm(realmName).users().search(search, 0, 10);
@@ -69,7 +68,24 @@ public class KeycloakRessource {
                 }
             }
         }
-        return sortListOfUsersByCreatedDate(listUsers);
+
+        List<User> listUsersToReturn = new ArrayList<User>();
+
+        for (UserRepresentation userR : sortListOfUsersByCreatedDate(listUsers)) {
+            User newUser = new User();
+            newUser.setId(userR.getId());
+            newUser.setUsername(userR.getUsername());
+            newUser.setFirstName(userR.getFirstName());
+            newUser.setLastName(userR.getLastName());
+            newUser.setEmail(userR.getEmail());
+            newUser.setEnabled(userR.isEnabled());
+            if (userR.getAttributes() != null) {
+                newUser.setAttributes(userR.getAttributes());
+            }
+            listUsersToReturn.add(newUser);
+        }
+
+        return listUsersToReturn;
     }
 
     @GET
@@ -120,9 +136,9 @@ public class KeycloakRessource {
         user.setFirstName(userBody.getFirstName());
         user.setLastName(userBody.getLastName());
         user.setEnabled(userBody.getEnabled());
-        // if (userBody.getAttributes().birthday != null) {
-        //     attributes.put("birthday", Arrays.asList("2021-02-03");
-        // }
+        if (userBody.getAttributes().birthday != null) {
+            attributes.put("birthday", Arrays.asList(userBody.getAttributes().birthday));
+        }
         if (userBody.getAttributes().nationality != null) {
             attributes.put("nationality", Arrays.asList(userBody.getAttributes().nationality));
         }
@@ -169,7 +185,7 @@ public class KeycloakRessource {
     public Status restPassword(@PathParam("userid") String userid, @PathParam("oldpass") String oldpass,
             @PathParam("newpass") String newpass) {
         Map<String, Object> clientCredentials = new HashMap<>();
-        clientCredentials.put("secret", "2b8bbd21-27d0-4680-8a69-5dee3d48d566");
+        clientCredentials.put("secret", "687ef02a-fcd1-4326-bc84-7f4454e7ced4");
         clientCredentials.put("grant_type", "password");
         Configuration configuration = new Configuration(serverUrl, "quarkus", "backenduser", clientCredentials, null);
         AuthzClient authzClient = AuthzClient.create(configuration);
@@ -271,7 +287,7 @@ public class KeycloakRessource {
         byte[] bytes = fileBody.file.readAllBytes();
         LocalDateTime localDate = LocalDateTime.now();
         String picFullpath = localDate.toString().replace(":", "") + fileBody.getFileName().replace(" ", "");
-        writeFile(bytes,picFullpath);
+        writeFile(bytes, picFullpath);
         // update profile
         if (userR.getAttributes() != null) {
             userR.getAttributes().entrySet().forEach(key -> {

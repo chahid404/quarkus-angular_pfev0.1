@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -80,14 +81,14 @@ public class DocumentRessource {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public FileParams uploadFile(@MultipartForm MultiPartBody bodyFile) throws IOException {
     byte[] bytes = bodyFile.file.readAllBytes();
-    Random random = new Random();
     FileParams fileParams = new FileParams();
-    int randomNumber = random.nextInt(1000 - 10) + 10;
-    LocalDate localDate = LocalDate.now();
-    writeFile(bytes, path + randomNumber + "-" + localDate + "-" + bodyFile.getFileName().replace(" ", ""));
+
+    LocalDateTime localDate = LocalDateTime.now();
+    String path = localDate.toString().replace(":", "") + bodyFile.getFileName().replace(" ", "");
+    writeFile(bytes, path);
     fileParams.setFileName(bodyFile.getFileName());
-    fileParams.setFullPath(path + randomNumber + "-" + localDate + "-" + bodyFile.getFileName().replace(" ", ""));
-    fileParams.setRegenaratedFileName(randomNumber + "-" + localDate + "-" + bodyFile.getFileName().replace(" ", ""));
+    fileParams.setFullPath(path);
+    fileParams.setRegenaratedFileName(path);
     return fileParams;
   }
 
